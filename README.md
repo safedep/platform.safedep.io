@@ -30,6 +30,14 @@ npm run dev
 
 - Navigate to `http://localhost:3000` in your browser.
 
+### Testing
+
+- Run the test suite:
+
+```shell
+npm run test
+```
+
 ### Framework Documentation
 
 - [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
