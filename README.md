@@ -19,6 +19,21 @@ asdf install
 ```shell
 npm install
 ```
+### Auth0 Configuration
+- Before running the project, ensure that you have set up the Auth0 configuration in the .env.local file.
+
+- Create a .env.local file in the root of the project.
+- Add your Auth0 credentials, which can be found in the Auth0 documentation, into the .env.local file.
+- Example .env.local:
+
+```
+NEXT_PUBLIC_AUTH0_DOMAIN=your-auth0-domain
+NEXT_PUBLIC_AUTH0_CLIENT_ID=your-auth0-client-id
+NEXT_PUBLIC_AUTH0_REDIRECT_URI=http://localhost:3000/api/auth/callback
+NEXT_PUBLIC_AUTH0_SCOPE="openid profile email"
+NEXT_PUBLIC_AUTH0_AUDIENCE=your-auth0-audience
+```
+- Make sure to replace your-auth0-domain, your-auth0-client-id, and your-auth0-audience with the actual values from your Auth0 account.
 
 ### Running the development server
 
