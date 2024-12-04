@@ -9,19 +9,8 @@ describe("AuthPage", () => {
 
     const heading = screen.getByRole("heading", { name: /welcome to safedep/i });
     expect(heading).toBeInTheDocument();
-  })
 
-  it("renders sign-in button", () => {
-    render(<Auth />);
-
-    const button = screen.getByRole("button", { name: /sign in/i });
-    expect(button).toBeInTheDocument();
-  })
-
-  it("renders create account button", () => {
-    render(<Auth />);
-
-    const button = screen.getByRole("button", { name: /create account/i });
-    expect(button).toBeInTheDocument();
+    const loginLink = screen.getByRole("link", { name: /create account or login/i });
+    expect(loginLink).toBeInTheDocument();
   })
 })
