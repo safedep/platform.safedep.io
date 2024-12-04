@@ -13,10 +13,11 @@ type FormData = {
   organizationDomain: string;
 };
 
-const Onboard = () => {
+const Onboard: React.FC = () => {
   const router = useRouter();
   const { user, isLoading } = useUser();
   const { register, handleSubmit } = useForm<FormData>();
+
   const onSubmit: SubmitHandler<FormData> = async (data) => {
     try {
       const response = await fetch("/api/onboard", {
@@ -28,12 +29,13 @@ const Onboard = () => {
       });
 
       if (response.ok) {
-        console.log("Successfully Done",response)
+        console.log("Successfully onboarded:", response); 
       } else {
-        console.error("Failed to create tenant:", await response.text());
+        const errorText = await response.text();
+        console.error("Failed to onboard:", errorText);
       }
-    } catch (err) {
-      console.error("Error creating tenant:", err);
+    } catch (error) {
+      console.error("Error during onboarding:", error);
     }
   };
 
@@ -48,7 +50,7 @@ const Onboard = () => {
         <div className="flex justify-center items-center">
           <Badge
             icon={UserIcon}
-            text={`Welcome, User ! Please Fill in the Details to Onboard`}
+            text={`Welcome, ${user?.name || "User"}! Please fill in the details to onboard.`}
             bgColor="bg-blue-100"
             textColor="text-blue-700"
           />
@@ -65,7 +67,7 @@ const Onboard = () => {
             </label>
             <input
               type="text"
-              {...register("name", { required: true })}
+              {...register("name", { required: "Name is required" })}
               className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring focus:ring-blue-300"
               placeholder="Enter your name"
             />
@@ -77,7 +79,7 @@ const Onboard = () => {
             </label>
             <input
               type="text"
-              {...register("organizationName", { required: true })}
+              {...register("organizationName", { required: "Organization name is required" })}
               className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring focus:ring-blue-300"
               placeholder="Enter organization name"
             />
@@ -89,7 +91,7 @@ const Onboard = () => {
             </label>
             <input
               type="text"
-              {...register("organizationDomain", { required: true })}
+              {...register("organizationDomain", { required: "Organization domain is required" })}
               className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring focus:ring-blue-300"
               placeholder="Enter domain"
             />
