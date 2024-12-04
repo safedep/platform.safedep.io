@@ -23,7 +23,7 @@ npm install
 ### Configuration
 
 - Create `.env.local` file based on `env.local.sample` (example)
-- Update `env.local` with the appropriate values
+- Update `.env.local` with the appropriate values
 
 > Note: For SafeDep Team members, ask for development credentials in Slack
 
