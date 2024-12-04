@@ -1,5 +1,13 @@
+import { getSession } from "@auth0/nextjs-auth0";
 import { redirect } from "next/navigation";
 
-export default function Home() {
-  redirect("/auth");
+export default async function Home() {
+  const session = await getSession(); 
+
+  if (!session?.user) {
+    redirect("/auth");
+  } else {
+    redirect("/onboard");
+  }
+  return null;
 }
