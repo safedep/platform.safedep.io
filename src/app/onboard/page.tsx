@@ -36,6 +36,7 @@ const Onboard: React.FC = () => {
       }
 
       logger.info("Onboarding successful", body);
+      router.push("/platform/keys");
     } catch (error) {
       logger.error("Error occurred while onboarding", error);
     }
@@ -45,6 +46,7 @@ const Onboard: React.FC = () => {
     router.push("/");
     return null;
   }
+
 
   return (
     <div className="flex items-center justify-center min-h-screen bg-gray-100">
