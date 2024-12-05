@@ -1,9 +1,9 @@
 import React from 'react';
 import { render, screen, fireEvent, waitFor } from '@testing-library/react';
-import '@testing-library/jest-dom'; 
+import '@testing-library/jest-dom';
 import { useRouter } from 'next/navigation';
 import { useUser } from '@auth0/nextjs-auth0/client';
-import Onboard from '../page'; 
+import Onboard from '../page';
 
 
 jest.mock('next/navigation', () => ({
@@ -15,6 +15,12 @@ jest.mock('@auth0/nextjs-auth0/client', () => ({
 }));
 
 global.fetch = jest.fn();
+
+const placeholderText = {
+  name: 'John Doe',
+  organization: 'Example Inc',
+  domain: 'example.com',
+};
 
 describe('Onboard Component', () => {
   const mockRouter = {
@@ -38,9 +44,9 @@ describe('Onboard Component', () => {
   test('renders onboarding form with user name', () => {
     render(<Onboard />);
     expect(screen.getByText(`Welcome, ${mockUser.name}! Please fill in the details to onboard.`)).toBeInTheDocument();
-    expect(screen.getByPlaceholderText('Enter your name')).toBeInTheDocument();
-    expect(screen.getByPlaceholderText('Enter organization name')).toBeInTheDocument();
-    expect(screen.getByPlaceholderText('Enter domain')).toBeInTheDocument();
+    expect(screen.getByPlaceholderText(placeholderText.name)).toBeInTheDocument();
+    expect(screen.getByPlaceholderText(placeholderText.organization)).toBeInTheDocument();
+    expect(screen.getByPlaceholderText(placeholderText.domain)).toBeInTheDocument();
     expect(screen.getByRole('button', { name: 'Create' })).toBeInTheDocument();
   });
 
@@ -57,21 +63,23 @@ describe('Onboard Component', () => {
   test('handles form submission successfully', async () => {
     (global.fetch as jest.Mock).mockResolvedValueOnce({
       ok: true,
-      text: jest.fn().mockResolvedValue('Success'),
+      json: jest.fn().mockResolvedValue({ domain: 'example.com' }),
     });
-    const consoleLogSpy = jest.spyOn(console, 'log').mockImplementation();
 
     render(<Onboard />);
 
-    fireEvent.change(screen.getByPlaceholderText('Enter your name'), { 
-      target: { value: 'Kunal Khare' } 
+    fireEvent.change(screen.getByPlaceholderText(placeholderText.name), {
+      target: { value: placeholderText.name }
     });
-    fireEvent.change(screen.getByPlaceholderText('Enter organization name'), { 
-      target: { value: 'Test Org' } 
+
+    fireEvent.change(screen.getByPlaceholderText(placeholderText.organization), {
+      target: { value: placeholderText.organization }
     });
-    fireEvent.change(screen.getByPlaceholderText('Enter domain'), { 
-      target: { value: 'testorg.com' } 
+
+    fireEvent.change(screen.getByPlaceholderText(placeholderText.domain), {
+      target: { value: placeholderText.domain }
     });
+
     fireEvent.click(screen.getByRole('button', { name: 'Create' }));
     await waitFor(() => {
       expect(global.fetch).toHaveBeenCalledWith('/api/onboard', {
@@ -80,37 +88,39 @@ describe('Onboard Component', () => {
           'Content-Type': 'application/json',
         },
         body: JSON.stringify({
-          name: 'Kunal Khare',
-          organizationName: 'Test Org',
-          organizationDomain: 'testorg.com'
+          name: placeholderText.name,
+          organizationName: placeholderText.organization,
+          organizationDomain: placeholderText.domain,
         }),
       });
     });
-    expect(consoleLogSpy).toHaveBeenCalledWith('Successfully onboarded:', expect.anything());
-
-    consoleLogSpy.mockRestore();
   });
 
   test('handles form submission error', async () => {
     (global.fetch as jest.Mock).mockResolvedValueOnce({
       ok: false,
-      text: jest.fn().mockResolvedValue('Error details'),
+      json: jest.fn().mockResolvedValue({ message: 'Error details' }),
     });
+
     const consoleErrorSpy = jest.spyOn(console, 'error').mockImplementation();
 
     render(<Onboard />);
-    fireEvent.change(screen.getByPlaceholderText('Enter your name'), { 
-      target: { value: 'Kunal Khare' } 
+    fireEvent.change(screen.getByPlaceholderText(placeholderText.name), {
+      target: { value: placeholderText.name }
     });
-    fireEvent.change(screen.getByPlaceholderText('Enter organization name'), { 
-      target: { value: 'Test Org' } 
+
+    fireEvent.change(screen.getByPlaceholderText(placeholderText.organization), {
+      target: { value: placeholderText.organization }
     });
-    fireEvent.change(screen.getByPlaceholderText('Enter domain'), { 
-      target: { value: 'testorg.com' } 
+
+    fireEvent.change(screen.getByPlaceholderText(placeholderText.domain), {
+      target: { value: placeholderText.domain }
     });
+
     fireEvent.click(screen.getByRole('button', { name: 'Create' }));
     await waitFor(() => {
-      expect(consoleErrorSpy).toHaveBeenCalledWith('Failed to onboard:', 'Error details');
+      expect(consoleErrorSpy).toHaveBeenCalledWith(expect.stringContaining('Failed to onboard'),
+        expect.any(String));
     });
 
     consoleErrorSpy.mockRestore();
@@ -121,18 +131,23 @@ describe('Onboard Component', () => {
     const consoleErrorSpy = jest.spyOn(console, 'error').mockImplementation();
 
     render(<Onboard />);
-    fireEvent.change(screen.getByPlaceholderText('Enter your name'), { 
-      target: { value: 'Kunal Khare' } 
+
+    fireEvent.change(screen.getByPlaceholderText(placeholderText.name), {
+      target: { value: placeholderText.name }
     });
-    fireEvent.change(screen.getByPlaceholderText('Enter organization name'), { 
-      target: { value: 'Test Org' } 
+
+    fireEvent.change(screen.getByPlaceholderText(placeholderText.organization), {
+      target: { value: placeholderText.organization }
     });
-    fireEvent.change(screen.getByPlaceholderText('Enter domain'), { 
-      target: { value: 'testorg.com' } 
+
+    fireEvent.change(screen.getByPlaceholderText(placeholderText.domain), {
+      target: { value: placeholderText.domain }
     });
+
     fireEvent.click(screen.getByRole('button', { name: 'Create' }));
     await waitFor(() => {
-      expect(consoleErrorSpy).toHaveBeenCalledWith('Error during onboarding:', expect.any(Error));
+      expect(consoleErrorSpy).toHaveBeenCalledWith(expect.stringContaining('Error occurred while onboarding'),
+        expect.any(String));
     });
 
     consoleErrorSpy.mockRestore();

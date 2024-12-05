@@ -1,31 +1,26 @@
-import { NextResponse } from "next/server";
-import { onboardingSchema, validateSchema } from "@/utils/schema";
+import { createValidationError } from "@/lib/schema/error";
+import { OnboardingRequest, OnboardingResponse } from "@/lib/schema/onboarding";
+import { validateSchema } from "@/lib/schema/validate";
 import { logger } from "@/utils/logger";
+import { NextResponse } from "next/server";
+import { z } from "zod";
 
 export async function POST(req: Request) {
-  try {
-    const body = await req.json();
-    const { validData, errors } = validateSchema(onboardingSchema, body);
+  const body = await req.json();
 
-    if (!validData || errors) {
-      logger.error("Validation failed");
-      return NextResponse.json(
-        { success: false, errors },
-        { status: 400 }
-      );
-    }
-
-    logger.info("Onboarding data received", validData);
-
-    return NextResponse.json({
-      success: true,
-      message: "Tenant created successfully",
-    });
-  } catch (err) {
-    logger.error("Unexpected error", { error: (err as Error).message });
-    return NextResponse.json(
-      { success: false, message: "Internal server error" },
-      { status: 500 }
-    );
+  const { validData, errors } = validateSchema(OnboardingRequest, body);
+  if (!validData || errors) {
+    logger.debug("Validation failed", errors);
+    return NextResponse.json(createValidationError(errors), { status: 400 });
   }
+
+  logger.debug("Onboarding request", validData);
+
+  type responseType = z.infer<typeof OnboardingResponse>;
+  const response: responseType = {
+    domain: "example.com"
+  };
+
+  logger.debug("Onboarding successful", response);
+  return NextResponse.json(response, { status: 200 });
 }
