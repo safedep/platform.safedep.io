@@ -6,6 +6,7 @@ import { useUser } from "@auth0/nextjs-auth0/client";
 import { useForm, SubmitHandler } from "react-hook-form";
 import Badge from "../../components/Badge";
 import { UserIcon } from "lucide-react";
+import { logger } from "@/utils/logger";
 
 type FormData = {
   name: string;
@@ -28,14 +29,15 @@ const Onboard: React.FC = () => {
         body: JSON.stringify(data),
       });
 
-      if (response.ok) {
-        console.log("Successfully onboarded:", response); 
-      } else {
-        const errorText = await response.text();
-        console.error("Failed to onboard:", errorText);
+      const body = await response.json();
+      if (!response.ok) {
+        logger.error("Failed to onboard", body);
+        return;
       }
+
+      logger.info("Onboarding successful", body);
     } catch (error) {
-      console.error("Error during onboarding:", error);
+      logger.error("Error occurred while onboarding", error);
     }
   };
 
@@ -69,7 +71,7 @@ const Onboard: React.FC = () => {
               type="text"
               {...register("name", { required: "Name is required" })}
               className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring focus:ring-blue-300"
-              placeholder="Enter your name"
+              placeholder="John Doe"
             />
           </div>
 
@@ -81,7 +83,7 @@ const Onboard: React.FC = () => {
               type="text"
               {...register("organizationName", { required: "Organization name is required" })}
               className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring focus:ring-blue-300"
-              placeholder="Enter organization name"
+              placeholder="Example Inc"
             />
           </div>
 
@@ -93,7 +95,7 @@ const Onboard: React.FC = () => {
               type="text"
               {...register("organizationDomain", { required: "Organization domain is required" })}
               className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring focus:ring-blue-300"
-              placeholder="Enter domain"
+              placeholder="example.com"
             />
           </div>
 
