@@ -13,7 +13,15 @@ const Layout = ({ children }: { children: React.ReactNode }) => {
     if (!isLoading && !user) {
       router.push("/");
     }
-  }, [user, isLoading]);
+  }, [user, isLoading, router]);
+
+  if (isLoading) {
+    return (
+      <div className="min-h-screen flex items-center justify-center">
+        <p className="text-gray-600 text-lg">Loading...</p>
+      </div>
+    )
+  }
 
   return (
     <div className="min-h-screen flex flex-col bg-blue-50">
