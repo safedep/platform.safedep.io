@@ -8,7 +8,7 @@ import { getAccessToken, getSession } from '@auth0/nextjs-auth0';
 import { NextResponse } from "next/server";
 import { z } from "zod";
 
-export async function handleOnboarding(req: Request) {
+async function handleOnboarding(req: Request) {
   const { accessToken } = await getAccessToken();
   const session = await getSession();
 
