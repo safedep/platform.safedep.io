@@ -14,6 +14,12 @@
 asdf install
 ```
 
+- Configure `buf` schema registry
+
+```shell
+npm config set @buf:registry https://buf.build/gen/npm/v1/
+```
+
 - Install `npm` dependencies:
 
 ```shell

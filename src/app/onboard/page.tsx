@@ -1,12 +1,13 @@
-"use client";
+'use client';
 
-import React from "react";
-import { useRouter } from "next/navigation";
-import { useUser } from "@auth0/nextjs-auth0/client";
-import { useForm, SubmitHandler } from "react-hook-form";
-import Badge from "../../components/Badge";
-import { UserIcon } from "lucide-react";
 import { logger } from "@/utils/logger";
+import { useUser } from "@auth0/nextjs-auth0/client";
+import { TimerIcon, UserIcon } from "lucide-react";
+import { useRouter } from "next/navigation";
+import React from "react";
+import { SubmitHandler, useForm } from "react-hook-form";
+import Badge from "../../components/Badge";
+import { Loading } from "@/components/Loading";
 
 type FormData = {
   name: string;
@@ -18,9 +19,11 @@ const Onboard: React.FC = () => {
   const router = useRouter();
   const { user, isLoading } = useUser();
   const { register, handleSubmit } = useForm<FormData>();
+  const [apiLoading, setApiLoading] = React.useState(false);
 
   const onSubmit: SubmitHandler<FormData> = async (data) => {
     try {
+      setApiLoading(true);
       const response = await fetch("/api/onboard", {
         method: "POST",
         headers: {
@@ -28,6 +31,8 @@ const Onboard: React.FC = () => {
         },
         body: JSON.stringify(data),
       });
+
+      setApiLoading(false);
 
       const body = await response.json();
       if (!response.ok) {
@@ -40,6 +45,12 @@ const Onboard: React.FC = () => {
       logger.error("Error occurred while onboarding", error);
     }
   };
+
+  if (apiLoading) {
+    return (
+      <Loading message="Creating your organization..." badge={TimerIcon} />
+    )
+  }
 
   if (!isLoading && !user) {
     router.push("/");

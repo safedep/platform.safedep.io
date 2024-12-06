@@ -9,6 +9,7 @@ export const Error = z.object({
   message: z.string().min(1, { message: "Message is required" }),
   errors: z.array(z.object({
     field: z.string().optional(),
+    status: z.number().optional(),
     message: z.string().min(1, {
       message: "Error message is required"
     })
@@ -22,7 +23,7 @@ export const Error = z.object({
  * @returns Error
  * @throws Error
 */
-export const createError = (message: string, errors: { message: string }[]) => {
+export const createError = (message: string, errors: { message: string, status?: number }[]) => {
   return Error.parse({ message, errors });
 }
 
