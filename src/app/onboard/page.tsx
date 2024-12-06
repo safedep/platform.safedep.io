@@ -7,7 +7,7 @@ import { useRouter } from "next/navigation";
 import React from "react";
 import { SubmitHandler, useForm } from "react-hook-form";
 import Badge from "../../components/Badge";
-import { Loading } from "../components/loading";
+import { Loading } from "@/components/Loading";
 
 type FormData = {
   name: string;
