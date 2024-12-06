@@ -1,11 +1,12 @@
 import { KeyIcon } from "lucide-react";
+import MainHeader from "../components/header";
 
 const Page = () => {
   return (
     <div>
-      <h1 className="text-2xl font-bold mt-4">
+      <MainHeader>
         <KeyIcon className="h-12 w-12 inline-block" /> API Keys
-      </h1>
+      </MainHeader>
     </div>
   )
 }
