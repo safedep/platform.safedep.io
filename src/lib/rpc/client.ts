@@ -44,7 +44,21 @@ export const createApiKeyServiceClient = (tenant: string, token: string) => {
   return createClient(ApiKeyService, transport)
 }
 
-export const createUserServiceClient = (tenant: string, token: string) => {
-  const transport = createTransport(cloudApiBaseUrl, tenant, token)
+export const createUserServiceClient = (token: string) => {
+  const transport = createTransport(cloudApiBaseUrl, "", token)
   return createClient(UserService, transport)
+}
+
+/**
+ * Find the first tenant associated with the user
+*/
+export const findFirstUserAccess = async (token: string) => {
+  const userServiceClient = createUserServiceClient(token)
+  const userInfo = await userServiceClient.getUserInfo({})
+
+  if (userInfo.access.length === 0) {
+    throw new Error("User has no access to any tenant")
+  }
+
+  return userInfo.access[0]
 }

@@ -152,4 +152,9 @@ describe('Onboard Component', () => {
 
     consoleErrorSpy.mockRestore();
   });
+
+  test('logout link is present', () => {
+    render(<Onboard />);
+    expect(screen.getByRole('link', { name: 'Sign out' })).toBeInTheDocument();
+  });
 });
