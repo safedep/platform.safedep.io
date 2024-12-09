@@ -8,6 +8,7 @@ import React from "react";
 import { SubmitHandler, useForm } from "react-hook-form";
 import Badge from "../../components/Badge";
 import { Loading } from "@/components/Loading";
+import Link from "next/link";
 type FormData = {
   name: string;
   organizationName: string;
@@ -112,6 +113,11 @@ const Onboard: React.FC = () => {
             Create
           </button>
         </form>
+        <div className="flex justify-center mt-4">
+          <Link href="/api/auth/logout">
+            <Badge icon={UserIcon} text="Sign out" bgColor="bg-blue-100" textColor="text-white-700" />
+          </Link>
+        </div>
       </div>
     </div>
   );
