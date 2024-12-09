@@ -1,37 +1,32 @@
+"use client";
 import { useState } from "react";
-import { Library, Plus } from "lucide-react";
-import LogoMark from "./navbar.svg";
-import Image from "next/image";
-const sidebarItems = [
-  { name: "List", icon: Library },
-];
-
-const Sidebar = () => {
-  const [activeItem, setActiveItem] = useState("List");
-
+import Link from "next/link";
+import { Plus } from "lucide-react";
+interface SidebarItem {
+  name: string;
+  icon: React.ComponentType<{ className?: string }>;
+  href: string;
+}
+interface SidebarProps {
+  items: SidebarItem[];
+}
+const Sidebar: React.FC<SidebarProps> = ({ items }) => {
+  const [activeItem, setActiveItem] = useState(items[0]?.name || "");
   return (
-    <aside className="h-screen bg-gray-900 text-white lg:w-64 w-16 transition-all duration-300">
-      <div className="flex items-center justify-center py-4 lg:py-6">
-        <Image
-          src={LogoMark}
-          alt="Logo"
-          className="h-8 lg:h-10 w-auto"
-        />
-      </div>
+    <aside className="h-screen bg-gray-900 pt-4 pb-4 border rounded  text-white lg:w-64 w-16 transition-all duration-300">
       <div className="px-4">
-        <button
-          className="w-full py-2 mb-4 text-center text-purple-600 bg-purple-100 rounded hover:bg-purple-200 flex items-center justify-center"
-        >
+        <button className="w-full py-2 mb-4 text-center text-purple-600 bg-purple-100 rounded hover:bg-purple-200 flex items-center justify-center">
           <Plus className="h-6 w-6 lg:hidden" />
           <span className="hidden lg:block">+ Create</span>
         </button>
       </div>
       <nav className="flex flex-col space-y-1 px-4">
-        {sidebarItems.map((item, index) => {
+        {items.map((item, index) => {
           const isActive = activeItem === item.name;
           return (
-            <button
+            <Link
               key={index}
+              href={item.href}
               className={`flex items-center gap-4 px-3 py-2 rounded text-left text-sm transition ${
                 isActive
                   ? "bg-gray-800 text-purple-400"
@@ -47,12 +42,11 @@ const Sidebar = () => {
               >
                 {item.name}
               </span>
-            </button>
+            </Link>
           );
         })}
       </nav>
     </aside>
   );
 };
-
 export default Sidebar;
