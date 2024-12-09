@@ -6,6 +6,7 @@ import { CheckCircle, Shield } from 'lucide-react';
 import ImageSection from "./components/ImageSection";
 import TextSection from "./components/TextSection";
 import AuthButtons from './components/AuthButtons';
+
 const Auth = () => {
   return (
     <main className="flex items-center justify-center min-h-screen bg-gradient-to-br from-blue-50 to-white p-8 font-inter">

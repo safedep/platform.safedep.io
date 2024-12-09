@@ -8,11 +8,13 @@ import React from "react";
 import { SubmitHandler, useForm } from "react-hook-form";
 import Badge from "../../components/Badge";
 import { Loading } from "@/components/Loading";
+
 type FormData = {
   name: string;
   organizationName: string;
   organizationDomain: string;
 };
+
 const Onboard: React.FC = () => {
   const router = useRouter();
   const { user, isLoading } = useUser();
@@ -29,12 +31,15 @@ const Onboard: React.FC = () => {
         },
         body: JSON.stringify(data),
       });
+
       setApiLoading(false);
+
       const body = await response.json();
       if (!response.ok) {
         logger.error("Failed to onboard", body);
         return;
       }
+
       logger.info("Onboarding successful", body);
     } catch (error) {
       logger.error("Error occurred while onboarding", error);
