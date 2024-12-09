@@ -9,6 +9,7 @@ import { SubmitHandler, useForm } from "react-hook-form";
 import Badge from "../../components/Badge";
 import { Loading } from "@/components/Loading";
 import Link from "next/link";
+
 type FormData = {
   name: string;
   organizationName: string;
