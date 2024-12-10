@@ -20,7 +20,7 @@ const Page = () => {
       );
       setApiKey(response.apiKey);
       setNotification("success");
-    } catch (error) {
+    } catch {
       setNotification("error");
     }
   };
