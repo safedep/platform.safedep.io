@@ -10,6 +10,7 @@ interface ApiKey {
   id: string;
   name: string;
   description: string;
+  ExpiryDays: number;
 }
 
 const Page = () => {
@@ -21,15 +22,16 @@ const Page = () => {
     {
       id: "a1b2",
       name: "Production API Key",
-      description: "This key is used for production environment with full access to all endpoints and services. Handle with care."
+      description: "This key is used for production environment with full access to all endpoints and services. Handle with care.",
+      ExpiryDays: 30
     },
     {
       id: "h8g7f6ueiiweuwoefgfeogeuwofwfc9efcefeifc",
       name: "Development API Key",
-      description: "Development environment key."
+      description: "Development environment key.",
+      ExpiryDays: 60
     }
   ]);
-
   const truncateDescription = (text: string) => {
     const words = text.split(' ').slice(0, 4).join(' ');
     return text.length > words.length ? `${words}...` : text;
@@ -55,7 +57,7 @@ const Page = () => {
             <span className="ml-4 text-2xl font-bold text-gray-900">API Keys</span>
           </div>
         </MainHeader>
-        
+
         <div className="mt-6">
           <table className="min-w-full bg-white rounded-lg shadow">
             <thead className="bg-gray-100">
@@ -63,6 +65,7 @@ const Page = () => {
                 <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">ID</th>
                 <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Name</th>
                 <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Description</th>
+                <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Expiry Days</th>
                 <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Options</th>
               </tr>
             </thead>
@@ -77,9 +80,9 @@ const Page = () => {
                       }}
                       className="hover:text-blue-600"
                     >
-                    {truncateId(key.id)}
+                      {truncateId(key.id)}
                     </button>
-                    </td>
+                  </td>
                   <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-900">{key.name}</td>
                   <td className="px-6 py-4 text-sm text-gray-500">
                     <button
@@ -92,6 +95,7 @@ const Page = () => {
                       {truncateDescription(key.description)}
                     </button>
                   </td>
+                  <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">{key.ExpiryDays}</td>
                   <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
                     <div className="relative group">
                       <button className="p-1 hover:bg-gray-100 rounded">
@@ -127,7 +131,7 @@ const Page = () => {
             </div>
           </div>
         )}
-          {showIDModal && (
+        {showIDModal && (
           <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center">
             <div className="bg-white p-6 rounded-lg max-w-lg w-full">
               <h3 className="text-lg font-medium mb-4">ID</h3>
