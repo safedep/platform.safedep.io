@@ -18,8 +18,8 @@ const Sidebar: React.FC<SidebarProps> = ({ items }) => {
   const pathname = usePathname();
 
   return (
-    <aside className="min-h-96 pt-10 pb-10 bg-gray-900 pt-4
-      pb-4 border rounded  text-white lg:w-64 w-16 transition-all duration-300">
+    <aside className="min-h-96  bg-gray-900 pt-4
+      pb-4 border  rounded-2xl  text-white lg:w-64 w-16 transition-all duration-300">
       <nav className="flex flex-col space-y-1 px-4">
         {items.map((item, index) => {
           const isActive = pathname === item.href;
