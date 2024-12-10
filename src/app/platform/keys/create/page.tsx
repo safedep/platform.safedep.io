@@ -83,7 +83,6 @@ const Page = () => {
                 <option value="60">60 days</option>
                 <option value="90">90 days</option>
                 <option value="365">1 year</option>
-                <option value="never">Never expires</option>
               </select>
             </div>
           </div>
