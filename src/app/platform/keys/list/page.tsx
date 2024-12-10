@@ -10,7 +10,7 @@ interface ApiKey {
   id: string;
   name: string;
   description: string;
-  ExpiryDays: number;
+  expiryDays: number;
 }
 
 const Page = () => {
@@ -23,13 +23,13 @@ const Page = () => {
       id: "a1b2",
       name: "Production API Key",
       description: "This key is used for production environment with full access to all endpoints and services. Handle with care.",
-      ExpiryDays: 30
+      expiryDays: 30
     },
     {
       id: "h8g7f6ueiiweuwoefgfeogeuwofwfc9efcefeifc",
       name: "Development API Key",
       description: "Development environment key.",
-      ExpiryDays: 60
+      expiryDays: 60
     }
   ]);
   const truncateDescription = (text: string) => {
@@ -95,7 +95,7 @@ const Page = () => {
                       {truncateDescription(key.description)}
                     </button>
                   </td>
-                  <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">{key.ExpiryDays}</td>
+                  <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">{key.expiryDays}</td>
                   <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
                     <div className="relative group">
                       <button className="p-1 hover:bg-gray-100 rounded">
@@ -123,7 +123,7 @@ const Page = () => {
               <h3 className="text-lg font-medium mb-4">Description</h3>
               <p className="text-gray-600">{selectedDescription}</p>
               <button
-                onClick={() => setShowIDModal(false)}
+                onClick={() => setShowModal(false)}
                 className="mt-4 px-4 py-2 bg-gray-100 rounded hover:bg-gray-200"
               >
                 Close
