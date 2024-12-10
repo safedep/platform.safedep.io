@@ -5,7 +5,6 @@ import { KeyIcon, ClipboardCopyIcon, CheckIcon } from "lucide-react";
 import MainHeader from "../../components/header";
 import Sidebar from "../../components/sidebar";
 import { ApiKeyNavigations } from "../navigations";
-
 const Page = () => {
   const [name, setName] = useState("");
   const [description, setDescription] = useState("");
