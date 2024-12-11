@@ -1,3 +1,4 @@
+import 'server-only';
 import { cookies } from "next/headers";
 
 export async function sessionSetTenant(domain: string) {
@@ -10,17 +11,11 @@ export async function sessionGetTenant(): Promise<string | undefined> {
   return cookieStore.get("tenant")?.value;
 }
 
-/**
-  * clientSetTenantInSession sets the tenant in the session
-  * by invoking an API because Next.js allows only server
-  * actions and route to set cookies.
-  */
-export async function clientSetTenantInSession(domain: string) {
-  await fetch("/api/tenant", {
-    method: "POST",
-    headers: {
-      "Content-Type": "application/json",
-    },
-    body: JSON.stringify({ domain }),
-  });
+export async function sessionMustGetTenant(): Promise<string> {
+  const tenant = await sessionGetTenant();
+  if (!tenant) {
+    throw new Error("Tenant not found in session");
+  }
+
+  return tenant;
 }
