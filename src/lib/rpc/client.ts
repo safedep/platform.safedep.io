@@ -49,6 +49,11 @@ export const createUserServiceClient = (token: string) => {
   return createClient(UserService, transport)
 }
 
+export const getUserAccess = async (token: string) => {
+  const userServiceClient = createUserServiceClient(token)
+  return await userServiceClient.getUserInfo({})
+}
+
 /**
  * Find the first tenant associated with the user
 */
