@@ -13,9 +13,10 @@ const Page = () => {
   const [apiKey, setApiKey] = useState("");
   const [notification, setNotification] = useState("");
   const [copied, setCopied] = useState(false);
-
+  const [loading, setLoading] = useState(false);
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
+    setLoading(true);
     try {
       const response = await fetch("/api/platform/keys", {
         method: "POST",
@@ -31,14 +32,20 @@ const Page = () => {
       }
 
       const data = await response.json();
-      setApiKey(data.apiKey);
+      setApiKey(data.key); // Use data.key to set the API key
       setNotification("success");
+
+      setName("");
+      setDescription("");
+      setExpiry("");
+
     } catch (err) {
       setNotification("error");
       console.error("Error creating API key:", err);
+    } finally {
+      setLoading(false);
     }
   };
-
   const handleCopy = () => {
     navigator.clipboard.writeText(apiKey);
     setCopied(true);
@@ -55,7 +62,7 @@ const Page = () => {
               <KeyIcon className="h-8 w-8 text-blue-600" />
             </div>
             <span className="ml-4 text-2xl font-bold text-gray-900">
-              Manage API Keys
+              Create API Key
             </span>
           </div>
         </MainHeader>
@@ -115,10 +122,11 @@ const Page = () => {
           <div className="pt-6 border-t border-gray-200"></div>
           <button
             type="submit"
+            disabled={loading}
             className="w-full px-6 py-3 text-white bg-blue-600 hover:bg-blue-700 rounded-lg shadow transition duration-200 flex items-center justify-center space-x-2"
           >
             <KeyIcon className="h-5 w-5" />
-            <span>Generate API Key</span>
+            <span>{loading ? "Generating..." : "Generate API Key"}</span>
           </button>
         </form>
 
@@ -152,6 +160,7 @@ const Page = () => {
             </p>
           </div>
         )}
+
 
         {notification === "error" && (
           <div className="mt-6 p-6 rounded-xl bg-red-50 border border-red-200">

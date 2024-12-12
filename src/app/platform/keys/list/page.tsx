@@ -6,11 +6,12 @@ import MainHeader from "../../components/header";
 import Sidebar from "../../components/sidebar";
 import { ApiKeyNavigations } from "../navigations";
 
+
 interface ApiKey {
   id: string;
   name: string;
   description: string;
-  expiry: string | null; 
+  expiry: string | null;
 }
 
 const Page = () => {
@@ -21,6 +22,7 @@ const Page = () => {
   const [showDeleteModal, setShowDeleteModal] = useState(false);
   const [apiKeys, setApiKeys] = useState<ApiKey[]>([]);
   const [loading, setLoading] = useState(false);
+  const [isOpen, setIsOpen] = useState(false);
   const [error, setError] = useState<string | null>(null);
 
   useEffect(() => {
@@ -35,7 +37,7 @@ const Page = () => {
           throw new Error("Failed to fetch API keys.");
         }
         const data = await response.json();
-        setApiKeys(data.keys); 
+        setApiKeys(data.keys);
       } catch (err) {
         setError((err as Error).message || "Something went wrong.");
       } finally {
@@ -64,12 +66,12 @@ const Page = () => {
         },
         body: JSON.stringify({ id }),
       });
-  
+
       if (!response.ok) {
         const errorData = await response.json();
         throw new Error(errorData.message || "Failed to delete API key.");
       }
-  
+
       setApiKeys((prevKeys) => prevKeys.filter((key) => key.id !== id));
       setShowDeleteModal(false);
     } catch (err) {
@@ -80,7 +82,7 @@ const Page = () => {
       }
     }
   };
-  
+
 
   return (
     <div className="flex min-h-screen bg-gray-50">
@@ -150,14 +152,22 @@ const Page = () => {
                     </td>
                     <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
                       <div className="relative group">
-                        <button className="p-1 hover:bg-gray-100 rounded">
+                        <button
+                          className="p-1 hover:bg-gray-100 rounded"
+                          onClick={() => setIsOpen(!isOpen)} 
+                        >
                           <MoreVertical className="h-5 w-5" />
                         </button>
-                        <div className="hidden group-hover:block absolute right-0 mt-0 w-48 bg-white rounded-md shadow-lg z-10">
+
+                        <div
+                          className={`absolute right-0 mt-0 w-48 bg-white rounded-md shadow-lg z-10 ${isOpen ? 'block' : 'hidden'
+                            }`}
+                        >
                           <button
                             onClick={() => {
                               setSelectedID(key.id);
                               setShowDeleteModal(true);
+                              setIsOpen(false); 
                             }}
                             className="w-full text-left px-4 py-2 text-sm text-red-600 hover:bg-red-50"
                           >
