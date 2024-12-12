@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { KeyIcon, MoreVertical } from "lucide-react";
 import MainHeader from "../../components/header";
 import Sidebar from "../../components/sidebar";
@@ -10,7 +10,7 @@ interface ApiKey {
   id: string;
   name: string;
   description: string;
-  expiryDays: number;
+  expiry: string | null; 
 }
 
 const Page = () => {
@@ -19,23 +19,35 @@ const Page = () => {
   const [showModal, setShowModal] = useState(false);
   const [showIDModal, setShowIDModal] = useState(false);
   const [showDeleteModal, setShowDeleteModal] = useState(false);
-  const [apiKeys, setApiKeys] = useState<ApiKey[]>([
-    {
-      id: "a1b2",
-      name: "Production API Key",
-      description: "This key is used for production environment with full access to all endpoints and services. Handle with care.",
-      expiryDays: 30
-    },
-    {
-      id: "h8g7f6ueiiweuwoefgfeogeuwofwfc9efcefeifc",
-      name: "Development API Key",
-      description: "Development environment key.",
-      expiryDays: 60
-    }
-  ]);
+  const [apiKeys, setApiKeys] = useState<ApiKey[]>([]);
+  const [loading, setLoading] = useState(false);
+  const [error, setError] = useState<string | null>(null);
+
+  useEffect(() => {
+    const fetchApiKeys = async () => {
+      setLoading(true);
+      setError(null);
+      try {
+        const response = await fetch("/api/platform/keys", {
+          method: "GET",
+        });
+        if (!response.ok) {
+          throw new Error("Failed to fetch API keys.");
+        }
+        const data = await response.json();
+        setApiKeys(data.keys); 
+      } catch (err) {
+        setError((err as Error).message || "Something went wrong.");
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    fetchApiKeys();
+  }, []);
 
   const truncateDescription = (text: string) => {
-    const words = text.split(' ').slice(0, 4).join(' ');
+    const words = text.split(" ").slice(0, 4).join(" ");
     return text.length > words.length ? `${words}...` : text;
   };
 
@@ -43,10 +55,32 @@ const Page = () => {
     return id.length > 6 ? `${id.slice(0, 4)}...` : id;
   };
 
-  const handleDelete = (id: string) => {
-    setApiKeys(apiKeys.filter(key => key.id !== id));
-    setShowDeleteModal(false);
+  const handleDelete = async (id: string) => {
+    try {
+      const response = await fetch("/api/platform/keys", {
+        method: "DELETE",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({ id }),
+      });
+  
+      if (!response.ok) {
+        const errorData = await response.json();
+        throw new Error(errorData.message || "Failed to delete API key.");
+      }
+  
+      setApiKeys((prevKeys) => prevKeys.filter((key) => key.id !== id));
+      setShowDeleteModal(false);
+    } catch (err) {
+      if (err instanceof Error) {
+        console.error("Error deleting API key:", err.message);
+      } else {
+        console.error("Unknown error occurred while deleting API key.");
+      }
+    }
   };
+  
 
   return (
     <div className="flex min-h-screen bg-gray-50">
@@ -62,67 +96,82 @@ const Page = () => {
         </MainHeader>
 
         <div className="mt-6">
-          <table className="min-w-full bg-white rounded-lg shadow">
-            <thead className="bg-gray-100">
-              <tr>
-                <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">ID</th>
-                <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Name</th>
-                <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Description</th>
-                <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Expiry Days</th>
-                <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Options</th>
-              </tr>
-            </thead>
-            <tbody className="divide-y divide-gray-300">
-              {apiKeys.map((key) => (
-                <tr key={key.id} className="hover:bg-gray-50">
-                  <td className="px-6 py-4 whitespace-nowrap text-sm font-mono text-gray-500">
-                    <button
-                      onClick={() => {
-                        setSelectedID(key.id);
-                        setShowIDModal(true);
-                      }}
-                      className="hover:text-blue-600"
-                    >
-                      {truncateId(key.id)}
-                    </button>
-                  </td>
-                  <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-900">{key.name}</td>
-                  <td className="px-6 py-4 text-sm text-gray-500">
-                    <button
-                      onClick={() => {
-                        setSelectedDescription(key.description);
-                        setShowModal(true);
-                      }}
-                      className="hover:text-blue-600"
-                    >
-                      {truncateDescription(key.description)}
-                    </button>
-                  </td>
-                  <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">{key.expiryDays}</td>
-                  <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
-                    <div className="relative group">
-                      <button className="p-1 hover:bg-gray-100 rounded">
-                        <MoreVertical className="h-5 w-5" />
-                      </button>
-                      <div className="hidden group-hover:block absolute right-0 mt-0 w-48 bg-white rounded-md shadow-lg z-10">
-                        <button
-                          onClick={() => {
-                            setSelectedID(key.id);
-                            setShowDeleteModal(true);
-                          }}
-                          className="w-full text-left px-4 py-2 text-sm text-red-600 hover:bg-red-50"
-                        >
-                          Delete
-                        </button>
-                      </div>
-                    </div>
-                  </td>
+          {loading && <p>Loading...</p>}
+          {error && <p className="text-red-600">{error}</p>}
+          {!loading && !error && (
+            <table className="min-w-full bg-white rounded-lg shadow">
+              <thead className="bg-gray-100">
+                <tr>
+                  <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                    ID
+                  </th>
+                  <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                    Name
+                  </th>
+                  <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                    Description
+                  </th>
+                  <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                    Expiry
+                  </th>
+                  <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                    Options
+                  </th>
                 </tr>
-              ))}
-            </tbody>
-          </table>
+              </thead>
+              <tbody className="divide-y divide-gray-300">
+                {apiKeys.map((key) => (
+                  <tr key={key.id} className="hover:bg-gray-50">
+                    <td className="px-6 py-4 whitespace-nowrap text-sm font-mono text-gray-500">
+                      <button
+                        onClick={() => {
+                          setSelectedID(key.id);
+                          setShowIDModal(true);
+                        }}
+                        className="hover:text-blue-600"
+                      >
+                        {truncateId(key.id)}
+                      </button>
+                    </td>
+                    <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-900">{key.name}</td>
+                    <td className="px-6 py-4 text-sm text-gray-500">
+                      <button
+                        onClick={() => {
+                          setSelectedDescription(key.description);
+                          setShowModal(true);
+                        }}
+                        className="hover:text-blue-600"
+                      >
+                        {truncateDescription(key.description)}
+                      </button>
+                    </td>
+                    <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
+                      {key.expiry ? new Date(key.expiry).toLocaleDateString() : "N/A"}
+                    </td>
+                    <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
+                      <div className="relative group">
+                        <button className="p-1 hover:bg-gray-100 rounded">
+                          <MoreVertical className="h-5 w-5" />
+                        </button>
+                        <div className="hidden group-hover:block absolute right-0 mt-0 w-48 bg-white rounded-md shadow-lg z-10">
+                          <button
+                            onClick={() => {
+                              setSelectedID(key.id);
+                              setShowDeleteModal(true);
+                            }}
+                            className="w-full text-left px-4 py-2 text-sm text-red-600 hover:bg-red-50"
+                          >
+                            Delete
+                          </button>
+                        </div>
+                      </div>
+                    </td>
+                  </tr>
+                ))}
+              </tbody>
+            </table>
+          )}
         </div>
-
         {showModal && (
           <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center">
             <div className="bg-white p-6 rounded-lg max-w-lg w-full">
