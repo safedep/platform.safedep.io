@@ -14,8 +14,16 @@ const Page = () => {
   const [notification, setNotification] = useState("");
   const [copied, setCopied] = useState(false);
   const [loading, setLoading] = useState(false);
+
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
+
+    if (!name || !description || !expiryDays) {
+      setNotification("error");
+      console.error("Validation error: All fields are required.");
+      return;
+    }
+
     setLoading(true);
     try {
       const response = await fetch("/api/platform/keys", {
@@ -32,9 +40,10 @@ const Page = () => {
       }
 
       const data = await response.json();
-      setApiKey(data.key); // Use data.key to set the API key
+      setApiKey(data.key); 
       setNotification("success");
 
+     
       setName("");
       setDescription("");
       setExpiry("");
@@ -46,6 +55,7 @@ const Page = () => {
       setLoading(false);
     }
   };
+
   const handleCopy = () => {
     navigator.clipboard.writeText(apiKey);
     setCopied(true);
@@ -160,7 +170,6 @@ const Page = () => {
             </p>
           </div>
         )}
-
 
         {notification === "error" && (
           <div className="mt-6 p-6 rounded-xl bg-red-50 border border-red-200">

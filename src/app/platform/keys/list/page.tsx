@@ -15,6 +15,31 @@ interface ApiKey {
 }
 
 const Page = () => {
+  const [dropdownStates, setDropdownStates] = useState<{ [key: string]: boolean }>({});
+
+  useEffect(() => {
+    const handleClickOutside = (event: MouseEvent) => {
+      if (!(event.target as Element).closest('.dropdown-container')) {
+        closeAllDropdowns();
+      }
+    };
+
+    document.addEventListener('mousedown', handleClickOutside);
+    return () => {
+      document.removeEventListener('mousedown', handleClickOutside);
+    };
+  }, []);
+
+  const toggleDropdown = (id: string) => {
+    setDropdownStates((prevState) => ({
+      ...prevState,
+      [id]: !prevState[id], 
+    }));
+  };
+
+  const closeAllDropdowns = () => {
+    setDropdownStates({});
+  };
   const [selectedDescription, setSelectedDescription] = useState<string>("");
   const [selectedID, setSelectedID] = useState<string>("");
   const [showModal, setShowModal] = useState(false);
@@ -22,7 +47,6 @@ const Page = () => {
   const [showDeleteModal, setShowDeleteModal] = useState(false);
   const [apiKeys, setApiKeys] = useState<ApiKey[]>([]);
   const [loading, setLoading] = useState(false);
-  const [isOpen, setIsOpen] = useState(false);
   const [error, setError] = useState<string | null>(null);
 
   useEffect(() => {
@@ -151,23 +175,24 @@ const Page = () => {
                       {key.expiry ? new Date(key.expiry).toLocaleDateString() : "N/A"}
                     </td>
                     <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
-                      <div className="relative group">
+                    <div className="relative">
                         <button
                           className="p-1 hover:bg-gray-100 rounded"
-                          onClick={() => setIsOpen(!isOpen)} 
+                          onClick={() => toggleDropdown(key.id)}
                         >
                           <MoreVertical className="h-5 w-5" />
                         </button>
 
                         <div
-                          className={`absolute right-0 mt-0 w-48 bg-white rounded-md shadow-lg z-10 ${isOpen ? 'block' : 'hidden'
-                            }`}
+                          className={`absolute right-0 mt-0 w-48 bg-white rounded-md shadow-lg z-10 ${
+                            dropdownStates[key.id] ? "block" : "hidden"
+                          }`}
                         >
                           <button
                             onClick={() => {
                               setSelectedID(key.id);
                               setShowDeleteModal(true);
-                              setIsOpen(false); 
+                              closeAllDropdowns(); // Close dropdowns
                             }}
                             className="w-full text-left px-4 py-2 text-sm text-red-600 hover:bg-red-50"
                           >
