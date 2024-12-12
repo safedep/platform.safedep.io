@@ -175,10 +175,13 @@ const Page = () => {
                       {key.expiry ? new Date(key.expiry).toLocaleDateString() : "N/A"}
                     </td>
                     <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
-                    <div className="relative">
+                    <div className="relative dropdown-container">
                         <button
                           className="p-1 hover:bg-gray-100 rounded"
-                          onClick={() => toggleDropdown(key.id)}
+                          onClick={(e) => {
+                            e.stopPropagation();
+                            toggleDropdown(key.id);
+                          }}
                         >
                           <MoreVertical className="h-5 w-5" />
                         </button>
@@ -189,10 +192,11 @@ const Page = () => {
                           }`}
                         >
                           <button
-                            onClick={() => {
+                            onClick={(e) => {
+                              e.stopPropagation();
                               setSelectedID(key.id);
                               setShowDeleteModal(true);
-                              closeAllDropdowns(); // Close dropdowns
+                              closeAllDropdowns();
                             }}
                             className="w-full text-left px-4 py-2 text-sm text-red-600 hover:bg-red-50"
                           >
