@@ -15,10 +15,11 @@ interface ApiKey {
 
 const Page = () => {
   const [selectedDescription, setSelectedDescription] = useState<string>("");
-  const [SelectedID, setSelectedID] = useState<string>("");
+  const [selectedID, setSelectedID] = useState<string>("");
   const [showModal, setShowModal] = useState(false);
   const [showIDModal, setShowIDModal] = useState(false);
-  const [apiKeys] = useState<ApiKey[]>([
+  const [showDeleteModal, setShowDeleteModal] = useState(false);
+  const [apiKeys, setApiKeys] = useState<ApiKey[]>([
     {
       id: "a1b2",
       name: "Production API Key",
@@ -32,6 +33,7 @@ const Page = () => {
       expiryDays: 60
     }
   ]);
+
   const truncateDescription = (text: string) => {
     const words = text.split(' ').slice(0, 4).join(' ');
     return text.length > words.length ? `${words}...` : text;
@@ -42,7 +44,8 @@ const Page = () => {
   };
 
   const handleDelete = (id: string) => {
-    console.log("Deleting key:", id);
+    setApiKeys(apiKeys.filter(key => key.id !== id));
+    setShowDeleteModal(false);
   };
 
   return (
@@ -101,9 +104,12 @@ const Page = () => {
                       <button className="p-1 hover:bg-gray-100 rounded">
                         <MoreVertical className="h-5 w-5" />
                       </button>
-                      <div className="hidden group-hover:block absolute right-0 mt-2 w-48 bg-white rounded-md shadow-lg z-10">
+                      <div className="hidden group-hover:block absolute right-0 mt-0 w-48 bg-white rounded-md shadow-lg z-10">
                         <button
-                          onClick={() => handleDelete(key.id)}
+                          onClick={() => {
+                            setSelectedID(key.id);
+                            setShowDeleteModal(true);
+                          }}
                           className="w-full text-left px-4 py-2 text-sm text-red-600 hover:bg-red-50"
                         >
                           Delete
@@ -135,13 +141,35 @@ const Page = () => {
           <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center">
             <div className="bg-white p-6 rounded-lg max-w-lg w-full">
               <h3 className="text-lg font-medium mb-4">ID</h3>
-              <p className="text-gray-600">{SelectedID}</p>
+              <p className="text-gray-600">{selectedID}</p>
               <button
                 onClick={() => setShowIDModal(false)}
                 className="mt-4 px-4 py-2 bg-gray-100 rounded hover:bg-gray-200"
               >
                 Close
               </button>
+            </div>
+          </div>
+        )}
+        {showDeleteModal && (
+          <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center">
+            <div className="bg-white p-6 rounded-lg max-w-lg w-full">
+              <h3 className="text-lg font-medium mb-4">Confirm Delete</h3>
+              <p className="text-gray-600">Are you sure you want to delete this API key?</p>
+              <div className="mt-4 flex justify-end space-x-2">
+                <button
+                  onClick={() => setShowDeleteModal(false)}
+                  className="px-4 py-2 bg-gray-100 rounded hover:bg-gray-200"
+                >
+                  Cancel
+                </button>
+                <button
+                  onClick={() => handleDelete(selectedID)}
+                  className="px-4 py-2 bg-red-600 text-white rounded hover:bg-red-700"
+                >
+                  Delete
+                </button>
+              </div>
             </div>
           </div>
         )}

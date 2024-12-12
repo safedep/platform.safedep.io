@@ -2,8 +2,8 @@ import { findFirstUserAccess } from "@/lib/rpc/client";
 import { sessionSetTenant } from "@/lib/session/session";
 import { logger } from "@/utils/logger";
 import { getAccessToken, getSession } from "@auth0/nextjs-auth0";
-import { Button } from "@headlessui/react";
 import { redirect } from "next/navigation";
+import { CheckCircleIcon } from "lucide-react";
 
 const defaultPostAuthOnboardedPath = "/platform/keys";
 const defaultPostAuthOnboardingPath = "/onboard";
@@ -59,17 +59,30 @@ export default async function Home() {
   }
 
   return (
-    <div className="flex items-center justify-center min-h-screen bg-gray-100">
-      <div className="max-w-lg w-full p-6 bg-white shadow-xl rounded-lg space-y-8">
-        <div className="flex justify-center items-center">
-          <h3 className="text-2xl font-bold text-gray-800">Select Tenant</h3>
+   <div className="flex items-center justify-center min-h-screen bg-gray-100">
+      <div className="max-w-lg w-full p-6 bg-white border border-black rounded-lg space-y-6">
+        <div className="flex justify-center">
+          <CheckCircleIcon className="w-6 h-6 text-green-500 mr-2" />
+          <h3 className="text-xl font-medium text-gray-600">Select Tenant</h3>
         </div>
-        <div className="flex justify-center items-center">
-          <div className="flex items-center justify-center">
-            <span className="pr-4">{tenant.domain}</span>
-            <Button onClick={useTenant} className={`bg-blue-500 text-white p-4 rounded`}>
+        <div className="space-y-4">
+          <div className="flex flex-col">
+            <label htmlFor="tenantDomain" className="text-sm font-medium text-gray-700 mb-1">Tenant Domain</label>
+            <input
+              type="text"
+              id="tenantDomain"
+              value={tenant.domain}
+              readOnly
+              className="w-full px-4 py-2 border border-gray-300 rounded focus:outline-none focus:ring-2 focus:ring-blue-500"
+            />
+          </div>
+          <div className="flex justify-center">
+            <button
+              onClick={useTenant}
+              className="bg-blue-500 hover:bg-blue-600 text-white px-4 py-2 rounded-3xl transition duration-300"
+            >
               Continue
-            </Button>
+            </button>
           </div>
         </div>
       </div>
