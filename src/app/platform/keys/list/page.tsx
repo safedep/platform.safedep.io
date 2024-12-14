@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useState } from "react";
+import { useEffect, useState, useCallback } from "react";
 import { KeyIcon, MoreVertical } from "lucide-react";
 import MainHeader from "../../components/header";
 import Sidebar from "../../components/sidebar";
@@ -81,7 +81,8 @@ const Page = () => {
     return id.length > 6 ? `${id.slice(0, 4)}...` : id;
   };
 
-  const handleDelete = async (id: string) => {
+  const handleDelete = useCallback(async (id: string) => {
+    setLoading(true);
     try {
       const response = await fetch("/api/platform/keys", {
         method: "DELETE",
@@ -98,15 +99,17 @@ const Page = () => {
 
       setApiKeys((prevKeys) => prevKeys.filter((key) => key.id !== id));
       setShowDeleteModal(false);
-    } catch (err) {
-      if (err instanceof Error) {
-        console.error("Error deleting API key:", err.message);
-      } else {
-        console.error("Unknown error occurred while deleting API key.");
-      }
+    } catch (error) {
+      console.error(error);
+    } finally {
+      setLoading(false);
     }
-  };
+  }, []);
 
+  useEffect(() => {
+    if (loading) {
+    }
+  }, [loading]);
 
   return (
     <div className="flex min-h-screen bg-gray-50">

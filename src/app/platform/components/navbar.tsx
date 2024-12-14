@@ -1,3 +1,4 @@
+import React, { memo } from 'react';
 import { Disclosure, DisclosureButton, DisclosurePanel, Menu, MenuButton, MenuItem, MenuItems } from '@headlessui/react';
 import { UserCircleIcon } from "@heroicons/react/16/solid";
 import { Bars3Icon, XMarkIcon } from '@heroicons/react/24/outline';
@@ -10,7 +11,7 @@ function classNames(...classes: string[]) {
   return classes.filter(Boolean).join(' ')
 }
 
-export default function Navbar() {
+const Navbar = () => {
   const navigation = [
     { name: 'API Keys', href: '/platform/keys', current: false },
   ]
@@ -31,8 +32,8 @@ export default function Navbar() {
             <DisclosureButton className="group relative inline-flex items-center justify-center rounded-md p-2 text-gray-400 hover:bg-gray-700 hover:text-white focus:outline-none focus:ring-2 focus:ring-inset focus:ring-white">
               <span className="absolute -inset-0.5" />
               <span className="sr-only">Open main menu</span>
-              <Bars3Icon aria-hidden="true" className="block size-6 group-data-[open]:hidden" />
-              <XMarkIcon aria-hidden="true" className="hidden size-6 group-data-[open]:block" />
+              <Bars3Icon aria-hidden="true" className="block h-8 w-8 group-data-[open]:hidden" />
+              <XMarkIcon aria-hidden="true" className="hidden h-8 w-8 group-data-[open]:block" />
             </DisclosureButton>
           </div>
           <div className="flex flex-1 items-center justify-center sm:items-stretch sm:justify-start">
@@ -66,7 +67,7 @@ export default function Navbar() {
                 <MenuButton className="relative flex rounded-full bg-gray-800 text-sm focus:outline-none focus:ring-2 focus:ring-white focus:ring-offset-2 focus:ring-offset-gray-800">
                   <span className="absolute -inset-1.5" />
                   <span className="sr-only">Open user menu</span>
-                  <UserCircleIcon className="h-8 w-8 text-gray-300" />
+                  <UserCircleIcon className="h-10 w-10 text-gray-300" />
                 </MenuButton>
               </div>
               <MenuItems
@@ -117,3 +118,4 @@ export default function Navbar() {
   )
 }
 
+export default memo(Navbar);

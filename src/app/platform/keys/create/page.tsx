@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useCallback, useMemo } from "react";
 import { KeyIcon, ClipboardCopyIcon, CheckIcon } from "lucide-react";
 import MainHeader from "../../components/header";
 import Sidebar from "../../components/sidebar";
@@ -15,7 +15,7 @@ const Page = () => {
   const [copied, setCopied] = useState(false);
   const [loading, setLoading] = useState(false);
 
-  const handleSubmit = async (e: React.FormEvent) => {
+  const handleSubmit = useCallback(async (e: React.FormEvent) => {
     e.preventDefault();
 
     if (!name || !description || !expiryDays) {
@@ -43,7 +43,6 @@ const Page = () => {
       setApiKey(data.key); 
       setNotification("success");
 
-     
       setName("");
       setDescription("");
       setExpiry("");
@@ -54,13 +53,78 @@ const Page = () => {
     } finally {
       setLoading(false);
     }
-  };
+  }, [name, description, expiryDays]);
 
-  const handleCopy = () => {
+  const handleCopy = useCallback(() => {
     navigator.clipboard.writeText(apiKey);
     setCopied(true);
     setTimeout(() => setCopied(false), 2000);
-  };
+  }, [apiKey]);
+
+  const formContent = useMemo(() => (
+    <form
+      onSubmit={handleSubmit}
+      className="mt-8 space-y-8 bg-white rounded-xl shadow-sm border border-gray-200 p-8"
+    >
+      <div className="space-y-6">
+        <div>
+          <label className="block text-sm font-medium text-gray-700 mb-2">
+            Name
+          </label>
+          <input
+            type="text"
+            value={name}
+            onChange={(e) => setName(e.target.value)}
+            className="w-full px-4 py-3 rounded-lg border border-gray-300 focus:ring-2 focus:ring-blue-500 focus:border-transparent transition duration-200"
+            placeholder="e.g. API Key"
+            required
+          />
+        </div>
+
+        <div>
+          <label className="block text-sm font-medium text-gray-700 mb-2">
+            Description
+          </label>
+          <textarea
+            value={description}
+            onChange={(e) => setDescription(e.target.value)}
+            rows={3}
+            className="w-full px-4 py-3 rounded-lg border border-gray-300 focus:ring-2 focus:ring-blue-500 focus:border-transparent transition duration-200"
+            placeholder="What will this API key be used for?"
+            required
+          />
+        </div>
+
+        <div>
+          <label className="block text-sm font-medium text-gray-700 mb-2">
+            Expiration Period
+          </label>
+          <select
+            value={expiryDays}
+            onChange={(e) => setExpiry(e.target.value)}
+            className="w-full px-4 py-3 rounded-lg border border-gray-300 focus:ring-2 focus:ring-blue-500 focus:border-transparent transition duration-200"
+            required
+          >
+            <option value="">Select duration</option>
+            <option value="30">30 days</option>
+            <option value="60">60 days</option>
+            <option value="90">90 days</option>
+            <option value="365">1 year</option>
+          </select>
+        </div>
+      </div>
+
+      <div className="pt-6 border-t border-gray-200"></div>
+      <button
+        type="submit"
+        disabled={loading}
+        className="w-full px-6 py-3 text-white bg-blue-600 hover:bg-blue-700 rounded-lg shadow transition duration-200 flex items-center justify-center space-x-2"
+      >
+        <KeyIcon className="h-5 w-5" />
+        <span>{loading ? "Generating..." : "Generate API Key"}</span>
+      </button>
+    </form>
+  ), [handleSubmit, name, description, expiryDays, loading]);
 
   return (
     <div className="flex min-h-screen bg-gray-50">
@@ -77,68 +141,7 @@ const Page = () => {
           </div>
         </MainHeader>
 
-        <form
-          onSubmit={handleSubmit}
-          className="mt-8 space-y-8 bg-white rounded-xl shadow-sm border border-gray-200 p-8"
-        >
-          <div className="space-y-6">
-            <div>
-              <label className="block text-sm font-medium text-gray-700 mb-2">
-                Name
-              </label>
-              <input
-                type="text"
-                value={name}
-                onChange={(e) => setName(e.target.value)}
-                className="w-full px-4 py-3 rounded-lg border border-gray-300 focus:ring-2 focus:ring-blue-500 focus:border-transparent transition duration-200"
-                placeholder="e.g. API Key"
-                required
-              />
-            </div>
-
-            <div>
-              <label className="block text-sm font-medium text-gray-700 mb-2">
-                Description
-              </label>
-              <textarea
-                value={description}
-                onChange={(e) => setDescription(e.target.value)}
-                rows={3}
-                className="w-full px-4 py-3 rounded-lg border border-gray-300 focus:ring-2 focus:ring-blue-500 focus:border-transparent transition duration-200"
-                placeholder="What will this API key be used for?"
-                required
-              />
-            </div>
-
-            <div>
-              <label className="block text-sm font-medium text-gray-700 mb-2">
-                Expiration Period
-              </label>
-              <select
-                value={expiryDays}
-                onChange={(e) => setExpiry(e.target.value)}
-                className="w-full px-4 py-3 rounded-lg border border-gray-300 focus:ring-2 focus:ring-blue-500 focus:border-transparent transition duration-200"
-                required
-              >
-                <option value="">Select duration</option>
-                <option value="30">30 days</option>
-                <option value="60">60 days</option>
-                <option value="90">90 days</option>
-                <option value="365">1 year</option>
-              </select>
-            </div>
-          </div>
-
-          <div className="pt-6 border-t border-gray-200"></div>
-          <button
-            type="submit"
-            disabled={loading}
-            className="w-full px-6 py-3 text-white bg-blue-600 hover:bg-blue-700 rounded-lg shadow transition duration-200 flex items-center justify-center space-x-2"
-          >
-            <KeyIcon className="h-5 w-5" />
-            <span>{loading ? "Generating..." : "Generate API Key"}</span>
-          </button>
-        </form>
+        {formContent}
 
         {notification === "success" && (
           <div className="mt-6 p-6 rounded-xl bg-green-50 border border-green-200">
