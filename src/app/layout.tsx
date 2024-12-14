@@ -20,6 +20,9 @@ export const metadata: Metadata = {
   title: "SafeDep | Open Source Software Supply Chain Security Platform",
   description:
     "Welcome to SafeDep. Onboard to SafeDep cloud, generate authentication credentials and access platform APIs",
+  icons: {
+    icon: '/safedep.svg',
+  },
 };
 
 export default function RootLayout({
