@@ -1,0 +1,59 @@
+name: Container Image Releaser
+
+on:
+  push:
+    branches:
+      - main
+  workflow_dispatch:
+    inputs:
+      release_version:
+        description: 'Release Version'
+        required: true
+        default: 'latest'
+
+env:
+  DOCKER_REGISTRY: 062919384504.dkr.ecr.us-east-1.amazonaws.com
+  DOCKER_IMAGE_NAME: sd-builds-us-east-1-platform-frontend-app
+  AWS_REGION: us-east-1
+  AWS_ACCESS_ROLE: arn:aws:iam::062919384504:role/github-actions/sd-builds-us-east-1-gh-oidc-platform-frontend-app-role
+
+jobs:
+  release:
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+      id-token: write
+
+    steps:
+    - uses: actions/checkout@v4
+      with:
+        fetch-depth: 0
+
+    - name: Configure AWS Credentials
+      uses: aws-actions/configure-aws-credentials@v1
+      with:
+        role-to-assume: ${{ env.AWS_ACCESS_ROLE }}
+        role-session-name: aws-github-oidc-session
+        aws-region: ${{ env.AWS_REGION }}
+
+    - name: Login to AWS ECR
+      uses: aws-actions/amazon-ecr-login@v1
+
+    - name: Determine Release Version
+      run: echo "RELEASE_TAG=${{ inputs.release_version }}" >> $GITHUB_ENV
+
+    - name: Check if Release Tag is Not Set
+      run: |
+        if [ -z "$RELEASE_TAG" ]; then
+          echo "RELEASE_TAG is not set. Setting it to 'latest'"
+          echo "RELEASE_TAG=latest" >> $GITHUB_ENV
+        fi
+
+    - name: Build Container Image
+      run: docker build -t $DOCKER_REGISTRY/$DOCKER_IMAGE_NAME:$RELEASE_TAG .
+      env:
+        RELEASE_TAG: ${{ env.RELEASE_TAG }}
+
+    - name: Push Container Image
+      run: docker push $DOCKER_REGISTRY/$DOCKER_IMAGE_NAME --all-tags
+
