@@ -8,6 +8,6 @@ export const OnboardingRequest = z.object({
 
 export const OnboardingResponse = z.object({
   domain: z.string().min(1, { message: "Domain is required" }),
+  isDomainDuplicate: z.boolean(),
+  message: z.string().optional(),
 });
-
-

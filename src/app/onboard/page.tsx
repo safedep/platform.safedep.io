@@ -19,7 +19,7 @@ type FormData = {
 const Onboard: React.FC = () => {
   const router = useRouter();
   const { user, isLoading } = useUser();
-  const { register, handleSubmit } = useForm<FormData>();
+  const { register, handleSubmit, setError } = useForm<FormData>();
   const [apiLoading, setApiLoading] = React.useState(false);
 
   const onSubmit: SubmitHandler<FormData> = async (data) => {
@@ -41,7 +41,16 @@ const Onboard: React.FC = () => {
         return;
       }
 
+      if (body.isDomainDuplicate) {
+        setError("organizationDomain", {
+          type: "manual",
+          message: body.message || "This domain is already in use"
+        });
+        return;
+      }
+
       logger.info("Onboarding successful", body);
+      router.push("/");
     } catch (error) {
       logger.error("Error occurred while onboarding", error);
     }

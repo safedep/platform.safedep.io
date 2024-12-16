@@ -24,6 +24,12 @@ const Page = () => {
       return;
     }
 
+    if (name.length < 3) {
+      setNotification("error");
+      console.error("Validation error: Name must be at least 3 characters long.");
+      return;
+    }
+
     setLoading(true);
     try {
       const response = await fetch("/api/platform/keys", {

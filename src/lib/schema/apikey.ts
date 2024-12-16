@@ -18,7 +18,7 @@ export const ListApiKeyResponse = z.object({
 });
 
 export const CreateApiKeyRequest = z.object({
-  name: z.string().min(1, { message: "Name is required" }),
+  name: z.string().min(3, { message: "Name should be minimum 3 chars" }),
   description: z.string().min(1, { message: "Description is required" }),
   expiryDays: z.number()
     .min(1, { message: "Expiry days is required" })
