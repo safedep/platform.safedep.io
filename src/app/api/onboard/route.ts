@@ -34,7 +34,8 @@ async function handleOnboarding(req: Request) {
 
   type responseType = z.infer<typeof OnboardingResponse>;
   const response: responseType = {
-    domain: tenant?.domain as string,
+  domain: tenant?.domain as string,
+  isDomainDuplicate: false,
   };
 
   logger.debug("Onboarding successful", response);
