@@ -12,6 +12,7 @@ const Page = () => {
   const [expiryDays, setExpiry] = useState("");
   const [apiKey, setApiKey] = useState("");
   const [notification, setNotification] = useState("");
+  const [validationErrors, setValidationErrors] = useState<string[]>([]); 
   const [copied, setCopied] = useState(false);
   const [loading, setLoading] = useState(false);
 
@@ -19,18 +20,13 @@ const Page = () => {
     e.preventDefault();
 
     if (!name || !description || !expiryDays) {
+      setValidationErrors(["All fields are required."]); 
       setNotification("error");
-      console.error("Validation error: All fields are required.");
-      return;
-    }
-
-    if (name.length < 3) {
-      setNotification("error");
-      console.error("Validation error: Name must be at least 3 characters long.");
       return;
     }
 
     setLoading(true);
+    setValidationErrors([])
     try {
       const response = await fetch("/api/platform/keys", {
         method: "POST",
@@ -42,11 +38,14 @@ const Page = () => {
 
       if (!response.ok) {
         const errorData = await response.json();
+        if (errorData.errors) {
+          setValidationErrors(errorData.errors.map((err: { field: string; message: string }) => `${err.field}: ${err.message}`));
+        }
         throw new Error(errorData.message || "Failed to create API key.");
       }
 
       const data = await response.json();
-      setApiKey(data.key); 
+      setApiKey(data.key);
       setNotification("success");
 
       setName("");
@@ -55,7 +54,8 @@ const Page = () => {
 
     } catch (err) {
       setNotification("error");
-      console.error("Error creating API key:", err);
+      const errorMessage = err instanceof Error ? err.message : 'An unknown error occurred';
+      console.error("Error creating API key:", errorMessage);
     } finally {
       setLoading(false);
     }
@@ -73,6 +73,16 @@ const Page = () => {
       className="mt-8 space-y-8 bg-white rounded-xl shadow-sm border border-gray-200 p-8"
     >
       <div className="space-y-6">
+        {validationErrors.length > 0 && (
+          <div className="bg-red-50 border border-red-200 text-red-700 p-4 rounded-lg">
+            <ul className="space-y-1">
+              {validationErrors.map((error, index) => (
+                <li key={index} className="text-sm">{error}</li>
+              ))}
+            </ul>
+          </div>
+        )}
+
         <div>
           <label className="block text-sm font-medium text-gray-700 mb-2">
             Name
@@ -130,7 +140,7 @@ const Page = () => {
         <span>{loading ? "Generating..." : "Generate API Key"}</span>
       </button>
     </form>
-  ), [handleSubmit, name, description, expiryDays, loading]);
+  ), [handleSubmit, name, description, expiryDays, loading, validationErrors]);
 
   return (
     <div className="flex min-h-screen bg-gray-50">
@@ -180,7 +190,7 @@ const Page = () => {
           </div>
         )}
 
-        {notification === "error" && (
+        {notification === "error" && !validationErrors.length && (
           <div className="mt-6 p-6 rounded-xl bg-red-50 border border-red-200">
             <div className="flex items-center space-x-3">
               <div className="flex-shrink-0 w-12 h-12 rounded-full bg-red-100 flex items-center justify-center">
