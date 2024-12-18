@@ -21,10 +21,12 @@ const Onboard: React.FC = () => {
   const { user, isLoading } = useUser();
   const { register, handleSubmit } = useForm<FormData>();
   const [apiLoading, setApiLoading] = React.useState(false);
+  const [errorMessage, setErrorMessage] = React.useState<string | null>(null);
 
   const onSubmit: SubmitHandler<FormData> = async (data) => {
     try {
       setApiLoading(true);
+      setErrorMessage(null);
       const response = await fetch("/api/onboard", {
         method: "POST",
         headers: {
@@ -38,19 +40,30 @@ const Onboard: React.FC = () => {
       const body = await response.json();
       if (!response.ok) {
         logger.error("Failed to onboard", body);
+
+        if (body.message?.includes("already_exists")) {
+          setErrorMessage(
+            "An organization with the same domain already exists. Please try a different domain."
+          );
+        } else {
+          setErrorMessage("An error occurred. Please try again later.");
+        }
+
         return;
       }
 
       logger.info("Onboarding successful", body);
+      router.push("/");
     } catch (error) {
       logger.error("Error occurred while onboarding", error);
+      setErrorMessage("An error occurred while processing your request.");
     }
   };
 
   if (apiLoading) {
     return (
       <Loading message="Creating your organization..." badge={TimerIcon} />
-    )
+    );
   }
 
   if (!isLoading && !user) {
@@ -75,6 +88,12 @@ const Onboard: React.FC = () => {
             Create Your Organization
           </h1>
 
+          {errorMessage && (
+            <div className="text-red-600 text-sm bg-red-100 p-3 rounded-lg">
+              {errorMessage}
+            </div>
+          )}
+
           <div>
             <label className="block mb-2 text-sm font-medium text-gray-700">
               Your Name
@@ -93,7 +112,9 @@ const Onboard: React.FC = () => {
             </label>
             <input
               type="text"
-              {...register("organizationName", { required: "Organization name is required" })}
+              {...register("organizationName", {
+                required: "Organization name is required",
+              })}
               className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring focus:ring-blue-300"
               placeholder="Example Inc"
             />
@@ -105,7 +126,9 @@ const Onboard: React.FC = () => {
             </label>
             <input
               type="text"
-              {...register("organizationDomain", { required: "Organization domain is required" })}
+              {...register("organizationDomain", {
+                required: "Organization domain is required",
+              })}
               className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring focus:ring-blue-300"
               placeholder="example.com"
             />
@@ -120,7 +143,12 @@ const Onboard: React.FC = () => {
         </form>
         <div className="flex justify-center mt-4">
           <Link href="/api/auth/logout">
-            <Badge icon={UserIcon} text="Sign out" bgColor="bg-blue-100" textColor="text-white-700" />
+            <Badge
+              icon={UserIcon}
+              text="Sign out"
+              bgColor="bg-blue-100"
+              textColor="text-white-700"
+            />
           </Link>
         </div>
       </div>

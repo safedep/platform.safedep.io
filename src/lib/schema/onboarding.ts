@@ -9,5 +9,3 @@ export const OnboardingRequest = z.object({
 export const OnboardingResponse = z.object({
   domain: z.string().min(1, { message: "Domain is required" }),
 });
-
-
