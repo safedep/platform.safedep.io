@@ -5,7 +5,8 @@ import { handleAuth, handleLogin } from '@auth0/nextjs-auth0';
 export const GET = handleAuth({
   signup: handleLogin({
     authorizationParams: {
-      screen_hint: 'signup'
+      screen_hint: 'signup',
+      redirect_uri: 'http://localhost:3000/verification',
     },
   }),
   login: handleLogin({
