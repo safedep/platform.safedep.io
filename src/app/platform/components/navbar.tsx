@@ -1,11 +1,12 @@
-import React, { memo } from 'react';
 import { Disclosure, DisclosureButton, DisclosurePanel, Menu, MenuButton, MenuItem, MenuItems } from '@headlessui/react';
 import { UserCircleIcon } from "@heroicons/react/16/solid";
 import { Bars3Icon, XMarkIcon } from '@heroicons/react/24/outline';
 import Image from "next/image";
 import Link from 'next/link';
 import { usePathname } from 'next/navigation';
+import { memo } from 'react';
 import LogoMark from './navbar.svg';
+import { LogoutLink } from "@/components/LogoutLink";
 
 function classNames(...classes: string[]) {
   return classes.filter(Boolean).join(' ')
@@ -83,12 +84,11 @@ const Navbar = () => {
                   </Link>
                 </MenuItem>
                 <MenuItem>
-                  <Link
-                    href="/api/auth/logout"
+                  <LogoutLink
                     className="block px-4 py-2 text-sm text-gray-700 data-[focus]:bg-gray-100 data-[focus]:outline-none"
                   >
                     Sign out
-                  </Link>
+                  </LogoutLink>
                 </MenuItem>
               </MenuItems>
             </Menu>
