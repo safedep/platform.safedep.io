@@ -40,18 +40,20 @@ const Onboard: React.FC = () => {
       const body = await response.json();
       if (!response.ok) {
         logger.error("Failed to onboard", body);
+
         if (body.message?.includes("already_exists")) {
           setErrorMessage(
-            "An organization with this domain already exists. Please try a different domain."
+            "An organization with the same domain already exists. Please try a different domain."
           );
         } else {
           setErrorMessage("An error occurred. Please try again later.");
         }
+
         return;
       }
-      
+
       logger.info("Onboarding successful", body);
-       router.push("/");
+      router.push("/");
     } catch (error) {
       logger.error("Error occurred while onboarding", error);
       setErrorMessage("An error occurred while processing your request.");

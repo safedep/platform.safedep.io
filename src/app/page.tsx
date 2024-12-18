@@ -3,8 +3,9 @@ import { sessionSetTenant } from "@/lib/session/session";
 import { logger } from "@/utils/logger";
 import { getAccessToken, getSession } from "@auth0/nextjs-auth0";
 import { redirect } from "next/navigation";
-import { CheckCircleIcon } from "lucide-react";
+import { CheckCircleIcon, UserIcon } from "lucide-react";
 import Link from "next/link";
+import Badge from "@/components/Badge";
 const defaultPostAuthOnboardedPath = "/platform/keys";
 const defaultPostAuthOnboardingPath = "/onboard";
 const defaultPreAuthPath = "/auth";
@@ -59,47 +60,48 @@ export default async function Home() {
   }
 
   return (
-    <div className="flex items-center justify-center min-h-screen bg-gray-100 px-4 sm:px-6 lg:px-8">
-  <div className="max-w-lg w-full p-6 bg-white border border-gray-300 rounded-lg shadow-md space-y-6">
-    <div className="flex justify-center items-center space-x-2">
-      <CheckCircleIcon className="w-6 h-6 text-green-500" />
-      <h3 className="text-xl font-semibold text-gray-700">Select Tenant</h3>
-    </div>
-    <div className="space-y-6">
-      <div className="flex flex-col">
-        <label
-          htmlFor="tenantDomain"
-          className="text-sm font-medium text-gray-700 mb-1"
-        >
-          Tenant Domain
-        </label>
-        <input
-          type="text"
-          id="tenantDomain"
-          value={tenant.domain}
-          readOnly
-          className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
-        />
+    <div className="flex flex-col items-center justify-center min-h-screen bg-gray-100 px-4 sm:px-6 lg:px-8">
+      <div className="max-w-lg w-full p-6 bg-white border border-gray-300 rounded-lg shadow-md space-y-6">
+        <div className="flex justify-center items-center space-x-2">
+          <CheckCircleIcon className="w-6 h-6 text-green-500" />
+          <h3 className="text-xl font-semibold text-gray-700">Select Tenant</h3>
+        </div>
+        <div className="space-y-6">
+          <div className="flex flex-col">
+            <label
+              htmlFor="tenantDomain"
+              className="text-sm font-medium text-gray-700 mb-1"
+            >
+              Tenant Domain
+            </label>
+            <input
+              type="text"
+              id="tenantDomain"
+              value={tenant.domain}
+              readOnly
+              className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
+            />
+          </div>
+          <div className="flex justify-center">
+            <button
+              onClick={useTenant}
+              className="bg-blue-500 hover:bg-blue-600 text-white px-8 py-2 rounded-full transition duration-300"
+            >
+              Continue
+            </button>
+          </div>
+        </div>
       </div>
-      <div className="flex justify-center">
-        <button
-          onClick={useTenant}
-          className="bg-blue-500 hover:bg-blue-600 text-white px-8 py-2 rounded-full transition duration-300"
-        >
-          Continue
-        </button>
-      </div>
-      <div className="flex justify-center">
-        <Link
-          href="/api/auth/logout"
-          className="bg-black hover:bg-gray-800 text-white px-4 py-2 rounded-full transition duration-300"
-        >
-          Log Out
+      <div className="flex justify-center py-4">
+        <Link href="/api/auth/logout">
+          <Badge
+            icon={UserIcon}
+            text="Sign out"
+            bgColor="bg-blue-100"
+            textColor="text-white-700"
+          />
         </Link>
       </div>
     </div>
-  </div>
-</div>
-
   );
 }
