@@ -1,5 +1,6 @@
 'use client';
 
+import { Loading } from "@/components/Loading";
 import { logger } from "@/utils/logger";
 import { useUser } from "@auth0/nextjs-auth0/client";
 import { TimerIcon, UserIcon } from "lucide-react";
@@ -7,8 +8,7 @@ import { useRouter } from "next/navigation";
 import React from "react";
 import { SubmitHandler, useForm } from "react-hook-form";
 import Badge from "../../components/Badge";
-import { Loading } from "@/components/Loading";
-import Link from "next/link";
+import { LogoutLink } from "@/components/LogoutLink";
 
 type FormData = {
   name: string;
@@ -142,17 +142,17 @@ const Onboard: React.FC = () => {
           </button>
         </form>
         <div className="flex justify-center mt-4">
-          <Link href="/api/auth/logout">
+          <LogoutLink>
             <Badge
               icon={UserIcon}
               text="Sign out"
               bgColor="bg-blue-100"
               textColor="text-white-700"
             />
-          </Link>
+          </LogoutLink>
         </div>
       </div>
-    </div>
+    </div >
   );
 };
 

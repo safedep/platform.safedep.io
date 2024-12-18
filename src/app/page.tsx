@@ -1,11 +1,11 @@
+import Badge from "@/components/Badge";
+import { LogoutLink } from "@/components/LogoutLink";
 import { findFirstUserAccess } from "@/lib/rpc/client";
 import { sessionSetTenant } from "@/lib/session/session";
 import { logger } from "@/utils/logger";
 import { getAccessToken, getSession } from "@auth0/nextjs-auth0";
-import { redirect } from "next/navigation";
 import { CheckCircleIcon, UserIcon } from "lucide-react";
-import Link from "next/link";
-import Badge from "@/components/Badge";
+import { redirect } from "next/navigation";
 const defaultPostAuthOnboardedPath = "/platform/keys";
 const defaultPostAuthOnboardingPath = "/onboard";
 const defaultPreAuthPath = "/auth";
@@ -93,15 +93,15 @@ export default async function Home() {
         </div>
       </div>
       <div className="flex justify-center py-4">
-        <Link href="/api/auth/logout">
+        <LogoutLink>
           <Badge
             icon={UserIcon}
             text="Sign out"
             bgColor="bg-blue-100"
             textColor="text-white-700"
           />
-        </Link>
+        </LogoutLink>
       </div>
-    </div>
+    </div >
   );
 }
