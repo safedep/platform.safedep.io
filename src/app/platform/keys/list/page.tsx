@@ -31,10 +31,16 @@ const Page = () => {
   }, []);
 
   const toggleDropdown = (id: string) => {
-    setDropdownStates((prevState) => ({
-      ...prevState,
-      [id]: !prevState[id], 
-    }));
+    setDropdownStates((prevState) => {
+      const newState = Object.keys(prevState).reduce((acc, key) => {
+        acc[key] = false;
+        return acc;
+      }, {} as { [key: string]: boolean });
+      return {
+        ...newState,
+        [id]: !prevState[id],
+      };
+    });
   };
 
   const closeAllDropdowns = () => {
