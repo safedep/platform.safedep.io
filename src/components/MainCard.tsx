@@ -2,11 +2,12 @@ import React from 'react';
 
 interface MainCardProps {
   children: React.ReactNode;
+  className?: string;
 }
 
-const MainCard: React.FC<MainCardProps> = ({ children }) => {
+const MainCard: React.FC<MainCardProps> = ({ children, className }) => {
   return (
-    <div className="w-full max-w-5xl mx-auto bg-white rounded-2xl shadow-lg border border-gray-200 grid grid-cols-1 md:grid-cols-2 overflow-hidden">
+    <div className={className}>
       {children}
     </div>
   );
