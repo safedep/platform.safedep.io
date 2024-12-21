@@ -14,7 +14,7 @@ function AuthErrorComponent() {
                 <div className="text-center">
                     <h1 className="text-black text-4xl font-extrabold mb-4">Authentication Error</h1>
                     <div className="bg-gray-50 border border-gray-200 rounded-lg p-4 mb-4">
-                        <p className="text-black">{decodeURIComponent(errorMessage)}</p>
+                        <p className="text-black">{ErrorURIComponent(errorMessage)}</p>
                     </div>
                     <Link
                         href="/api/auth/login"
