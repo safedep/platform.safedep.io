@@ -9,7 +9,7 @@ const Verification = () => {
     useEffect(() => {
         setTimeout(() => {
             router.push('/api/auth/login');
-        }, 60000);
+        }, 6000);
     }, [router]);
 
     return (

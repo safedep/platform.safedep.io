@@ -7,12 +7,9 @@ export default function Page() {
         <div className="min-h-[75vh] flex items-center justify-center p-4">
             <div className="w-full max-w-md bg-white rounded-lg shadow-lg p-6">
                 <div className="text-center space-y-6">
-                    {/* Icon */}
                     <div className="mx-auto w-16 h-16 rounded-full flex items-center justify-center bg-gray-100">
                         <Mail className="w-8 h-8" />
                     </div>
-
-                    {/* Title and Description */}
                     <div className="space-y-2">
                         <h2 className="text-2xl font-bold tracking-tight">
                             Verify your email
@@ -22,8 +19,6 @@ export default function Page() {
                             continue.
                         </p>
                     </div>
-
-                    {/* Steps */}
                     <div className="space-y-4 py-4">
                         {[
                             "Open your email inbox",
@@ -38,8 +33,6 @@ export default function Page() {
                             </div>
                         ))}
                     </div>
-
-                    {/* Divider */}
                     <div className="relative">
                         <div className="absolute inset-0 flex items-center">
                             <div className="w-full border-t border-gray-200"></div>
@@ -48,8 +41,6 @@ export default function Page() {
                             <span className="px-2 bg-white text-gray-500">Already verified?</span>
                         </div>
                     </div>
-
-                    {/* Actions */}
                     <div className="space-y-3">
                         <button
                             className="w-full bg-blue-600 text-white py-2 px-4 rounded-md hover:bg-blue-700 transition-colors flex items-center justify-center group"
@@ -63,13 +54,11 @@ export default function Page() {
 
                         <button
                             className="w-full border border-gray-300 text-gray-700 py-2 px-4 rounded-md hover:bg-gray-50 transition-colors"
-                            onClick={() => (window.location.href = "/")}
+                            onClick={() => window.location.assign("/")}
                         >
                             Return to Home
                         </button>
                     </div>
-
-                    {/* Help text */}
                     <p className="text-xs text-gray-500">
                         Didnt receive the email? Check your spam folder or try logging in
                         again to resend the verification email.
