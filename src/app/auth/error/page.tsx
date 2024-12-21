@@ -9,12 +9,12 @@ function AuthErrorComponent() {
     const errorMessage = searchParams?.get('message') || 'An unknown error occurred'
 
     return (
-        <div className="min-h-screen flex items-center justify-center bg-gray-100">
+      <div className="min-h-screen flex items-center justify-center bg-gray-100">
             <div className="max-w-md w-full p-6 bg-white rounded-2xl shadow-2xl border border-blue-500">
                 <div className="text-center">
                     <h1 className="text-black text-4xl font-extrabold mb-4">Authentication Error</h1>
                     <div className="bg-gray-50 border border-gray-200 rounded-lg p-4 mb-4">
-                        <p className="text-black">{ErrorURIComponent(errorMessage)}</p>
+                        <p className="text-black">{decodeURIComponent(errorMessage)}</p>
                     </div>
                     <Link
                         href="/api/auth/login"
