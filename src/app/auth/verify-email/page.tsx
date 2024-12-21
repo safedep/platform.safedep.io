@@ -53,7 +53,7 @@ export default function Page() {
             <button
               className="w-full bg-blue-600 text-white py-2 px-4 rounded-md hover:bg-blue-700 transition-colors flex items-center justify-center group"
               onClick={() => {
-                window.location.href = "/api/auth/logout?returnTo=api/auth/login";
+                window.location.href = "/api/auth/login";
               }}
             >
               Continue to Login
