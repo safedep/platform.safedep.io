@@ -1,17 +1,17 @@
-import { handleAuth, handleLogin } from '@auth0/nextjs-auth0';
+import { handleAuth, handleLogin } from "@auth0/nextjs-auth0";
 import { NextRequest, NextResponse } from "next/server";
 // export Auth0's default handleAuth with custom action for
 // sign-up to render the sign-up screen by default
 export const GET = handleAuth({
   signup: handleLogin({
     authorizationParams: {
-      screen_hint: 'signup'
+      screen_hint: "signup",
     },
   }),
 
   login: handleLogin({
     authorizationParams: {
-      scope: 'openid profile email offline_access',
+      scope: "openid profile email offline_access",
     },
   }),
 
@@ -26,16 +26,15 @@ export const GET = handleAuth({
       errorDescription?.includes("verify your email")
     ) {
       return NextResponse.redirect(
-        new URL(`/auth/verify-email`, process.env.NEXT_PUBLIC_URL || req.url)
+        new URL(`/auth/verify-email`, process.env.NEXT_PUBLIC_URL || req.url),
       );
     }
 
     return NextResponse.redirect(
       new URL(
         `/auth/error?message=${encodeURIComponent(errorDescription)}`,
-        process.env.NEXT_PUBLIC_URL || req.url
-      )
+        process.env.NEXT_PUBLIC_URL || req.url,
+      ),
     );
   },
 });
-

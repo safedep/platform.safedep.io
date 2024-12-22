@@ -43,7 +43,8 @@ jobs:
           trusted-registries: |
             https://buf.build/gen/npm/v1,
             https://registry.npmjs.org/strip-ansi,
-            https://registry.npmjs.org/string-width
+            https://registry.npmjs.org/string-width,
+            https://registry.npmjs.org/wrap-ansi
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
           SAFEDEP_CLOUD_MODE: ${{ env.SAFEDEP_CLOUD_MODE }}

@@ -10,10 +10,9 @@ const defaultPostAuthOnboardedPath = "/platform/keys";
 const defaultPostAuthOnboardingPath = "/onboard";
 const defaultPreAuthPath = "/auth";
 
-
 export default async function Home() {
   const session = await getSession();
-  const tenant: { domain?: string, access?: string } = {}
+  const tenant: { domain?: string; access?: string } = {};
 
   if (!session?.user) {
     redirect(defaultPreAuthPath);
@@ -51,7 +50,7 @@ export default async function Home() {
   }
 
   async function useTenant() {
-    'use server'
+    "use server";
 
     logger.info("User confirmed tenant information", tenant);
     sessionSetTenant(tenant.domain as string);
@@ -102,6 +101,6 @@ export default async function Home() {
           />
         </LogoutLink>
       </div>
-    </div >
+    </div>
   );
 }

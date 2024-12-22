@@ -1,4 +1,4 @@
-import { BellIcon } from '@heroicons/react/24/outline'
+import { BellIcon } from "@heroicons/react/24/outline";
 
 const NavbarNotification = () => {
   return (
@@ -12,7 +12,7 @@ const NavbarNotification = () => {
         <BellIcon aria-hidden="true" className="size-6" />
       </button>
     </>
-  )
-}
+  );
+};
 
 export default NavbarNotification;

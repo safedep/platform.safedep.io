@@ -6,7 +6,6 @@ import MainHeader from "../../components/header";
 import Sidebar from "../../components/sidebar";
 import { ApiKeyNavigations } from "../navigations";
 
-
 interface ApiKey {
   id: string;
   name: string;
@@ -15,27 +14,32 @@ interface ApiKey {
 }
 
 const Page = () => {
-  const [dropdownStates, setDropdownStates] = useState<{ [key: string]: boolean }>({});
+  const [dropdownStates, setDropdownStates] = useState<{
+    [key: string]: boolean;
+  }>({});
 
   useEffect(() => {
     const handleClickOutside = (event: MouseEvent) => {
-      if (!(event.target as Element).closest('.dropdown-container')) {
+      if (!(event.target as Element).closest(".dropdown-container")) {
         closeAllDropdowns();
       }
     };
 
-    document.addEventListener('mousedown', handleClickOutside);
+    document.addEventListener("mousedown", handleClickOutside);
     return () => {
-      document.removeEventListener('mousedown', handleClickOutside);
+      document.removeEventListener("mousedown", handleClickOutside);
     };
   }, []);
 
   const toggleDropdown = (id: string) => {
     setDropdownStates((prevState) => {
-      const newState = Object.keys(prevState).reduce((acc, key) => {
-        acc[key] = false;
-        return acc;
-      }, {} as { [key: string]: boolean });
+      const newState = Object.keys(prevState).reduce(
+        (acc, key) => {
+          acc[key] = false;
+          return acc;
+        },
+        {} as { [key: string]: boolean },
+      );
       return {
         ...newState,
         [id]: !prevState[id],
@@ -126,7 +130,9 @@ const Page = () => {
             <div className="p-3 bg-blue-100 rounded-lg">
               <KeyIcon className="h-8 w-8 text-blue-600" />
             </div>
-            <span className="ml-4 text-2xl font-bold text-gray-900">API Keys</span>
+            <span className="ml-4 text-2xl font-bold text-gray-900">
+              API Keys
+            </span>
           </div>
         </MainHeader>
 
@@ -168,7 +174,9 @@ const Page = () => {
                         {truncateId(key.id)}
                       </button>
                     </td>
-                    <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-900">{key.name}</td>
+                    <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-900">
+                      {key.name}
+                    </td>
                     <td className="px-6 py-4 text-sm text-gray-500">
                       <button
                         onClick={() => {
@@ -181,10 +189,12 @@ const Page = () => {
                       </button>
                     </td>
                     <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
-                      {key.expiry ? new Date(key.expiry).toLocaleDateString() : "N/A"}
+                      {key.expiry
+                        ? new Date(key.expiry).toLocaleDateString()
+                        : "N/A"}
                     </td>
                     <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
-                    <div className="relative dropdown-container">
+                      <div className="relative dropdown-container">
                         <button
                           className="p-1 hover:bg-gray-100 rounded"
                           onClick={(e) => {
@@ -252,7 +262,9 @@ const Page = () => {
           <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center">
             <div className="bg-white p-6 rounded-lg max-w-lg w-full">
               <h3 className="text-lg font-medium mb-4">Confirm Delete</h3>
-              <p className="text-gray-600">Are you sure you want to delete this API key?</p>
+              <p className="text-gray-600">
+                Are you sure you want to delete this API key?
+              </p>
               <div className="mt-4 flex justify-end space-x-2">
                 <button
                   onClick={() => setShowDeleteModal(false)}

@@ -1,6 +1,6 @@
-import React from 'react';
-import Link from 'next/link';
-import { User, Lock } from 'lucide-react';
+import React from "react";
+import Link from "next/link";
+import { User, Lock } from "lucide-react";
 
 const AuthButtons: React.FC = () => {
   return (
@@ -18,7 +18,9 @@ const AuthButtons: React.FC = () => {
           <div className="w-full border-t border-gray-300"></div>
         </div>
         <div className="relative flex justify-center">
-          <span className="bg-white rounded-2xl  px-4 text-gray-500 text-sm">or</span>
+          <span className="bg-white rounded-2xl  px-4 text-gray-500 text-sm">
+            or
+          </span>
         </div>
       </div>
 
@@ -29,7 +31,6 @@ const AuthButtons: React.FC = () => {
         <Lock className="mr-3 group-hover:animate-pulse" />
         Login
       </Link>
-
     </div>
   );
 };

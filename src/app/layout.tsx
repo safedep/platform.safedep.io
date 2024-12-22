@@ -21,7 +21,7 @@ export const metadata: Metadata = {
   description:
     "Welcome to SafeDep. Onboard to SafeDep cloud, generate authentication credentials and access platform APIs",
   icons: {
-    icon: '/safedep.svg',
+    icon: "/safedep.svg",
   },
 };
 

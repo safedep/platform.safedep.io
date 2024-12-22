@@ -19,5 +19,4 @@ export const Loading: React.FC<LoadingProps> = (props: LoadingProps) => {
       />
     </div>
   );
-}
-
+};

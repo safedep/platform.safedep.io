@@ -39,4 +39,3 @@ filters:
     summary: Component release pipeline appear to use dangerous workflows
     value: |
       scorecard.scores["Dangerous-Workflow"] == 0
-
