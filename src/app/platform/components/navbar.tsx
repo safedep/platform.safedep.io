@@ -1,24 +1,34 @@
-import { Disclosure, DisclosureButton, DisclosurePanel, Menu, MenuButton, MenuItem, MenuItems } from '@headlessui/react';
+import {
+  Disclosure,
+  DisclosureButton,
+  DisclosurePanel,
+  Menu,
+  MenuButton,
+  MenuItem,
+  MenuItems,
+} from "@headlessui/react";
 import { UserCircleIcon } from "@heroicons/react/16/solid";
-import { Bars3Icon, XMarkIcon } from '@heroicons/react/24/outline';
+import { Bars3Icon, XMarkIcon } from "@heroicons/react/24/outline";
 import Image from "next/image";
-import Link from 'next/link';
-import { usePathname } from 'next/navigation';
-import { memo } from 'react';
-import LogoMark from './navbar.svg';
+import Link from "next/link";
+import { usePathname } from "next/navigation";
+import { memo } from "react";
+import LogoMark from "./navbar.svg";
 import { LogoutLink } from "@/components/LogoutLink";
 
 function classNames(...classes: string[]) {
-  return classes.filter(Boolean).join(' ')
+  return classes.filter(Boolean).join(" ");
 }
 
 const Navbar = () => {
   const navigation = [
-    { name: 'API Keys', href: '/platform/keys', current: false },
-  ]
+    { name: "API Keys", href: "/platform/keys", current: false },
+  ];
 
   const pathname = usePathname();
-  const currentNavigationItem = navigation.find((item) => item.href === pathname);
+  const currentNavigationItem = navigation.find(
+    (item) => item.href === pathname,
+  );
 
   if (currentNavigationItem) {
     currentNavigationItem.current = true;
@@ -33,8 +43,14 @@ const Navbar = () => {
             <DisclosureButton className="group relative inline-flex items-center justify-center rounded-md p-2 text-gray-400 hover:bg-gray-700 hover:text-white focus:outline-none focus:ring-2 focus:ring-inset focus:ring-white">
               <span className="absolute -inset-0.5" />
               <span className="sr-only">Open main menu</span>
-              <Bars3Icon aria-hidden="true" className="block h-8 w-8 group-data-[open]:hidden" />
-              <XMarkIcon aria-hidden="true" className="hidden h-8 w-8 group-data-[open]:block" />
+              <Bars3Icon
+                aria-hidden="true"
+                className="block h-8 w-8 group-data-[open]:hidden"
+              />
+              <XMarkIcon
+                aria-hidden="true"
+                className="hidden h-8 w-8 group-data-[open]:block"
+              />
             </DisclosureButton>
           </div>
           <div className="flex flex-1 items-center justify-center sm:items-stretch sm:justify-start">
@@ -49,10 +65,12 @@ const Navbar = () => {
                   <a
                     key={item.name}
                     href={item.href}
-                    aria-current={item.current ? 'page' : undefined}
+                    aria-current={item.current ? "page" : undefined}
                     className={classNames(
-                      item.current ? 'bg-gray-900 text-white' : 'text-gray-300 hover:bg-gray-700 hover:text-white',
-                      'rounded-md px-3 py-2 text-sm font-medium',
+                      item.current
+                        ? "bg-gray-900 text-white"
+                        : "text-gray-300 hover:bg-gray-700 hover:text-white",
+                      "rounded-md px-3 py-2 text-sm font-medium",
                     )}
                   >
                     {item.name}
@@ -84,9 +102,7 @@ const Navbar = () => {
                   </Link>
                 </MenuItem>
                 <MenuItem>
-                  <LogoutLink
-                    className="block px-4 py-2 text-sm text-gray-700 data-[focus]:bg-gray-100 data-[focus]:outline-none"
-                  >
+                  <LogoutLink className="block px-4 py-2 text-sm text-gray-700 data-[focus]:bg-gray-100 data-[focus]:outline-none">
                     Sign out
                   </LogoutLink>
                 </MenuItem>
@@ -103,10 +119,12 @@ const Navbar = () => {
               key={item.name}
               as="a"
               href={item.href}
-              aria-current={item.current ? 'page' : undefined}
+              aria-current={item.current ? "page" : undefined}
               className={classNames(
-                item.current ? 'bg-gray-900 text-white' : 'text-gray-300 hover:bg-gray-700 hover:text-white',
-                'block rounded-md px-3 py-2 text-base font-medium',
+                item.current
+                  ? "bg-gray-900 text-white"
+                  : "text-gray-300 hover:bg-gray-700 hover:text-white",
+                "block rounded-md px-3 py-2 text-base font-medium",
               )}
             >
               {item.name}
@@ -115,7 +133,7 @@ const Navbar = () => {
         </div>
       </DisclosurePanel>
     </Disclosure>
-  )
-}
+  );
+};
 
 export default memo(Navbar);

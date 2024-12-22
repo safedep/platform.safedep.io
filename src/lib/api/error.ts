@@ -12,17 +12,24 @@ export const apiErrorHandler =
         }
       } catch (error) {
         if (error instanceof ApiError) {
-          return NextResponse.json(createError(error.message, [
-            { message: error.message, status: error.statusCode }
-          ]), { status: error.statusCode });
+          return NextResponse.json(
+            createError(error.message, [
+              { message: error.message, status: error.statusCode },
+            ]),
+            { status: error.statusCode },
+          );
         } else if (error instanceof Error) {
-          return NextResponse.json(createError(error.message, [
-            { message: error.message }
-          ]), { status: 500 });
+          return NextResponse.json(
+            createError(error.message, [{ message: error.message }]),
+            { status: 500 },
+          );
         } else {
-          return NextResponse.json(createError("Internal server error", [
-            { message: "Internal server error" }
-          ]), { status: 500 });
+          return NextResponse.json(
+            createError("Internal server error", [
+              { message: "Internal server error" },
+            ]),
+            { status: 500 },
+          );
         }
       }
-    }
+    };

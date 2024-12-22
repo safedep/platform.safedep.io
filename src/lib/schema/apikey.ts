@@ -12,7 +12,7 @@ export const ListApiKeyResponse = z.object({
       name: z.string(),
       description: z.string(),
       expiry: z.date().optional(),
-    })
+    }),
   ),
   total: z.number(),
 });
@@ -20,7 +20,8 @@ export const ListApiKeyResponse = z.object({
 export const CreateApiKeyRequest = z.object({
   name: z.string().min(3, { message: "Name should be minimum 3 chars" }),
   description: z.string().min(1, { message: "Description is required" }),
-  expiryDays: z.number()
+  expiryDays: z
+    .number()
     .min(1, { message: "Expiry days is required" })
     .max(365, { message: "Expiry days must be less than 365" }),
 });

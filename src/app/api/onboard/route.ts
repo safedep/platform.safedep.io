@@ -4,7 +4,7 @@ import { createValidationError } from "@/lib/schema/error";
 import { OnboardingRequest, OnboardingResponse } from "@/lib/schema/onboarding";
 import { validateSchema } from "@/lib/schema/validate";
 import { logger } from "@/utils/logger";
-import { getAccessToken, getSession } from '@auth0/nextjs-auth0';
+import { getAccessToken, getSession } from "@auth0/nextjs-auth0";
 import { NextResponse } from "next/server";
 import { z } from "zod";
 
@@ -13,7 +13,9 @@ async function handleOnboarding(req: Request) {
   const session = await getSession();
 
   const body = await req.json();
-  const onboardingService = createOnboardingServiceClient(accessToken as string);
+  const onboardingService = createOnboardingServiceClient(
+    accessToken as string,
+  );
 
   const { validData, errors } = validateSchema(OnboardingRequest, body);
   if (!validData || errors) {
@@ -21,16 +23,19 @@ async function handleOnboarding(req: Request) {
     return NextResponse.json(createValidationError(errors), { status: 400 });
   }
 
-  logger.debug(`Onboarding request email: ${session?.user.email} data: `, validData);
+  logger.debug(
+    `Onboarding request email: ${session?.user.email} data: `,
+    validData,
+  );
 
   const { tenant } = await onboardingService.onboardUser({
     organizationName: validData.organizationName,
     organizationDomain: validData.organizationDomain,
     name: validData.name,
     email: session?.user.email as string,
-  })
+  });
 
-  logger.debug("Response from onboarding service", tenant)
+  logger.debug("Response from onboarding service", tenant);
 
   type responseType = z.infer<typeof OnboardingResponse>;
   const response: responseType = {

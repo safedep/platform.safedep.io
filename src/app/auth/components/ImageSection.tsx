@@ -1,5 +1,5 @@
-import React from 'react';
-import Image from 'next/image';
+import React from "react";
+import Image from "next/image";
 
 const ImageSection: React.FC = () => (
   <div className="w-full max-w-lg  aspect-video mb-6 overflow-hidden rounded-2xl ">

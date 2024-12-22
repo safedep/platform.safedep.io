@@ -18,7 +18,8 @@ export default function Page() {
               Verify your email
             </h2>
             <p className="text-sm text-gray-600">
-              We have sent a verification link to the email address you provided. Please check your inbox to proceed.
+              We have sent a verification link to the email address you
+              provided. Please check your inbox to proceed.
             </p>
           </div>
 
@@ -29,7 +30,10 @@ export default function Page() {
               "Click the verification link we sent you",
               "Return here to continue",
             ].map((text, index) => (
-              <div key={index} className="flex items-center space-x-3 text-left">
+              <div
+                key={index}
+                className="flex items-center space-x-3 text-left"
+              >
                 <div className="flex-shrink-0 w-8 h-8 rounded-full bg-gray-100 flex items-center justify-center">
                   <span className="font-semibold">{index + 1}</span>
                 </div>
@@ -44,7 +48,9 @@ export default function Page() {
               <div className="w-full border-t border-gray-200"></div>
             </div>
             <div className="relative flex justify-center text-sm">
-              <span className="px-2 bg-white text-gray-500">Already verified?</span>
+              <span className="px-2 bg-white text-gray-500">
+                Already verified?
+              </span>
             </div>
           </div>
 

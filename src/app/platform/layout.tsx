@@ -1,4 +1,4 @@
-'use client';
+"use client";
 
 import React, { useEffect } from "react";
 import { useRouter } from "next/navigation";
@@ -20,7 +20,7 @@ const Layout = ({ children }: { children: React.ReactNode }) => {
       <div className="min-h-screen flex items-center justify-center">
         <p className="text-gray-600 text-lg">Loading...</p>
       </div>
-    )
+    );
   }
 
   return (
@@ -30,7 +30,7 @@ const Layout = ({ children }: { children: React.ReactNode }) => {
         {children}
       </main>
     </div>
-  )
-}
+  );
+};
 
 export default Layout;

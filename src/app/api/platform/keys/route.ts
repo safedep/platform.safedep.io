@@ -1,6 +1,11 @@
 import { apiErrorHandler } from "@/lib/api/error";
 import { createApiKeyServiceClient } from "@/lib/rpc/client";
-import { CreateApiKeyRequest, CreateApiKeyResponse, DeleteApiKeyRequest, ListApiKeyResponse } from "@/lib/schema/apikey";
+import {
+  CreateApiKeyRequest,
+  CreateApiKeyResponse,
+  DeleteApiKeyRequest,
+  ListApiKeyResponse,
+} from "@/lib/schema/apikey";
 import { createValidationError } from "@/lib/schema/error";
 import { validateSchema } from "@/lib/schema/validate";
 import { sessionMustGetTenant } from "@/lib/session/session";
@@ -13,7 +18,7 @@ async function handleListApiKeys() {
   const tenant = await sessionMustGetTenant();
 
   const client = createApiKeyServiceClient(tenant, accessToken as string);
-  const keys = await client.listApiKeys({})
+  const keys = await client.listApiKeys({});
 
   type responseType = z.infer<typeof ListApiKeyResponse>;
   const response: responseType = {
@@ -33,7 +38,10 @@ async function handleCreateApiKey(req: NextRequest) {
   const { accessToken } = await getAccessToken();
   const tenant = await sessionMustGetTenant();
 
-  const { validData, errors } = validateSchema(CreateApiKeyRequest, await req.json());
+  const { validData, errors } = validateSchema(
+    CreateApiKeyRequest,
+    await req.json(),
+  );
   if (!validData || errors) {
     return NextResponse.json(createValidationError(errors), { status: 400 });
   }
@@ -43,7 +51,7 @@ async function handleCreateApiKey(req: NextRequest) {
     name: validData.name,
     description: validData.description,
     expiryDays: validData.expiryDays,
-  })
+  });
 
   type responseType = z.infer<typeof CreateApiKeyResponse>;
   const responseBody: responseType = {
@@ -59,7 +67,10 @@ async function handleDeleteApiKey(req: NextRequest) {
   const { accessToken } = await getAccessToken();
   const tenant = await sessionMustGetTenant();
 
-  const { validData, errors } = validateSchema(DeleteApiKeyRequest, await req.json());
+  const { validData, errors } = validateSchema(
+    DeleteApiKeyRequest,
+    await req.json(),
+  );
   if (!validData || errors) {
     return NextResponse.json(createValidationError(errors), { status: 400 });
   }

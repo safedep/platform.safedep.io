@@ -1,9 +1,9 @@
-import 'server-only';
+import "server-only";
 import { cookies } from "next/headers";
 
 export async function sessionSetTenant(domain: string) {
   const cookieStore = await cookies();
-  cookieStore.set("tenant", domain)
+  cookieStore.set("tenant", domain);
 }
 
 export async function sessionGetTenant(): Promise<string | undefined> {

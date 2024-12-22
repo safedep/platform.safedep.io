@@ -1,4 +1,4 @@
-'use client';
+"use client";
 
 import { Loading } from "@/components/Loading";
 import { logger } from "@/utils/logger";
@@ -43,7 +43,7 @@ const Onboard: React.FC = () => {
 
         if (body.message?.includes("already_exists")) {
           setErrorMessage(
-            "An organization with the same domain already exists. Please try a different domain."
+            "An organization with the same domain already exists. Please try a different domain.",
           );
         } else {
           setErrorMessage("An error occurred. Please try again later.");
@@ -152,7 +152,7 @@ const Onboard: React.FC = () => {
           </LogoutLink>
         </div>
       </div>
-    </div >
+    </div>
   );
 };
 

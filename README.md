@@ -4,15 +4,18 @@
 
 ### Prerequisites
 
+> Note: You can skip `ASDF` setup if you already have the required
+> version of `nodejs` installed on your system. Look at `.tool-versions` file
+> to see the required version and other required tools.
+
 - [ASDF](https://asdf-vm.com/guide/getting-started.html)
-
-### Setup
-
 - Install the required version of `nodejs` using `asdf`:
 
 ```shell
 asdf install
 ```
+
+### Setup
 
 - Configure `buf` schema registry
 

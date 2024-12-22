@@ -1,4 +1,4 @@
-'use client'
+"use client";
 
 import Link from "next/link";
 import React from "react";
@@ -9,7 +9,7 @@ const Footer: React.FC = () => {
 
   useState(() => {
     setYear(new Date().getFullYear());
-  })
+  });
 
   return (
     <footer className="bg-gray-800 text-white p-4 text-center">
@@ -26,6 +26,6 @@ const Footer: React.FC = () => {
       </p>
     </footer>
   );
-}
+};
 
 export default Footer;

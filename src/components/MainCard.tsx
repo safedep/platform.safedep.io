@@ -1,4 +1,4 @@
-import React from 'react';
+import React from "react";
 
 interface MainCardProps {
   children: React.ReactNode;
@@ -6,9 +6,7 @@ interface MainCardProps {
 const MainCard: React.FC<MainCardProps> = ({ children }) => {
   return (
     <div className="w-full h-full flex items-center justify-center">
-      <div className="w-full max-w-2xl mx-auto p-8">
-        {children}
-      </div>
+      <div className="w-full max-w-2xl mx-auto p-8">{children}</div>
     </div>
   );
 };
