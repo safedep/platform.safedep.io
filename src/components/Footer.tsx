@@ -3,6 +3,7 @@
 import Link from "next/link";
 import React from "react";
 import { useState } from "react";
+import { externalUrls } from "@/lib/config";
 
 const Footer: React.FC = () => {
   const [year, setYear] = useState(new Date().getFullYear());
@@ -16,11 +17,11 @@ const Footer: React.FC = () => {
       <p>&copy; {year} SafeDep</p>
 
       <p className="text-sm">
-        <Link href="#" className="text-white">
+        <Link href={externalUrls.termsOfService} className="text-white">
           Terms of Service
         </Link>
         {" | "}
-        <Link href="#" className="text-white">
+        <Link href={externalUrls.privacyPolicy} className="text-white">
           Privacy Policy
         </Link>
       </p>
