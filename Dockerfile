@@ -6,7 +6,10 @@ COPY package.json package-lock.json ./
 RUN npm install
 
 COPY . .
-RUN npm run build
+
+# https://docs.docker.com/build/building/secrets/
+RUN --mount=type=secret,id=sentry_auth_token,env=SENTRY_AUTH_TOKEN \
+	npm run build
 
 ENV NODE_ENV=production
 

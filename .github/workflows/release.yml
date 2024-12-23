@@ -50,9 +50,10 @@ jobs:
           fi
 
       - name: Build Container Image
-        run: docker build -t $DOCKER_REGISTRY/$DOCKER_IMAGE_NAME:$RELEASE_TAG .
+        run: docker build --secret id=sentry_auth_token,env=SENTRY_AUTH_TOKEN -t $DOCKER_REGISTRY/$DOCKER_IMAGE_NAME:$RELEASE_TAG .
         env:
           RELEASE_TAG: ${{ env.RELEASE_TAG }}
+          SENTRY_AUTH_TOKEN: ${{ secrets.SENTRY_AUTH_TOKEN }}
 
       - name: Push Container Image
         run: docker push $DOCKER_REGISTRY/$DOCKER_IMAGE_NAME --all-tags
