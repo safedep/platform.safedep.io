@@ -7,6 +7,7 @@ import AuthButtons from "./components/AuthButtons";
 import Image from "next/image";
 import LoginIllustrationImage from "./Illustration.svg";
 import LogoImage from "./Logo.svg";
+import { externalUrls } from "@/lib/config";
 
 const AuthPage = () => {
   return (
