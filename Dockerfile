@@ -1,3 +1,6 @@
+# syntax=docker/dockerfile:1
+# https://github.com/docker/docs/issues/20935
+
 FROM node:22-alpine
 
 WORKDIR /app
