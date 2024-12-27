@@ -1,3 +1,4 @@
+import { LogoutLink } from "@/components/LogoutLink";
 import {
   Disclosure,
   DisclosureButton,
@@ -14,7 +15,6 @@ import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { memo } from "react";
 import LogoMark from "./navbar.svg";
-import { LogoutLink } from "@/components/LogoutLink";
 
 function classNames(...classes: string[]) {
   return classes.filter(Boolean).join(" ");
@@ -22,7 +22,8 @@ function classNames(...classes: string[]) {
 
 const Navbar = () => {
   const navigation = [
-    { name: "API Keys", href: "/platform/keys", current: false },
+    { name: "Inventory", href: "#", current: false },
+    { name: "API Keys", href: "/platform/keys/list", current: false },
   ];
 
   const pathname = usePathname();
@@ -35,12 +36,11 @@ const Navbar = () => {
   }
 
   return (
-    <Disclosure as="nav" className="bg-gray-800">
-      <div className="mx-auto max-w-7xl px-2 sm:px-6 lg:px-8">
+    <Disclosure as="nav" className="bg-blue-600">
+      <div className="mx-auto max-w-full px-2 sm:px-6 lg:px-8">
         <div className="relative flex h-16 items-center justify-between">
           <div className="absolute inset-y-0 left-0 flex items-center sm:hidden">
-            {/* Mobile menu button*/}
-            <DisclosureButton className="group relative inline-flex items-center justify-center rounded-md p-2 text-gray-400 hover:bg-gray-700 hover:text-white focus:outline-none focus:ring-2 focus:ring-inset focus:ring-white">
+            <DisclosureButton className="group relative inline-flex items-center justify-center rounded-md p-2 text-gray-100 hover:bg-blue-700 hover:text-white focus:outline-none focus:ring-2 focus:ring-inset focus:ring-white">
               <span className="absolute -inset-0.5" />
               <span className="sr-only">Open main menu</span>
               <Bars3Icon
@@ -56,7 +56,7 @@ const Navbar = () => {
           <div className="flex flex-1 items-center justify-center sm:items-stretch sm:justify-start">
             <div className="flex shrink-0 items-center">
               <Link href={"/"}>
-                <Image src={LogoMark} alt="SafeDep" width={32} height={32} />
+                <Image src={LogoMark} alt="Logo" width={32} height={32} />
               </Link>
             </div>
             <div className="hidden sm:ml-6 sm:block">
@@ -68,8 +68,8 @@ const Navbar = () => {
                     aria-current={item.current ? "page" : undefined}
                     className={classNames(
                       item.current
-                        ? "bg-gray-900 text-white"
-                        : "text-gray-300 hover:bg-gray-700 hover:text-white",
+                        ? "bg-blue-700 text-white"
+                        : "text-gray-100 hover:bg-blue-700 hover:text-white",
                       "rounded-md px-3 py-2 text-sm font-medium",
                     )}
                   >
@@ -80,27 +80,18 @@ const Navbar = () => {
             </div>
           </div>
           <div className="absolute inset-y-0 right-0 flex items-center pr-2 sm:static sm:inset-auto sm:ml-6 sm:pr-0">
-            {/* Profile dropdown */}
             <Menu as="div" className="relative ml-3">
               <div>
-                <MenuButton className="relative flex rounded-full bg-gray-800 text-sm focus:outline-none focus:ring-2 focus:ring-white focus:ring-offset-2 focus:ring-offset-gray-800">
+                <MenuButton className="relative flex rounded-full bg-blue-600 text-sm focus:outline-none focus:ring-2 focus:ring-white focus:ring-offset-2 focus:ring-offset-blue-600">
                   <span className="absolute -inset-1.5" />
                   <span className="sr-only">Open user menu</span>
-                  <UserCircleIcon className="h-10 w-10 text-gray-300" />
+                  <UserCircleIcon className="h-10 w-10 text-gray-100" />
                 </MenuButton>
               </div>
               <MenuItems
                 transition
                 className="absolute right-0 z-10 mt-2 w-48 origin-top-right rounded-md bg-white py-1 shadow-lg ring-1 ring-black/5 transition focus:outline-none data-[closed]:scale-95 data-[closed]:transform data-[closed]:opacity-0 data-[enter]:duration-100 data-[leave]:duration-75 data-[enter]:ease-out data-[leave]:ease-in"
               >
-                <MenuItem>
-                  <Link
-                    href="#"
-                    className="block px-4 py-2 text-sm text-gray-700 data-[focus]:bg-gray-100 data-[focus]:outline-none"
-                  >
-                    Profile
-                  </Link>
-                </MenuItem>
                 <MenuItem>
                   <LogoutLink className="block px-4 py-2 text-sm text-gray-700 data-[focus]:bg-gray-100 data-[focus]:outline-none">
                     Sign out
@@ -122,8 +113,8 @@ const Navbar = () => {
               aria-current={item.current ? "page" : undefined}
               className={classNames(
                 item.current
-                  ? "bg-gray-900 text-white"
-                  : "text-gray-300 hover:bg-gray-700 hover:text-white",
+                  ? "bg-blue-700 text-white"
+                  : "text-gray-100 hover:bg-blue-700 hover:text-white",
                 "block rounded-md px-3 py-2 text-base font-medium",
               )}
             >
