@@ -17,6 +17,19 @@ const Page = () => {
   const [dropdownStates, setDropdownStates] = useState<{
     [key: string]: boolean;
   }>({});
+  const [selectedDescription, setSelectedDescription] = useState<string>("");
+  const [selectedID, setSelectedID] = useState<string>("");
+  const [showModal, setShowModal] = useState(false);
+  const [showIDModal, setShowIDModal] = useState(false);
+  const [showDeleteModal, setShowDeleteModal] = useState(false);
+  const [apiKeys, setApiKeys] = useState<ApiKey[]>([]);
+  const [loading, setLoading] = useState(false);
+  const [error, setError] = useState<string | null>(null);
+  const [searchTerm, setSearchTerm] = useState<string>("");
+  const [sortConfig, setSortConfig] = useState<{
+    key: string;
+    direction: string;
+  } | null>(null);
 
   useEffect(() => {
     const handleClickOutside = (event: MouseEvent) => {
@@ -50,14 +63,6 @@ const Page = () => {
   const closeAllDropdowns = () => {
     setDropdownStates({});
   };
-  const [selectedDescription, setSelectedDescription] = useState<string>("");
-  const [selectedID, setSelectedID] = useState<string>("");
-  const [showModal, setShowModal] = useState(false);
-  const [showIDModal, setShowIDModal] = useState(false);
-  const [showDeleteModal, setShowDeleteModal] = useState(false);
-  const [apiKeys, setApiKeys] = useState<ApiKey[]>([]);
-  const [loading, setLoading] = useState(false);
-  const [error, setError] = useState<string | null>(null);
 
   useEffect(() => {
     const fetchApiKeys = async () => {
@@ -116,10 +121,40 @@ const Page = () => {
     }
   }, []);
 
-  useEffect(() => {
-    if (loading) {
+  const handleSearch = (event: React.ChangeEvent<HTMLInputElement>) => {
+    setSearchTerm(event.target.value);
+  };
+
+  const sortedApiKeys = [...apiKeys].sort((a, b) => {
+    if (sortConfig !== null) {
+      const { key, direction } = sortConfig;
+      const aValue = a[key as keyof ApiKey] ?? "";
+      const bValue = b[key as keyof ApiKey] ?? "";
+      if (aValue < bValue) {
+        return direction === "ascending" ? -1 : 1;
+      }
+      if (aValue > bValue) {
+        return direction === "ascending" ? 1 : -1;
+      }
     }
-  }, [loading]);
+    return 0;
+  });
+
+  const filteredApiKeys = sortedApiKeys.filter((key) =>
+    key.name.toLowerCase().includes(searchTerm.toLowerCase()),
+  );
+
+  const requestSort = (key: string) => {
+    let direction = "ascending";
+    if (
+      sortConfig &&
+      sortConfig.key === key &&
+      sortConfig.direction === "ascending"
+    ) {
+      direction = "descending";
+    }
+    setSortConfig({ key, direction });
+  };
 
   return (
     <div className="flex min-h-screen bg-gray-50">
@@ -137,97 +172,118 @@ const Page = () => {
         </MainHeader>
 
         <div className="mt-6">
+          <input
+            type="text"
+            placeholder="Search..."
+            value={searchTerm}
+            onChange={handleSearch}
+            className="mb-4 p-2 border border-gray-300 rounded"
+          />
           {loading && <p>Loading...</p>}
           {error && <p className="text-red-600">{error}</p>}
           {!loading && !error && (
-            <table className="min-w-full bg-white rounded-lg shadow">
-              <thead className="bg-gray-100">
-                <tr>
-                  <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                    ID
-                  </th>
-                  <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                    Name
-                  </th>
-                  <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                    Description
-                  </th>
-                  <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                    Expiry
-                  </th>
-                  <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                    Options
-                  </th>
-                </tr>
-              </thead>
-              <tbody className="divide-y divide-gray-300">
-                {apiKeys.map((key) => (
-                  <tr key={key.id} className="hover:bg-gray-50">
-                    <td className="px-6 py-4 whitespace-nowrap text-sm font-mono text-gray-500">
-                      <button
-                        onClick={() => {
-                          setSelectedID(key.id);
-                          setShowIDModal(true);
-                        }}
-                        className="hover:text-blue-600"
-                      >
-                        {truncateId(key.id)}
-                      </button>
-                    </td>
-                    <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-900">
-                      {key.name}
-                    </td>
-                    <td className="px-6 py-4 text-sm text-gray-500">
-                      <button
-                        onClick={() => {
-                          setSelectedDescription(key.description);
-                          setShowModal(true);
-                        }}
-                        className="hover:text-blue-600"
-                      >
-                        {truncateDescription(key.description)}
-                      </button>
-                    </td>
-                    <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
-                      {key.expiry
-                        ? new Date(key.expiry).toLocaleDateString()
-                        : "N/A"}
-                    </td>
-                    <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
-                      <div className="relative dropdown-container">
+            <div className="overflow-auto max-h-96">
+              <table className="min-w-full bg-white rounded-lg shadow">
+                <thead className="bg-gray-100">
+                  <tr>
+                    <th
+                      className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider cursor-pointer"
+                      onClick={() => requestSort("id")}
+                    >
+                      ID
+                    </th>
+                    <th
+                      className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider cursor-pointer"
+                      onClick={() => requestSort("name")}
+                    >
+                      Name
+                    </th>
+                    <th
+                      className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider cursor-pointer"
+                      onClick={() => requestSort("description")}
+                    >
+                      Description
+                    </th>
+                    <th
+                      className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider cursor-pointer"
+                      onClick={() => requestSort("expiry")}
+                    >
+                      Expiry
+                    </th>
+                    <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                      Options
+                    </th>
+                  </tr>
+                </thead>
+                <tbody className="divide-y divide-gray-300">
+                  {filteredApiKeys.map((key) => (
+                    <tr key={key.id} className="hover:bg-gray-50">
+                      <td className="px-6 py-4 whitespace-nowrap text-sm font-mono text-gray-500">
                         <button
-                          className="p-1 hover:bg-gray-100 rounded"
-                          onClick={(e) => {
-                            e.stopPropagation();
-                            toggleDropdown(key.id);
+                          onClick={() => {
+                            setSelectedID(key.id);
+                            setShowIDModal(true);
                           }}
+                          className="hover:text-blue-600"
                         >
-                          <MoreVertical className="h-5 w-5" />
+                          {truncateId(key.id)}
                         </button>
-
-                        <div
-                          className={`absolute right-0 mt-0 w-48 bg-white rounded-md shadow-lg z-10 ${
-                            dropdownStates[key.id] ? "block" : "hidden"
-                          }`}
+                      </td>
+                      <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-900">
+                        {key.name}
+                      </td>
+                      <td className="px-6 py-4 text-sm text-gray-500">
+                        <button
+                          onClick={() => {
+                            setSelectedDescription(key.description);
+                            setShowModal(true);
+                          }}
+                          className="hover:text-blue-600"
                         >
+                          {truncateDescription(key.description)}
+                        </button>
+                      </td>
+                      <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
+                        {key.expiry
+                          ? new Date(key.expiry).toLocaleDateString()
+                          : "N/A"}
+                      </td>
+                      <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
+                        <div className="relative dropdown-container">
                           <button
+                            className="p-1 hover:bg-gray-100 rounded"
                             onClick={(e) => {
                               e.stopPropagation();
-                              setSelectedID(key.id);
-                              setShowDeleteModal(true);
-                              closeAllDropdowns();
+                              toggleDropdown(key.id);
                             }}
-                            className="w-full text-left px-4 py-2 text-sm text-red-600 hover:bg-red-50"
                           >
-                            Delete
+                            <MoreVertical className="h-5 w-5" />
                           </button>
+
+                          <div
+                            className={`absolute right-0 mt-0 w-48 bg-white rounded-md shadow-lg z-10 ${
+                              dropdownStates[key.id] ? "block" : "hidden"
+                            }`}
+                          >
+                            <button
+                              onClick={(e) => {
+                                e.stopPropagation();
+                                setSelectedID(key.id);
+                                setShowDeleteModal(true);
+                                closeAllDropdowns();
+                              }}
+                              className="w-full text-left px-4 py-2 text-sm text-red-600 hover:bg-red-50"
+                            >
+                              Delete
+                            </button>
+                          </div>
                         </div>
-                      </div>
-                    </td>
-                  </tr>
-                ))}
-              </tbody>
-            </table>
+                      </td>
+                    </tr>
+                  ))}
+                </tbody>
+              </table>
+            </div>
           )}
         </div>
         {showModal && (
