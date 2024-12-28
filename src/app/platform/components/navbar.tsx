@@ -22,7 +22,11 @@ function classNames(...classes: string[]) {
 
 const Navbar = () => {
   const navigation = [
-    { name: "Inventory", href: "#", current: false },
+    {
+      name: "Inventory",
+      href: "/platform/inventory/projects/list",
+      current: false,
+    },
     { name: "API Keys", href: "/platform/keys/list", current: false },
   ];
 
