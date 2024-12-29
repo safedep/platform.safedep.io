@@ -21,10 +21,24 @@ function classNames(...classes: string[]) {
 }
 
 const Navbar = () => {
-  const navigation = [
-    { name: "Inventory", href: "#", current: false },
-    { name: "API Keys", href: "/platform/keys/list", current: false },
-  ];
+  // We will add navigations entries based on feature flags
+  // while maintaining the desired order.
+  const navigation = [];
+
+  if (process.env.NEXT_PUBLIC_FEATURE_INVENTORY_ENABLED === "true") {
+    navigation.push({
+      name: "Inventory",
+      href: "/platform/inventory/projects/list",
+      current: false,
+    });
+  }
+
+  // This is always available
+  navigation.push({
+    name: "API Keys",
+    href: "/platform/keys/list",
+    current: false,
+  });
 
   const pathname = usePathname();
   const currentNavigationItem = navigation.find(
