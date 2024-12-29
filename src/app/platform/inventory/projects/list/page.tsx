@@ -1,10 +1,8 @@
 "use client";
+import { ExternalLink, EyeIcon, FolderIcon } from "lucide-react";
+import Link from "next/link";
 import { useEffect, useState } from "react";
 import type { Project } from "../types/project";
-import { ExternalLink, EyeIcon, FolderIcon } from "lucide-react";
-import { ProjectNavigations } from "./navigations";
-import Sidebar from "@/app/platform/components/sidebar";
-import Link from "next/link";
 
 export default function ProjectListPage() {
   const [projects, setProjects] = useState<Project[]>([]);

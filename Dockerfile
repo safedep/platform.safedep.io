@@ -15,6 +15,7 @@ RUN --mount=type=secret,id=sentry_auth_token,env=SENTRY_AUTH_TOKEN \
 	npm run build
 
 ENV NODE_ENV=production
+ENV NEXT_PUBLIC_ENV=production
 
 EXPOSE 3000
 
