@@ -1,9 +1,10 @@
 "use client";
 import { useEffect, useState } from "react";
 import type { Project } from "../types/project";
-import { EyeIcon, FolderIcon } from "lucide-react";
-import { ApiKeyNavigations } from "./navigations";
+import { ExternalLink, EyeIcon, FolderIcon } from "lucide-react";
+import { ProjectNavigations } from "./navigations";
 import Sidebar from "@/app/platform/components/sidebar";
+import Link from "next/link";
 
 export default function ProjectListPage() {
   const [projects, setProjects] = useState<Project[]>([]);
@@ -45,10 +46,27 @@ export default function ProjectListPage() {
     );
   }
 
+  if (projects.length === 0) {
+    return (
+      <div className="bg-yellow-50 p-4 rounded-md">
+        <p className="text-yellow-800 text-center">
+          No projects found.{" "}
+          <Link
+            href="https://docs.safedep.io/cloud/sync"
+            target="_blank"
+            className="text-blue-800"
+          >
+            <ExternalLink className="h-4 w-4 inline" />
+            Learn more
+          </Link>{" "}
+          about how to sync your project data with SafeDep.
+        </p>
+      </div>
+    );
+  }
+
   return (
     <div className="flex space-x-8">
-      <Sidebar items={ApiKeyNavigations} />
-
       <div className="flex-1">
         <div className="mb-6 bg-white rounded-lg shadow-sm border border-gray-200">
           <div className="px-6 py-4 border-b border-gray-200 bg-blue-50">

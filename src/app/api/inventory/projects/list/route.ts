@@ -1,3 +1,4 @@
+import { apiErrorHandler } from "@/lib/api/error";
 import { NextResponse } from "next/server";
 
 interface ProjectData {
@@ -7,7 +8,7 @@ interface ProjectData {
   violations: number;
 }
 
-export async function GET() {
+export async function handleListProjects() {
   try {
     const mockProjects: ProjectData[] = Array.from({ length: 90 }, (_, i) => ({
       name: `Project ${String.fromCharCode(65 + (i % 26))}${i >= 26 ? Math.floor(i / 26) : ""}`,
@@ -29,3 +30,5 @@ export async function GET() {
     );
   }
 }
+
+export const GET = apiErrorHandler(handleListProjects);
