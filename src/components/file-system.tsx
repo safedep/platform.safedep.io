@@ -2,7 +2,7 @@ import React from "react";
 
 type FileType = {
   key: string;
-  origin: string;
+  size?: string;
   derived_extension?: string;
   mime_type?: string;
 };
@@ -17,7 +17,7 @@ export function FileSystem({ files }: { files: FileType[] }) {
               File
             </th>
             <th className="px-6 py-4 text-left text-sm font-bold text-gray-700 uppercase tracking-wider">
-              Origin
+              Size
             </th>
             <th className="px-6 py-4 text-left text-sm font-bold text-gray-700 uppercase tracking-wider">
               Type
@@ -34,7 +34,7 @@ export function FileSystem({ files }: { files: FileType[] }) {
                 <span className="font-medium text-gray-900">{file.key}</span>
               </td>
               <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
-                {file.origin}
+                {file.size || "N/A"}
               </td>
               <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
                 {file.mime_type || file.derived_extension || "unknown"}

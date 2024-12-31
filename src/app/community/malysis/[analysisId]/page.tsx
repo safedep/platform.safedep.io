@@ -1,44 +1,55 @@
 import { notFound } from "next/navigation";
 import MalwareReport from "@/components/malware-report";
-
 type MalwareReportData = {
   package_version: {
-    package: { name: string };
+    package: {
+      ecosystem: string;
+      name: string;
+    };
     version: string;
   };
+  target: {
+    origin: string;
+    sha256?: string;
+  };
+  file_system: {
+    files: Array<{
+      key: string;
+      origin: string;
+      derived_extension?: string;
+      mime_type?: string;
+      size?: string;
+    }>;
+  };
+  file_evidences: Array<{
+    file_key: string;
+    evidence: {
+      title: string;
+      behavior: string;
+      details: string;
+      confidence: string;
+      source: string;
+    };
+  }>;
+  project_evidences: Array<{
+    evidence: {
+      title: string;
+      behavior: string;
+      details: string;
+      confidence: string;
+      source: string;
+    };
+  }>;
+  warnings: Array<{
+    message: string;
+  }>;
   analyzed_at: string;
   inference: {
-    is_malware: boolean;
-    is_verified?: boolean;
-    confidence: number;
+    confidence: string;
+    is_malware?: boolean;
     details: string;
   };
-  file_evidences: {
-    file_key?: string;
-    evidence: {
-      title: string;
-      behavior: string;
-      details: string;
-      confidence: string;
-      source: string;
-    };
-  }[];
-  project_evidences: {
-    file_key?: string;
-    evidence: {
-      title: string;
-      behavior: string;
-      details: string;
-      confidence: string;
-      source: string;
-    };
-  }[];
-  file_system: {
-    files: { name: string; path: string; content: string }[];
-  };
-  warnings: { message: string }[];
 };
-
 async function getMalwareReport(
   analysisId: string,
 ): Promise<MalwareReportData | null> {
