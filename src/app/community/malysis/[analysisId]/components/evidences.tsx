@@ -7,6 +7,7 @@ import {
 import { ChevronDown, ChevronUp } from "lucide-react";
 import { useState } from "react";
 import Confidence from "./confidence";
+import MarkdownContent from "@/components/MarkdownContent";
 
 export function Evidences({
   fileEvidences,
@@ -50,18 +51,28 @@ export function Evidences({
           </button>
           {expandedItems.includes(index) && (
             <div className="px-4 py-2 bg-gray-50 text-gray-700">
-              <p>
-                <strong>Behavior:</strong>{" "}
+              <div className="mb-2 py-2">
+                <span className="font-medium bg-gray-200 px-2 py-1 rounded-md">
+                  Behavior
+                </span>{" "}
+                <hr />
                 {evidence?.evidence?.behavior || "N/A"}
-              </p>
-              <p>
-                <strong>Details:</strong> {evidence?.evidence?.details || "N/A"}
-              </p>
+              </div>
+              <div className="mb-2 py-2">
+                <span className="font-medium bg-gray-200 px-2 py-1 rounded-md">
+                  Details
+                </span>{" "}
+                <hr />
+                <MarkdownContent content={evidence?.evidence?.details || ""} />
+              </div>
               {(evidence as Report_FileEvidence).fileKey && (
-                <p>
-                  <strong>File:</strong>{" "}
+                <div className="mb-2 py-2">
+                  <span className="font-medium bg-gray-200 px-2 py-1 rounded-md">
+                    File
+                  </span>{" "}
+                  <hr />
                   {(evidence as Report_FileEvidence).fileKey}
-                </p>
+                </div>
               )}
             </div>
           )}
