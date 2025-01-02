@@ -1,7 +1,7 @@
 import { apiErrorHandler } from "@/lib/api/error";
 import { createMalwareAnalysisServiceClient } from "@/lib/rpc/client";
 import { NextApiRequest } from "next";
-import { NextRequest, NextResponse } from "next/server";
+import { NextResponse } from "next/server";
 
 type MockReportType = {
   package_version: {
@@ -296,7 +296,7 @@ const mockReport: MockReportType = {
   },
 };
 
-export async function GET(
+export async function handleGET(
   _req: NextApiRequest,
   { params }: { params: Promise<{ analysisId: string }> },
 ) {
@@ -323,4 +323,4 @@ export async function GET(
   return NextResponse.json({ ...report, id: analysisId });
 }
 
-//export const GET = apiErrorHandler(handleGET);
+export const GET = apiErrorHandler(handleGET);

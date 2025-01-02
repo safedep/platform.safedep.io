@@ -5,10 +5,11 @@ import { createError } from "../schema/error";
 export const apiErrorHandler =
   // eslint-disable-next-line @typescript-eslint/no-unsafe-function-type
   (...handlers: Function[]) =>
-    async (req: NextRequest) => {
+    // @ts-ignore
+    async (req: NextRequest, params) => {
       try {
         for (const handler of handlers) {
-          return await handler(req);
+          return await handler(req, params);
         }
       } catch (error) {
         if (error instanceof ApiError) {
