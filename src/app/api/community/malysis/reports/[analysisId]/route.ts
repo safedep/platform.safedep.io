@@ -292,6 +292,7 @@ const mockReport: MockReportType = {
     details: "TEST",
   },
 };
+
 export async function GET(
   request: Request,
   context: { params: { analysisId: string } },
