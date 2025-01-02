@@ -15,6 +15,7 @@
   },
   "dependencies": {
     "@auth0/nextjs-auth0": "^3.5.0",
+    "@buf/safedep_api.bufbuild_es": "^1.10.0-20241230154048-f72c3643452e.1",
     "@buf/safedep_api.connectrpc_es": "^1.6.1-20241117092917-2fd4dbf7c52e.1",
     "@connectrpc/connect-node": "^1.6.1",
     "@headlessui/react": "^2.2.0",

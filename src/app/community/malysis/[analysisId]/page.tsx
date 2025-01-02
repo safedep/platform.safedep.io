@@ -1,13 +1,16 @@
 "use client";
 
-import MalwareReport from "./components/malware-report";
+import {
+  AnalysisStatus,
+  GetAnalysisReportResponse,
+} from "@buf/safedep_api.bufbuild_es/safedep/services/malysis/v1/malysis_pb";
 import { useParams } from "next/navigation";
 import { useEffect, useState } from "react";
-import type { MalwareAnalysisReport } from "./schema";
+import MalwareReport from "./components/malware-report";
 
 export default function MalwareReportPage() {
   const [loading, setLoading] = useState(true);
-  const [report, setReport] = useState<MalwareAnalysisReport>();
+  const [response, setResponse] = useState<GetAnalysisReportResponse>();
   const [error, setError] = useState<string>();
   const params = useParams<{ analysisId: string }>();
 
@@ -16,19 +19,23 @@ export default function MalwareReportPage() {
       const response = await fetch(
         `/api/community/malysis/reports/${analysisId}`,
       );
+
       if (!response.ok) {
-        throw new Error("Failed to fetch malware report");
+        const errorData = await response.json();
+        throw new Error(errorData.message || "Failed to fetch malware report.");
       }
 
       const data = await response.json();
-      return data;
+      const typedResponse = GetAnalysisReportResponse.fromJson(data);
+
+      return typedResponse;
     };
 
     const { analysisId } = params;
     if (typeof analysisId === "string") {
       fetchMalwareReport(analysisId)
         .then((data) => {
-          setReport(data);
+          setResponse(data);
         })
         .catch((error) => {
           setError(
@@ -57,5 +64,32 @@ export default function MalwareReportPage() {
     );
   }
 
-  return <MalwareReport report={report as MalwareAnalysisReport} />;
+  if (response?.status === AnalysisStatus.FAILED) {
+    return (
+      <div className="flex bg-red-50 p-4 rounded-md items-center justify-center">
+        <p className="text-red-800">Failed to analyze the package.</p>
+      </div>
+    );
+  }
+
+  if (
+    response?.status === AnalysisStatus.QUEUED ||
+    response?.status === AnalysisStatus.IN_PROGRESS
+  ) {
+    return (
+      <div className="flex bg-yellow-50 p-4 rounded-md items-center justify-center">
+        <p className="text-yellow-800">Analysis is in progress.</p>
+      </div>
+    );
+  }
+
+  if (response?.status === AnalysisStatus.COMPLETED && response.report) {
+    return <MalwareReport report={response.report} />;
+  }
+
+  return (
+    <div className="flex bg-red-50 p-4 rounded-md items-center justify-center">
+      <p className="text-red-800">Failed to fetch malware analysis report.</p>
+    </div>
+  );
 }

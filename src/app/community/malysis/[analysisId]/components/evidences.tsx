@@ -1,25 +1,19 @@
 "use client";
 
-import { useState } from "react";
+import {
+  Report_FileEvidence,
+  Report_ProjectEvidence,
+} from "@buf/safedep_api.bufbuild_es/safedep/messages/malysis/v1/report_pb";
 import { ChevronDown, ChevronUp } from "lucide-react";
-
-type Evidence = {
-  file_key?: string;
-  evidence: {
-    title: string;
-    behavior: string;
-    details: string;
-    confidence: string;
-    source: string;
-  };
-};
+import { useState } from "react";
+import Confidence from "./confidence";
 
 export function Evidences({
   fileEvidences,
   projectEvidences,
 }: {
-  fileEvidences: Evidence[];
-  projectEvidences: Evidence[];
+  fileEvidences: Report_FileEvidence[];
+  projectEvidences: Report_ProjectEvidence[];
 }) {
   const allEvidences = [...fileEvidences, ...projectEvidences];
   const [expandedItems, setExpandedItems] = useState<number[]>([]);
@@ -43,20 +37,13 @@ export function Evidences({
           >
             <div className="flex-1 grid grid-cols-3 gap-4">
               <span className="font-medium text-gray-800">
-                {evidence.evidence.title || "Unknown Title"}
+                {evidence?.evidence?.title || "Unknown Title"}
               </span>
               <span className="text-gray-600">
-                {evidence.evidence.source || "Unknown Source"}
+                {evidence?.evidence?.source || "Unknown Source"}
               </span>
-              <span
-                className={`px-2 py-1 rounded-full text-xs font-semibold ${
-                  evidence.evidence.confidence.startsWith("CONFIDENCE_")
-                    ? " text-blue-800"
-                    : " text-gray-800"
-                }`}
-              >
-                {evidence.evidence.confidence.replace("CONFIDENCE_", "") ||
-                  "Unknown"}
+              <span className="text-gray-600">
+                <Confidence confidence={evidence?.evidence?.confidence!} />
               </span>
             </div>
             {expandedItems.includes(index) ? <ChevronUp /> : <ChevronDown />}
@@ -64,14 +51,16 @@ export function Evidences({
           {expandedItems.includes(index) && (
             <div className="px-4 py-2 bg-gray-50 text-gray-700">
               <p>
-                <strong>Behavior:</strong> {evidence.evidence.behavior || "N/A"}
+                <strong>Behavior:</strong>{" "}
+                {evidence?.evidence?.behavior || "N/A"}
               </p>
               <p>
-                <strong>Details:</strong> {evidence.evidence.details || "N/A"}
+                <strong>Details:</strong> {evidence?.evidence?.details || "N/A"}
               </p>
-              {evidence.file_key && (
+              {(evidence as Report_FileEvidence).fileKey && (
                 <p>
-                  <strong>File:</strong> {evidence.file_key}
+                  <strong>File:</strong>{" "}
+                  {(evidence as Report_FileEvidence).fileKey}
                 </p>
               )}
             </div>

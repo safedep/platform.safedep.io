@@ -1,13 +1,7 @@
+import { Report_File } from "@buf/safedep_api.bufbuild_es/safedep/messages/malysis/v1/report_pb";
 import React from "react";
 
-type FileType = {
-  key: string;
-  size?: string;
-  derived_extension?: string;
-  mime_type?: string;
-};
-
-export function FileSystem({ files }: { files: FileType[] }) {
+export function FileSystem({ files }: { files: Report_File[] }) {
   return (
     <div className="overflow-x-auto bg-gray-50 rounded-xl border-2 border-gray-200">
       <table className="min-w-full divide-y-2 divide-gray-200">
@@ -34,10 +28,10 @@ export function FileSystem({ files }: { files: FileType[] }) {
                 <span className="font-medium text-gray-900">{file.key}</span>
               </td>
               <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
-                {file.size || "N/A"}
+                {file.size.toString()}
               </td>
               <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
-                {file.mime_type || file.derived_extension || "unknown"}
+                {file.mimeType || file.derivedExtension || "unknown"}
               </td>
             </tr>
           ))}
