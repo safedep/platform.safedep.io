@@ -5,7 +5,7 @@ import { createError } from "../schema/error";
 export const apiErrorHandler =
   // eslint-disable-next-line @typescript-eslint/no-unsafe-function-type
   (...handlers: Function[]) =>
-    // @ts-ignore
+    // @ts-expect-error This is a Next.js handler
     async (req: NextRequest, params) => {
       try {
         for (const handler of handlers) {

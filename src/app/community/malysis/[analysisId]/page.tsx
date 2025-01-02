@@ -46,7 +46,7 @@ export default function MalwareReportPage() {
           setLoading(false);
         });
     }
-  }, [params.analysisId]);
+  }, [params]);
 
   if (loading) {
     return (
