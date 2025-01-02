@@ -3,7 +3,7 @@ import { createMalwareAnalysisServiceClient } from "@/lib/rpc/client";
 import { NextApiRequest } from "next";
 import { NextResponse } from "next/server";
 
-export async function handleGET(
+async function handleGET(
   _req: NextApiRequest,
   { params }: { params: Promise<{ analysisId: string }> },
 ) {
