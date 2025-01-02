@@ -1,4 +1,7 @@
-import { NextResponse } from "next/server";
+import { apiErrorHandler } from "@/lib/api/error";
+import { createMalwareAnalysisServiceClient } from "@/lib/rpc/client";
+import { NextApiRequest } from "next";
+import { NextRequest, NextResponse } from "next/server";
 
 type MockReportType = {
   package_version: {
@@ -294,17 +297,30 @@ const mockReport: MockReportType = {
 };
 
 export async function GET(
-  request: Request,
-  context: { params: { analysisId: string } },
+  _req: NextApiRequest,
+  { params }: { params: Promise<{ analysisId: string }> },
 ) {
-  const analysisId = context.params.analysisId;
-
+  const analysisId = (await params).analysisId;
   if (!analysisId) {
-    return NextResponse.json(
-      { error: "Analysis ID is required" },
-      { status: 400 },
-    );
+    throw new Error("Analysis ID is required");
   }
 
-  return NextResponse.json({ ...mockReport, id: analysisId });
+  const communityTenantId = process.env.COMMUNITY_API_TENANT_ID as string;
+  const communityApiKey = process.env.COMMUNITY_API_KEY as string;
+
+  if (!communityTenantId || !communityApiKey) {
+    throw new Error("Community API credentials are required");
+  }
+
+  const client = createMalwareAnalysisServiceClient(
+    communityTenantId,
+    communityApiKey,
+  );
+  const report = await client.getAnalysisReport({
+    analysisId: analysisId,
+  });
+
+  return NextResponse.json({ ...report, id: analysisId });
 }
+
+//export const GET = apiErrorHandler(handleGET);

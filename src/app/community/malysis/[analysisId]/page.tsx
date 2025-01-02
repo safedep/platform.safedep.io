@@ -51,7 +51,7 @@ export default function MalwareReportPage() {
 
   if (error) {
     return (
-      <div className="bg-red-50 p-4 rounded-md">
+      <div className="flex bg-red-50 p-4 rounded-md items-center justify-center">
         <p className="text-red-800">Error: {error}</p>
       </div>
     );
