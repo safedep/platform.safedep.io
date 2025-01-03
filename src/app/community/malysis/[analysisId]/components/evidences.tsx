@@ -44,7 +44,10 @@ export function Evidences({
                 {evidence?.evidence?.source || "Unknown Source"}
               </span>
               <span className="text-gray-600">
-                <Confidence confidence={evidence?.evidence?.confidence ?? 0} />
+                <Confidence
+                  confidence={evidence?.evidence?.confidence ?? 0}
+                  isMalware={false}
+                />
               </span>
             </div>
             {expandedItems.includes(index) ? <ChevronUp /> : <ChevronDown />}
