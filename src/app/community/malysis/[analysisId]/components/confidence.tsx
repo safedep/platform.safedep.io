@@ -6,12 +6,28 @@ export default function Confidence({
   confidence: Report_Evidence_Confidence;
 }) {
   if (confidence === Report_Evidence_Confidence.HIGH) {
-    return <span className="text-green-600">High</span>;
+    return (
+      <span className="text-orange-600 bg-orange-200 p-2 rounded-xl text-sm">
+        High
+      </span>
+    );
   } else if (confidence === Report_Evidence_Confidence.MEDIUM) {
-    return <span className="text-yellow-600">Medium</span>;
+    return (
+      <span className="text-yellow-600 bg-yellow-200 p-2 rounded-xl text-sm">
+        Medium
+      </span>
+    );
   } else if (confidence === Report_Evidence_Confidence.LOW) {
-    return <span className="text-red-600">Low</span>;
+    return (
+      <span className="text-red-600 bg-red-200 p-2 rounded-xl text-sm">
+        Low
+      </span>
+    );
   } else {
-    return <span className="text-gray-600">Unknown</span>;
+    return (
+      <span className="text-gray-600 bg-gray-200 p-2 rounded-xl text-sm">
+        Unknown
+      </span>
+    );
   }
 }
