@@ -19,7 +19,7 @@ export default function Confidence({
     );
   } else if (confidence === Report_Evidence_Confidence.LOW) {
     return (
-      <span className="text-red-600 bg-red-200 p-2 rounded-xl text-sm">
+      <span className="text-cyan-600 bg-cyan-200 p-2 rounded-xl text-sm">
         Low
       </span>
     );
