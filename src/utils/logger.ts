@@ -1,4 +1,5 @@
 import { z } from "zod";
+import * as Sentry from "@sentry/browser";
 
 type metaType =
   | Record<string, unknown>
@@ -14,18 +15,35 @@ type metaType =
 // logger is used by both the client and server
 export const logger = {
   info: (message: string, meta?: metaType) => {
-    console.log(`INFO: ${message}`, meta ? JSON.stringify(meta, null, 2) : "");
+    const extra: Record<string, unknown> = meta ? { meta } : {};
+    Sentry.captureMessage(message, {
+      level: "error",
+      extra: extra,
+    });
+
+    if (process.env.NODE_ENV !== "production") {
+      console.log(`INFO: ${message}`, meta);
+    }
   },
   error: (message: string, meta?: metaType) => {
-    console.error(
-      `ERROR: ${message}`,
-      meta ? JSON.stringify(meta, null, 2) : "",
-    );
+    const extra: Record<string, unknown> = meta ? { meta } : {};
+    Sentry.captureMessage(message, {
+      level: "error",
+      extra: extra,
+    });
+
+    if (process.env.NODE_ENV !== "production") {
+      console.error(`ERROR: ${message}`, meta);
+    }
   },
   debug: (message: string, meta?: metaType) => {
-    console.debug(
-      `DEBUG: ${message}`,
-      meta ? JSON.stringify(meta, null, 2) : "",
-    );
+    if (process.env.NODE_ENV === "production") {
+      return;
+    }
+
+    console.debug(`DEBUG: ${message}`, meta);
+  },
+  logException: (error: unknown) => {
+    Sentry.captureException(error);
   },
 };

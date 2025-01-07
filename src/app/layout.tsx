@@ -1,8 +1,10 @@
+import { UserProvider } from "@auth0/nextjs-auth0/client";
+import "@radix-ui/themes/styles.css";
 import type { Metadata } from "next";
 import localFont from "next/font/local";
 import "./globals.css";
-import { UserProvider } from "@auth0/nextjs-auth0/client";
-import Footer from "../components/Footer";
+import { Theme } from "@radix-ui/themes";
+import { Toaster } from "@/components/ui/toaster";
 
 const geistSans = localFont({
   src: "./fonts/GeistVF.woff",
@@ -36,8 +38,10 @@ export default function RootLayout({
         <body
           className={`${geistSans.variable} ${geistMono.variable} antialiased flex flex-col min-h-screen`}
         >
-          <main className="flex-grow">{children}</main>
-          <Footer />
+          <Theme>
+            <main className="flex-grow">{children}</main>
+            <Toaster />
+          </Theme>
         </body>
       </UserProvider>
     </html>
