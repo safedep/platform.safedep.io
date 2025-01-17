@@ -135,8 +135,8 @@ describe("Onboard Component", () => {
     fireEvent.click(screen.getByRole("button", { name: "Create" }));
     await waitFor(() => {
       expect(consoleErrorSpy).toHaveBeenCalledWith(
-        expect.stringContaining("Failed to onboard"),
-        expect.any(String),
+        expect.stringContaining("ERROR: Failed to onboard"),
+        expect.any(Object),
       );
     });
 
@@ -169,8 +169,8 @@ describe("Onboard Component", () => {
     fireEvent.click(screen.getByRole("button", { name: "Create" }));
     await waitFor(() => {
       expect(consoleErrorSpy).toHaveBeenCalledWith(
-        expect.stringContaining("Error occurred while onboarding"),
-        expect.any(String),
+        expect.stringContaining("ERROR: Error occurred while onboarding"),
+        expect.any(Error),
       );
     });
 

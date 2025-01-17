@@ -1,18 +1,37 @@
-import Badge from "@/components/Badge";
-import { LogoutLink } from "@/components/LogoutLink";
-import { findFirstUserAccess } from "@/lib/rpc/client";
-import { sessionSetTenant } from "@/lib/session/session";
+import { getUserAccess } from "@/lib/rpc/client";
 import { logger } from "@/utils/logger";
 import { getAccessToken, getSession } from "@auth0/nextjs-auth0";
-import { CheckCircleIcon, UserIcon } from "lucide-react";
+import { GetUserInfoResponse } from "@buf/safedep_api.bufbuild_es/safedep/services/controltower/v1/user_pb";
+import { UserIcon } from "lucide-react";
 import { redirect } from "next/navigation";
-const defaultPostAuthOnboardedPath = "/platform/keys";
+
+import { Button } from "@/components/ui/button";
+import {
+  Card,
+  CardContent,
+  CardDescription,
+  CardFooter,
+  CardHeader,
+  CardTitle,
+} from "@/components/ui/card";
+import { Label } from "@/components/ui/label";
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "@/components/ui/select";
+
 const defaultPostAuthOnboardingPath = "/onboard";
 const defaultPreAuthPath = "/auth";
 
 export default async function Home() {
   const session = await getSession();
-  const tenant: { domain?: string; access?: string } = {};
+  const userInfo = new GetUserInfoResponse();
+  const currentTenant = {
+    tenant: "",
+  };
 
   if (!session?.user) {
     redirect(defaultPreAuthPath);
@@ -24,21 +43,17 @@ export default async function Home() {
     let path = "";
     try {
       const { accessToken } = await getAccessToken();
-      const access = await findFirstUserAccess(accessToken as string);
-      if (!access) {
+      const res = await getUserAccess(accessToken as string);
+
+      if (!res?.access) {
         throw new Error("No access found");
       }
 
-      if (!access.tenant) {
+      if (res.access.length === 0) {
         throw new Error("No tenant found");
       }
 
-      if (!access.tenant.domain) {
-        throw new Error("No tenant domain found");
-      }
-
-      tenant.domain = access.tenant.domain;
-      tenant.access = access.level.toString();
+      userInfo.access = res.access;
     } catch (error) {
       logger.debug("User not onboarded: ", error);
       path = defaultPostAuthOnboardingPath;
@@ -49,58 +64,63 @@ export default async function Home() {
     }
   }
 
-  async function useTenant() {
+  async function handleSetTenant(tenant: string) {
     "use server";
 
-    logger.info("User confirmed tenant information", tenant);
-    sessionSetTenant(tenant.domain as string);
+    logger.debug("Selected tenant: ", tenant);
+    currentTenant.tenant = tenant;
 
-    redirect(defaultPostAuthOnboardedPath);
+    redirect("/api/tenant/redirect/" + tenant);
+  }
+
+  async function handleLogout() {
+    "use server";
+    redirect("/api/auth/logout");
   }
 
   return (
     <div className="flex flex-col items-center justify-center min-h-screen bg-gray-100 px-4 sm:px-6 lg:px-8">
-      <div className="max-w-lg w-full p-6 bg-white border border-gray-300 rounded-lg shadow-md space-y-6">
-        <div className="flex justify-center items-center space-x-2">
-          <CheckCircleIcon className="w-6 h-6 text-green-500" />
-          <h3 className="text-xl font-semibold text-gray-700">Select Tenant</h3>
-        </div>
-        <div className="space-y-6">
-          <div className="flex flex-col">
-            <label
-              htmlFor="tenantDomain"
-              className="text-sm font-medium text-gray-700 mb-1"
-            >
-              Tenant Domain
-            </label>
-            <input
-              type="text"
-              id="tenantDomain"
-              value={tenant.domain}
-              readOnly
-              className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
-            />
-          </div>
-          <div className="flex justify-center">
-            <button
-              onClick={useTenant}
-              className="bg-blue-500 hover:bg-blue-600 text-white px-8 py-2 rounded-full transition duration-300"
-            >
-              Continue
-            </button>
-          </div>
-        </div>
+      <div className="flex items-center space-x-2 py-2">
+        <UserIcon size={18} />
+        <span className="text-sm">Welcome {session?.user?.email}</span>
       </div>
-      <div className="flex justify-center py-4">
-        <LogoutLink>
-          <Badge
-            icon={UserIcon}
-            text="Sign out"
-            bgColor="bg-blue-100"
-            textColor="text-white-700"
-          />
-        </LogoutLink>
-      </div>
+      <Card className="w-full max-w-md">
+        <CardHeader>
+          <CardTitle>Select Tenant</CardTitle>
+          <CardDescription>
+            Select the tenant for use with the application
+          </CardDescription>
+        </CardHeader>
+        <CardContent>
+          <form>
+            <div className="grid w-full items-center gap-4">
+              <div className="flex flex-col space-y-1.5">
+                <Label htmlFor="framework">Tenant</Label>
+                <Select name="tenant" onValueChange={handleSetTenant}>
+                  <SelectTrigger>
+                    <SelectValue placeholder="Select tenant to continue ..." />
+                  </SelectTrigger>
+                  <SelectContent position="popper">
+                    {userInfo?.access.map((access) => (
+                      <SelectItem
+                        key={access?.tenant?.domain}
+                        value={access?.tenant?.domain ?? ""}
+                      >
+                        {access.tenant?.domain}
+                      </SelectItem>
+                    ))}
+                  </SelectContent>
+                </Select>
+              </div>
+            </div>
+          </form>
+        </CardContent>
+        <CardFooter className="flex justify-between">
+          <Button variant="outline" onClick={handleLogout}>
+            Logout
+          </Button>
+        </CardFooter>
+      </Card>
     </div>
   );
 }
