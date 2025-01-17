@@ -17,7 +17,7 @@ export const logger = {
   info: (message: string, meta?: metaType) => {
     const extra: Record<string, unknown> = meta ? { meta } : {};
     Sentry.captureMessage(message, {
-      level: "error",
+      level: "info",
       extra: extra,
     });
 

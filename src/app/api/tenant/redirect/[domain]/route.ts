@@ -1,12 +1,11 @@
 import { sessionSetTenant } from "@/lib/session/session";
-import { redirect } from "next/navigation";
-import { NextRequest } from "next/server";
+import { NextRequest, NextResponse } from "next/server";
 
 const dashboardRoute = "/v2/dashboard";
 
 // Redirect to dashboard page after setting tenant cookie
 async function handleGET(
-  _req: NextRequest,
+  req: NextRequest,
   { params }: { params: Promise<{ domain: string }> },
 ) {
   const { domain } = await params;
@@ -15,7 +14,11 @@ async function handleGET(
   }
 
   await sessionSetTenant(domain);
-  return redirect(dashboardRoute);
+
+  const url = req.nextUrl.clone();
+  url.pathname = dashboardRoute;
+
+  return NextResponse.redirect(url, { status: 302 });
 }
 
 // We are not wrapping this with apiErrorHandler because
