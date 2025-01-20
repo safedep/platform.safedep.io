@@ -4,6 +4,7 @@ import {
   accessLevelToKey,
   accessLevelToLabel,
 } from "./access";
+import { describe, it, expect } from "vitest";
 
 describe("Access", () => {
   it("should map from key to level", () => {

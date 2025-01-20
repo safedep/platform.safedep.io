@@ -3,16 +3,17 @@ import "@testing-library/jest-dom";
 import { useSearchParams } from "next/navigation";
 import { Suspense } from "react";
 import AuthError from "./page";
+import { describe, it, expect, vi, type Mock } from "vitest";
 
 // Mock useSearchParams from next/navigation
-jest.mock("next/navigation", () => ({
-  useSearchParams: jest.fn(),
+vi.mock("next/navigation", () => ({
+  useSearchParams: vi.fn(),
 }));
 
 describe("AuthError Component", () => {
   it("renders with a default error message when no message is provided", () => {
-    (useSearchParams as jest.Mock).mockReturnValue({
-      get: jest.fn().mockReturnValue(null),
+    (useSearchParams as Mock).mockReturnValue({
+      get: vi.fn().mockReturnValue(null),
     });
 
     render(<AuthError />);
@@ -25,8 +26,8 @@ describe("AuthError Component", () => {
   });
 
   it("renders with a specific error message from search params", () => {
-    (useSearchParams as jest.Mock).mockReturnValue({
-      get: jest.fn().mockReturnValue(encodeURIComponent("Invalid credentials")),
+    (useSearchParams as Mock).mockReturnValue({
+      get: vi.fn().mockReturnValue(encodeURIComponent("Invalid credentials")),
     });
 
     render(<AuthError />);
@@ -39,7 +40,7 @@ describe("AuthError Component", () => {
   });
 
   it("renders the fallback loading state", () => {
-    (useSearchParams as jest.Mock).mockImplementation(() => {
+    (useSearchParams as Mock).mockImplementation(() => {
       throw new Promise(() => {}); // Never resolves, forcing Suspense
     });
 

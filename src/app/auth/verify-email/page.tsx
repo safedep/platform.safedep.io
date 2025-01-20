@@ -1,8 +1,11 @@
 "use client";
 
 import { Mail, ArrowRight } from "lucide-react";
+import { useRouter } from "next/navigation";
 
 export default function Page() {
+  const router = useRouter();
+
   return (
     <div className="min-h-[75vh] flex items-center justify-center p-4">
       <div className="w-full max-w-md bg-white rounded-lg shadow-lg p-6">
@@ -30,10 +33,7 @@ export default function Page() {
               "Click the verification link we sent you",
               "Return here to continue",
             ].map((text, index) => (
-              <div
-                key={index}
-                className="flex items-center space-x-3 text-left"
-              >
+              <div key={text} className="flex items-center space-x-3 text-left">
                 <div className="flex-shrink-0 w-8 h-8 rounded-full bg-gray-100 flex items-center justify-center">
                   <span className="font-semibold">{index + 1}</span>
                 </div>
@@ -45,7 +45,7 @@ export default function Page() {
           {/* Divider */}
           <div className="relative">
             <div className="absolute inset-0 flex items-center">
-              <div className="w-full border-t border-gray-200"></div>
+              <div className="w-full border-t border-gray-200" />
             </div>
             <div className="relative flex justify-center text-sm">
               <span className="px-2 bg-white text-gray-500">
@@ -58,17 +58,17 @@ export default function Page() {
           <div className="space-y-3">
             <button
               className="w-full bg-blue-600 text-white py-2 px-4 rounded-md hover:bg-blue-700 transition-colors flex items-center justify-center group"
-              onClick={() => {
-                window.location.href = "/api/auth/login";
-              }}
+              type="button"
+              onClick={() => router.push("/api/auth/login")}
             >
               Continue to Login
               <ArrowRight className="ml-2 h-4 w-4 group-hover:translate-x-1 transition-transform" />
             </button>
 
             <button
-              className="w-full border border-gray-300 text-gray-700 py-2 px-4 rounded-md hover:bg-gray-50 transition-colors"
-              onClick={() => (window.location.href = "/")}
+              className="w-full block border border-gray-300 text-gray-700 py-2 px-4 rounded-md hover:bg-gray-50 transition-colors"
+              type="button"
+              onClick={() => router.push("/")}
             >
               Return to Home
             </button>
