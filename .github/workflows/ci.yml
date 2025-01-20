@@ -12,26 +12,36 @@ jobs:
   run-test:
     timeout-minutes: 15
     runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        node-version: ["22.x"]
+    name: Build with Node ${{ matrix.node-version }}
     steps:
-      - name: Checkout Source
-        uses: actions/checkout@v3
+      - uses: actions/checkout@v4
 
-      - name: Set up Node
-        uses: actions/setup-node@39370e3970a6d050c480ffad4ff0ed4d3fdee5af # v4.1.0
+      - name: Install pnpm
+        uses: pnpm/action-setup@v4
+
+      - name: Use Node.js ${{ matrix.node-version }}
+        uses: actions/setup-node@v4
         with:
-          node-version: "22.x"
+          node-version: ${{ matrix.node-version }}
+          cache: "pnpm"
 
-      - name: Install Packages
-        run: npm install
+      - name: Set buf registry
+        run: pnpm config set @buf:registry https://buf.build/gen/npm/v1/
+
+      - name: Install dependencies
+        run: pnpm install
 
       - name: Lint
-        run: npm run lint
+        run: pnpm lint
 
       - name: Prettier
-        run: npx prettier --check .
+        run: pnpm prettier --check .
 
       - name: Build
-        run: npm run build
+        run: pnpm build
 
       - name: Test
-        run: npm run test
+        run: pnpm test
