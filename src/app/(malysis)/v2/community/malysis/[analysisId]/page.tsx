@@ -10,6 +10,7 @@ import {
 } from "@/components/ui/table";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
+import { EvidenceRow } from "@/components/EvidenceRow";
 
 type MalwareStatus = "safe" | "possibly-malicious" | "malicious";
 
@@ -37,8 +38,43 @@ const statusConfig: Record<
   },
 };
 
-export default function Page() {
-  const status: MalwareStatus = "safe";
+const evidences = [
+  {
+    name: "unsigned_bitwise_math_excess",
+    type: "YARA Analyzer",
+    confidence: "Medium" as const,
+    behavior:
+      "Uses an excessive amount of unsigned bitwise math operations, commonly associated with obfuscated malicious code.",
+    details: [
+      "$function",
+      "function(",
+      "$charAt",
+      "charAt(",
+      "$left",
+      "n>>>1",
+      "$right",
+      "n>>>1",
+    ],
+    file: "package/dist/vue2-zhongke-plugins-call.min.js",
+  },
+  {
+    name: "suspicious_eval_usage",
+    type: "Static Analysis",
+    confidence: "High" as const,
+    behavior:
+      "Contains multiple instances of eval() function calls with dynamic content.",
+    details: [
+      "eval(",
+      "new Function(",
+      "setTimeout(string",
+      "setInterval(string",
+    ],
+    file: "package/dist/core.min.js",
+  },
+];
+
+export default function MalwareAnalysisResult() {
+  const status: MalwareStatus = "malicious";
   const { color, label, theme } = statusConfig[status];
 
   return (
@@ -101,29 +137,11 @@ export default function Page() {
                   <TabsTrigger value="warnings">Warnings</TabsTrigger>
                 </TabsList>
                 <TabsContent value="evidences" className="mt-4">
-                  <Table>
-                    <TableHeader>
-                      <TableRow>
-                        <TableHead className="w-[50%]">File</TableHead>
-                        <TableHead>Size</TableHead>
-                        <TableHead>Type</TableHead>
-                      </TableRow>
-                    </TableHeader>
-                    <TableBody>
-                      <TableRow>
-                        <TableCell className="font-mono">index.js</TableCell>
-                        <TableCell>2.4KB</TableCell>
-                        <TableCell>JavaScript</TableCell>
-                      </TableRow>
-                      <TableRow>
-                        <TableCell className="font-mono">
-                          package.json
-                        </TableCell>
-                        <TableCell>0.8KB</TableCell>
-                        <TableCell>JSON</TableCell>
-                      </TableRow>
-                    </TableBody>
-                  </Table>
+                  <div className="space-y-2">
+                    {evidences.map((evidence, index) => (
+                      <EvidenceRow key={index} {...evidence} />
+                    ))}
+                  </div>
                 </TabsContent>
                 <TabsContent value="filesystems" className="mt-4">
                   <Table>
