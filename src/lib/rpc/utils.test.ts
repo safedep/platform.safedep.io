@@ -1,7 +1,7 @@
 import { Ecosystem } from "@buf/safedep_api.bufbuild_es/safedep/messages/package/v1/ecosystem_pb";
 import { Package } from "@buf/safedep_api.bufbuild_es/safedep/messages/package/v1/package_pb";
 import { PackageVersion } from "@buf/safedep_api.bufbuild_es/safedep/messages/package/v1/package_version_pb";
-
+import { describe, it, expect } from "vitest";
 import { packageRegistryUrl } from "./utils";
 
 describe("packageRegistryUrl", () => {

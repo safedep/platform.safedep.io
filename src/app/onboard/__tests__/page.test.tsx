@@ -4,16 +4,17 @@ import "@testing-library/jest-dom";
 import { useRouter } from "next/navigation";
 import { useUser } from "@auth0/nextjs-auth0/client";
 import Onboard from "../page";
+import { describe, expect, vi, beforeEach, type Mock, test } from "vitest";
 
-jest.mock("next/navigation", () => ({
-  useRouter: jest.fn(),
+vi.mock("next/navigation", () => ({
+  useRouter: vi.fn(),
 }));
 
-jest.mock("@auth0/nextjs-auth0/client", () => ({
-  useUser: jest.fn(),
+vi.mock("@auth0/nextjs-auth0/client", () => ({
+  useUser: vi.fn(),
 }));
 
-global.fetch = jest.fn();
+global.fetch = vi.fn();
 
 const placeholderText = {
   name: "John Doe",
@@ -23,7 +24,7 @@ const placeholderText = {
 
 describe("Onboard Component", () => {
   const mockRouter = {
-    push: jest.fn(),
+    push: vi.fn(),
   };
 
   const mockUser = {
@@ -32,9 +33,9 @@ describe("Onboard Component", () => {
   };
 
   beforeEach(() => {
-    jest.clearAllMocks();
-    (useRouter as jest.Mock).mockReturnValue(mockRouter);
-    (useUser as jest.Mock).mockReturnValue({
+    vi.clearAllMocks();
+    (useRouter as Mock).mockReturnValue(mockRouter);
+    (useUser as Mock).mockReturnValue({
       user: mockUser,
       isLoading: false,
     });
@@ -60,7 +61,7 @@ describe("Onboard Component", () => {
   });
 
   test("redirects to home page when no user is logged in", () => {
-    (useUser as jest.Mock).mockReturnValue({
+    (useUser as Mock).mockReturnValue({
       user: null,
       isLoading: false,
     });
@@ -70,9 +71,9 @@ describe("Onboard Component", () => {
   });
 
   test("handles form submission successfully", async () => {
-    (global.fetch as jest.Mock).mockResolvedValueOnce({
+    (global.fetch as Mock).mockResolvedValueOnce({
       ok: true,
-      json: jest.fn().mockResolvedValue({ domain: "example.com" }),
+      json: vi.fn().mockResolvedValue({ domain: "example.com" }),
     });
 
     render(<Onboard />);
@@ -109,12 +110,12 @@ describe("Onboard Component", () => {
   });
 
   test("handles form submission error", async () => {
-    (global.fetch as jest.Mock).mockResolvedValueOnce({
+    (global.fetch as Mock).mockResolvedValueOnce({
       ok: false,
-      json: jest.fn().mockResolvedValue({ message: "Error details" }),
+      json: vi.fn().mockResolvedValue({ message: "Error details" }),
     });
 
-    const consoleErrorSpy = jest.spyOn(console, "error").mockImplementation();
+    const consoleErrorSpy = vi.spyOn(console, "error");
 
     render(<Onboard />);
     fireEvent.change(screen.getByPlaceholderText(placeholderText.name), {
@@ -144,10 +145,8 @@ describe("Onboard Component", () => {
   });
 
   test("handles network error during submission", async () => {
-    (global.fetch as jest.Mock).mockRejectedValueOnce(
-      new Error("Network error"),
-    );
-    const consoleErrorSpy = jest.spyOn(console, "error").mockImplementation();
+    (global.fetch as Mock).mockRejectedValueOnce(new Error("Network error"));
+    const consoleErrorSpy = vi.spyOn(console, "error");
 
     render(<Onboard />);
 

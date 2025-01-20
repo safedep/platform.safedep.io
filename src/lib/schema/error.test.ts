@@ -1,5 +1,10 @@
 import { z } from "zod";
-import { createError, createValidationError, Error } from "./error";
+import {
+  createError,
+  createValidationError,
+  Error as ValidationError,
+} from "./error";
+import { describe, it, expect } from "vitest";
 
 describe("Error Schema", () => {
   it("should validate a correct error object", () => {
@@ -11,7 +16,7 @@ describe("Error Schema", () => {
       ],
     };
 
-    expect(() => Error.parse(errorObject)).not.toThrow();
+    expect(() => ValidationError.parse(errorObject)).not.toThrow();
   });
 
   it("should throw an error for an invalid error object", () => {
@@ -20,7 +25,7 @@ describe("Error Schema", () => {
       errors: [{ field: "username", message: "" }],
     };
 
-    expect(() => Error.parse(invalidErrorObject)).toThrow();
+    expect(() => ValidationError.parse(invalidErrorObject)).toThrow();
   });
 });
 
@@ -31,7 +36,7 @@ describe("createError", () => {
       { message: "Password is required" },
     ]);
 
-    expect(() => Error.parse(errorObject)).not.toThrow();
+    expect(() => ValidationError.parse(errorObject)).not.toThrow();
   });
 });
 
@@ -44,6 +49,6 @@ describe("createValidationError", () => {
 
     const errorObject = createValidationError(validationError);
 
-    expect(() => Error.parse(errorObject)).not.toThrow();
+    expect(() => ValidationError.parse(errorObject)).not.toThrow();
   });
 });
