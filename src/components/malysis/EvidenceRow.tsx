@@ -15,7 +15,7 @@ interface EvidenceRowProps {
   file: string;
 }
 
-export function EvidenceRow({
+export default function EvidenceRow({
   name,
   type,
   confidence,
