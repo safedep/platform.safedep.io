@@ -1,77 +1,64 @@
 "use client";
 
+import MalwareAnalysisReportCard from "@/components/malysis/MalwareAnalysisReportCard";
 import {
   AnalysisStatus,
   GetAnalysisReportResponse,
 } from "@buf/safedep_api.bufbuild_es/safedep/services/malysis/v1/malysis_pb";
 import { useParams } from "next/navigation";
 import { useEffect, useState } from "react";
-import MalwareReport from "./components/malware-report";
+import MalwareAnalysisCardLoading from "@/components/malysis/MalwareAnalysisReportLoading";
+import MalwareAnalysisError from "@/components/malysis/MalwareAnalysisError";
 
-export default function MalwareReportPage() {
+export default function Page() {
+  const { analysisId } = useParams<{ analysisId?: string }>();
+  const [error, setError] = useState<Error>();
   const [loading, setLoading] = useState(true);
   const [response, setResponse] = useState<GetAnalysisReportResponse>();
-  const [error, setError] = useState<string>();
-  const params = useParams<{ analysisId: string }>();
 
   useEffect(() => {
-    const fetchMalwareReport = async (analysisId: string) => {
+    async function fetchReport() {
       const response = await fetch(
         `/api/community/malysis/reports/${analysisId}`,
+        { cache: "force-cache" },
       );
-
       if (!response.ok) {
         const errorData = await response.json();
         throw new Error(errorData.message || "Failed to fetch malware report.");
       }
-
       const data = await response.json();
-      const typedResponse = GetAnalysisReportResponse.fromJson(data);
-
-      return typedResponse;
-    };
-
-    const { analysisId } = params;
-    if (typeof analysisId === "string") {
-      fetchMalwareReport(analysisId)
-        .then((data) => {
-          setResponse(data);
-        })
-        .catch((error) => {
-          setError(
-            error instanceof Error ? error.message : "An error occurred",
-          );
-        })
-        .finally(() => {
-          setLoading(false);
-        });
+      return GetAnalysisReportResponse.fromJson(data);
     }
-  }, [params]);
+
+    fetchReport()
+      .then((report) => {
+        setResponse(report);
+      })
+      .catch((error) => {
+        setError(error);
+      })
+      .finally(() => {
+        setLoading(false);
+      });
+  }, [analysisId]);
 
   if (loading) {
     return (
-      <div className="flex items-center justify-center min-h-[400px]">
-        <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-gray-900"></div>
+      <div className="flex py-8 h-dvh">
+        <MalwareAnalysisCardLoading />
       </div>
     );
   }
 
-  if (error) {
+  if (response?.status === AnalysisStatus.FAILED || error) {
     return (
-      <div className="flex bg-red-50 p-4 rounded-md items-center justify-center">
-        <p className="text-red-800">Error: {error}</p>
+      <div className="flex py-8 items-start h-dvh">
+        <MalwareAnalysisError error={error} />
       </div>
     );
   }
 
-  if (response?.status === AnalysisStatus.FAILED) {
-    return (
-      <div className="flex bg-red-50 p-4 rounded-md items-center justify-center">
-        <p className="text-red-800">Failed to analyze the package.</p>
-      </div>
-    );
-  }
-
+  // TODO: Add a loading state for the analysis report
   if (
     response?.status === AnalysisStatus.QUEUED ||
     response?.status === AnalysisStatus.IN_PROGRESS
@@ -84,7 +71,11 @@ export default function MalwareReportPage() {
   }
 
   if (response?.status === AnalysisStatus.COMPLETED && response.report) {
-    return <MalwareReport report={response.report} />;
+    return (
+      <div className="flex py-8 min-h-dvh">
+        <MalwareAnalysisReportCard report={response.report} />
+      </div>
+    );
   }
 
   return (

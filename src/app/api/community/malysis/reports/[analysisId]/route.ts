@@ -1,6 +1,6 @@
 import { apiErrorHandler } from "@/lib/api/error";
 import { createMalwareAnalysisServiceClient } from "@/lib/rpc/client";
-import { NextApiRequest } from "next";
+import type { NextApiRequest } from "next";
 import { NextResponse } from "next/server";
 
 async function handleGET(
