@@ -24,10 +24,6 @@ jobs:
 
       - name: Use Node.js ${{ matrix.node-version }}
         uses: actions/setup-node@v4
-        # FIXME: does not work with pnpm
-        # with:
-        #   node-version: ${{ matrix.node-version }}
-        #   cache: "pnpm"
 
       - name: Set buf registry
         run: pnpm config set @buf:registry https://buf.build/gen/npm/v1/
