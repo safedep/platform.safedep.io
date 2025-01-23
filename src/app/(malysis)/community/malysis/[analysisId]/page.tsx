@@ -44,7 +44,7 @@ export default function Page() {
 
   if (loading) {
     return (
-      <div className="flex items-center justify-center h-dvh">
+      <div className="flex py-8 h-dvh">
         <MalwareAnalysisCardLoading />
       </div>
     );
@@ -52,7 +52,7 @@ export default function Page() {
 
   if (response?.status === AnalysisStatus.FAILED || error) {
     return (
-      <div className="flex items-center justify-center h-dvh">
+      <div className="flex py-8 items-start h-dvh">
         <MalwareAnalysisError error={error} />
       </div>
     );
@@ -72,7 +72,7 @@ export default function Page() {
 
   if (response?.status === AnalysisStatus.COMPLETED && response.report) {
     return (
-      <div className="flex items-center justify-center py-8 min-h-dvh">
+      <div className="flex py-8 min-h-dvh">
         <MalwareAnalysisReportCard report={response.report} />
       </div>
     );
