@@ -1,5 +1,5 @@
 import { createConnectTransport } from "@connectrpc/connect-node";
-import { createClient, Interceptor } from "@connectrpc/connect";
+import { createClient, type Interceptor } from "@connectrpc/connect";
 import { OnboardingService } from "@buf/safedep_api.connectrpc_es/safedep/services/controltower/v1/onboarding_connect";
 import { ApiKeyService } from "@buf/safedep_api.connectrpc_es/safedep/services/controltower/v1/api_key_connect";
 import { UserService } from "@buf/safedep_api.connectrpc_es/safedep/services/controltower/v1/user_connect";

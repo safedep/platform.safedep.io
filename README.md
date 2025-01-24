@@ -20,13 +20,13 @@ asdf install
 - Configure `buf` schema registry
 
 ```shell
-npm config set @buf:registry https://buf.build/gen/npm/v1/
+pnpm config set @buf:registry https://buf.build/gen/npm/v1/
 ```
 
 - Install `npm` dependencies:
 
 ```shell
-npm install
+pnpm install
 ```
 
 ### Configuration
@@ -41,7 +41,7 @@ npm install
 - Start the development server:
 
 ```shell
-npm run dev
+pnpm dev
 ```
 
 - Navigate to `http://localhost:3000` in your browser.
@@ -51,7 +51,7 @@ npm run dev
 - Run the test suite:
 
 ```shell
-npm run test
+pnpm test
 ```
 
 ### Framework Documentation

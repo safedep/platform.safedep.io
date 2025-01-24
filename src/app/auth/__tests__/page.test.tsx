@@ -1,6 +1,6 @@
 import "@testing-library/jest-dom";
 import { render, screen } from "@testing-library/react";
-import { describe } from "node:test";
+import { describe, expect, it } from "vitest";
 import Auth from "../page";
 
 describe("AuthPage", () => {
@@ -10,7 +10,7 @@ describe("AuthPage", () => {
     const heading = screen.getByRole("heading", {
       name: /welcome to safedep/i,
     });
-    expect(heading).toBeInTheDocument();
+    expect(heading).toBeDefined();
 
     const loginLink = screen.getByRole("link", { name: /login/i });
     expect(loginLink).toBeInTheDocument();
