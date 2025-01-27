@@ -7,6 +7,7 @@ import { InsightService } from "@buf/safedep_api.connectrpc_es/safedep/services/
 import { MalwareAnalysisService } from "@buf/safedep_api.connectrpc_es/safedep/services/malysis/v1/malysis_connect";
 import { TenantService } from "@buf/safedep_api.connectrpc_es/safedep/services/controltower/v1/tenant_connect";
 import { QueryService } from "@buf/safedep_api.connectrpc_es/safedep/services/controltower/v1/query_connect";
+import { ProjectService } from "@buf/safedep_api.connectrpc_es/safedep/services/controltower/v1/project_connect";
 
 const apiBaseUrl = (process.env.API_BASE_URL ||
   "https://api.safedep.io") as string;
@@ -67,6 +68,11 @@ export const createUserServiceClient = (token: string) => {
   const transport = createTransport(cloudApiBaseUrl, "", token);
   return createClient(UserService, transport);
 };
+
+export function createProjectListClient(tenant: string, token: string) {
+  const transport = createTransport(apiBaseUrl, tenant, token);
+  return createClient(ProjectService, transport);
+}
 
 export const createMalwareAnalysisServiceClient = (
   tenant: string,
