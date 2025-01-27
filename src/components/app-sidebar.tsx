@@ -50,7 +50,7 @@ const data = {
       items: [
         {
           title: "Projects",
-          url: "#",
+          url: "/v2/inventory/projects",
         },
         {
           title: "Components",
