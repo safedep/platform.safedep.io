@@ -1,7 +1,9 @@
 import PageHeader from "@/components/v2/page_header";
 import getProjects from "./actions";
-import ProjectsTable from "@/components/projects/ProjectTable";
 import { SearchCode } from "lucide-react";
+import { DataTable } from "@/components/projects/data-table";
+import { columns } from "@/app/v2/inventory/projects/columns";
+import { Project_Source } from "@buf/safedep_api.bufbuild_es/safedep/messages/controltower/v1/project_pb";
 
 export default async function Page() {
   const projects = await getProjects();
@@ -14,8 +16,15 @@ export default async function Page() {
         </div>
       </header>
       <div className="pt-4">
-        {/* TODO: add pagination */}
-        <ProjectsTable data={projects.projects} />
+        <DataTable
+          columns={columns}
+          data={projects.projects.map(({ project }) => ({
+            source: project?.source ?? Project_Source.UNSPECIFIED,
+            name: project?.name ?? "",
+            id: project?.projectId ?? "",
+            createdAt: project?.createdAt?.toDate() ?? new Date(),
+          }))}
+        />
       </div>
     </div>
   );

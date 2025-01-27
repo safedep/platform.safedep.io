@@ -7,6 +7,8 @@ export default async function getProjects() {
   const { accessToken } = await getAccessToken();
   const tenant = await sessionMustGetTenant();
   const projectList = createProjectListClient(tenant, accessToken as string);
-  const proj = await projectList.listProjects({});
+  const proj = await projectList.listProjects({
+    // filter: {}
+  });
   return proj;
 }
