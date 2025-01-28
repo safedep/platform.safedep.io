@@ -18,12 +18,12 @@ export default async function Page() {
       <div className="pt-4">
         <DataTable
           columns={columns}
-          data={projects.projects.map(({ project }) => ({
+          data={projects.projects.map(({ project, attributes }) => ({
             source: project?.source ?? Project_Source.UNSPECIFIED,
             name: project?.name ?? "",
             id: project?.projectId ?? "",
             createdAt: project?.createdAt?.toDate() ?? new Date(),
-            version: null,
+            version: attributes?.versions,
           }))}
         />
       </div>
