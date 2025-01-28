@@ -28,6 +28,10 @@ export const columns: ColumnDef<Project>[] = [
     header: "Name",
   },
   {
+    accessorKey: "version",
+    header: "Version",
+  },
+  {
     accessorKey: "source",
     header: "Source",
   },

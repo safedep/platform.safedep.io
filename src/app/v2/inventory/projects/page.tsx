@@ -23,6 +23,7 @@ export default async function Page() {
             name: project?.name ?? "",
             id: project?.projectId ?? "",
             createdAt: project?.createdAt?.toDate() ?? new Date(),
+            version: null,
           }))}
         />
       </div>
