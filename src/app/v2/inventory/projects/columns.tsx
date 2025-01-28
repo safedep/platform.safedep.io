@@ -8,6 +8,7 @@ import {
   DropdownMenuLabel,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
+import { useToast } from "@/hooks/use-toast";
 import { Project_Source } from "@buf/safedep_api.bufbuild_es/safedep/messages/controltower/v1/project_pb";
 import {
   SiBitbucket,
@@ -68,6 +69,8 @@ export const columns: ColumnDef<Project>[] = [
     header: "",
     cell: ({ row }) => {
       const key = row.original;
+      // eslint-disable-next-line react-hooks/rules-of-hooks
+      const { toast } = useToast();
       return (
         <DropdownMenu>
           <DropdownMenuTrigger asChild>
@@ -80,7 +83,12 @@ export const columns: ColumnDef<Project>[] = [
             <DropdownMenuLabel>Actions</DropdownMenuLabel>
             <DropdownMenuItem
               className="cursor-pointer"
-              onClick={() => navigator.clipboard.writeText(key.id)}
+              onClick={() => {
+                navigator.clipboard.writeText(key.id);
+                toast({
+                  description: "Project ID copied to clipboard",
+                });
+              }}
             >
               Copy Key ID
             </DropdownMenuItem>
