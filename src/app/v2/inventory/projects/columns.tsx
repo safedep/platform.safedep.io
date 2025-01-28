@@ -63,7 +63,6 @@ export const columns: ColumnDef<Project>[] = [
     header: "Created At",
     cell: ({ row }) => row.original.createdAt.toLocaleDateString(),
   },
-
   {
     accessorKey: "actions",
     header: "",
