@@ -27,24 +27,12 @@ export interface Project {
 
 export const columns: ColumnDef<Project>[] = [
   {
-    accessorKey: "id",
-    header: "ID",
-    cell: ({ row }) => {
-      // return a truncated and stylized version of the ID
-      return (
-        <div className="text-muted-foreground font-mono">
-          {row.original.id.slice(0, 8)}...
-        </div>
-      );
-    },
-  },
-  {
     accessorKey: "name",
     header: "Name",
   },
   {
     accessorKey: "version",
-    header: "Version",
+    header: "# of Versions",
   },
   {
     accessorKey: "source",
@@ -83,13 +71,22 @@ export const columns: ColumnDef<Project>[] = [
             <DropdownMenuItem
               className="cursor-pointer"
               onClick={() => {
+                // Here we will redirect to project details page
+                console.log("View details for: ", key.id);
+              }}
+            >
+              View Details
+            </DropdownMenuItem>
+            <DropdownMenuItem
+              className="cursor-pointer"
+              onClick={() => {
                 navigator.clipboard.writeText(key.id);
                 toast({
                   description: "Project ID copied to clipboard",
                 });
               }}
             >
-              Copy Key ID
+              Copy Project ID
             </DropdownMenuItem>
           </DropdownMenuContent>
         </DropdownMenu>
