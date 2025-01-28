@@ -15,8 +15,8 @@
   },
   "dependencies": {
     "@auth0/nextjs-auth0": "^3.5.0",
-    "@buf/safedep_api.bufbuild_es": "1.10.0-20250127063129-a4e14b7d4f45.1",
-    "@buf/safedep_api.connectrpc_es": "1.6.1-20250127063129-a4e14b7d4f45.2",
+    "@buf/safedep_api.bufbuild_es": "^1.10.0-20250127063129-a4e14b7d4f45.1",
+    "@buf/safedep_api.connectrpc_es": "^1.6.1-20250127063129-a4e14b7d4f45.2",
     "@bufbuild/protobuf": "^1.10.0",
     "@codemirror/lang-sql": "^6.8.0",
     "@connectrpc/connect": "^1.6.1",

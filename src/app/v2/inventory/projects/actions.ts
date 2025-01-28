@@ -7,7 +7,9 @@ import type { ProjectFilter } from "@buf/safedep_api.bufbuild_es/safedep/service
 export default async function getProjects(filter?: Partial<ProjectFilter>) {
   const { accessToken } = await getAccessToken();
   const tenant = await sessionMustGetTenant();
-  const projectServiceClient = createProjectListClient(tenant, accessToken as string);
-  const projects = await projectServiceClient.listProjects({ filter });
-  return proj;
+  const projectServiceClient = createProjectListClient(
+    tenant,
+    accessToken as string,
+  );
+  return await projectServiceClient.listProjects({ filter });
 }
