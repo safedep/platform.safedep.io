@@ -12,8 +12,25 @@ import {
   TableRow,
 } from "@/components/ui/table";
 import VersionList from "@/components/projects/version-list";
-import { ProjectVersionWithAttributes } from "@buf/safedep_api.bufbuild_es/safedep/services/controltower/v1/project_pb";
-import { useState } from "react";
+import {
+  BOMWithAttributes,
+  ProjectVersionWithAttributes,
+} from "@buf/safedep_api.bufbuild_es/safedep/services/controltower/v1/project_pb";
+import { useEffect, useState } from "react";
+import { BOM_Status } from "@buf/safedep_api.bufbuild_es/safedep/messages/controltower/v1/bom_pb";
+
+function getBOMStatusName(status?: BOM_Status) {
+  switch (status) {
+    case BOM_Status.LATEST:
+      return "Latest";
+    case BOM_Status.HISTORICAL:
+      return "Historical";
+    case BOM_Status.UNSPECIFIED:
+      return "Unspecified";
+    default:
+      return "Unknown";
+  }
+}
 
 export default function ProjectDetails() {
   const versions = [
@@ -40,7 +57,26 @@ export default function ProjectDetails() {
     }),
   ];
 
-  const [, setVersion] = useState<ProjectVersionWithAttributes | null>();
+  const boms = [
+    new BOMWithAttributes({
+      attributes: {},
+      bom: {
+        bomId: "a",
+        createdAt: undefined,
+        status: BOM_Status.LATEST,
+        updatedAt: undefined,
+      },
+    }),
+  ];
+
+  const [version, setVersion] = useState<ProjectVersionWithAttributes | null>();
+
+  // TODO: fetch boms
+  useEffect(() => {
+    if (version) {
+      // const service =
+    }
+  }, [version]);
 
   return (
     <div className="min-h-screen bg-background p-6">
@@ -62,10 +98,10 @@ export default function ProjectDetails() {
       </div>
 
       {/* Info Cards */}
-      <div className="mb-8 grid gap-6 sm:grid-cols-2 lg:grid-cols-4">
+      <div className="mb-8 grid gap-6 sm:grid-cols-2 lg:grid-cols-3">
         <Card>
           <CardContent className="flex flex-col items-center justify-center p-6">
-            <span className="text-3xl font-bold">100</span>
+            <span className="text-3xl font-bold">{versions.length}</span>
             <span className="text-sm text-muted-foreground">
               Versions Available
             </span>
@@ -73,17 +109,17 @@ export default function ProjectDetails() {
         </Card>
         <Card>
           <CardContent className="flex flex-col items-center justify-center p-6">
-            <span className="text-3xl font-bold">286</span>
+            <span className="text-3xl font-bold">{boms.length}</span>
             <span className="text-sm text-muted-foreground">BOMs</span>
           </CardContent>
         </Card>
       </div>
 
       {/* Tabs and Table */}
-      <Tabs defaultValue="components" className="w-full">
-        <TabsList className="mb-4">
-          <TabsTrigger value="components">Components</TabsTrigger>
+      <Tabs defaultValue="boms" className="w-full">
+        <TabsList className="mb-4 w-full grid grid-cols-2 lg:block lg:w-fit">
           <TabsTrigger value="boms">BOMs</TabsTrigger>
+          <TabsTrigger value="components">Components</TabsTrigger>
         </TabsList>
 
         <TabsContent value="components">
@@ -127,31 +163,32 @@ export default function ProjectDetails() {
           </Table>
         </TabsContent>
 
+        {/* BOM values */}
         <TabsContent value="boms">
           <Table>
             <TableHeader>
               <TableRow>
                 <TableHead>BOM ID</TableHead>
-                <TableHead>Components</TableHead>
+                <TableHead>Created At</TableHead>
+                <TableHead>Status</TableHead>
                 <TableHead>Last Updated</TableHead>
               </TableRow>
             </TableHeader>
             <TableBody>
-              <TableRow>
-                <TableCell className="font-medium">BOM-2024-001</TableCell>
-                <TableCell>15 components</TableCell>
-                <TableCell>2 days ago</TableCell>
-              </TableRow>
-              <TableRow>
-                <TableCell className="font-medium">BOM-2024-002</TableCell>
-                <TableCell>23 components</TableCell>
-                <TableCell>1 day ago</TableCell>
-              </TableRow>
-              <TableRow>
-                <TableCell className="font-medium">BOM-2024-003</TableCell>
-                <TableCell>8 components</TableCell>
-                <TableCell>5 hours ago</TableCell>
-              </TableRow>
+              {boms.map(({ bom }) => (
+                <TableRow key={bom?.bomId}>
+                  <TableCell className="font-medium font-mono">
+                    {bom?.bomId}
+                  </TableCell>
+                  <TableCell>
+                    {bom?.createdAt?.toDate().toLocaleDateString()}
+                  </TableCell>
+                  <TableCell>{getBOMStatusName(bom?.status)}</TableCell>
+                  <TableCell>
+                    {bom?.updatedAt?.toDate().toLocaleDateString()}
+                  </TableCell>
+                </TableRow>
+              ))}
             </TableBody>
           </Table>
         </TabsContent>

@@ -14,7 +14,7 @@ import {
   PopoverContent,
   PopoverTrigger,
 } from "@/components/ui/popover";
-import { useMemo, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 import type { ProjectVersionWithAttributes } from "@buf/safedep_api.bufbuild_es/safedep/services/controltower/v1/project_pb";
 
 export interface VersionListProps {
@@ -24,12 +24,19 @@ export interface VersionListProps {
 
 export default function VersionList({ versions, onSelect }: VersionListProps) {
   // this becomes the part of our props
-  const [value, setValue] = useState(""); // this is the version name not the label
+  const [value, setValue] = useState(versions.at(0)?.version?.version); // this is the version name not the label
   const [open, setOpen] = useState(false);
 
   const selectedVersion = useMemo(() => {
-    return versions.find(({ version }) => version?.version === value);
+    const val = versions.find(({ version }) => version?.version === value);
+    return val;
   }, [value, versions]);
+
+  // biome-ignore lint/correctness/useExhaustiveDependencies: to select default value once the component is mounted
+  useEffect(() => {
+    onSelect(selectedVersion);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
 
   return (
     <Popover open={open} onOpenChange={setOpen}>
@@ -47,7 +54,7 @@ export default function VersionList({ versions, onSelect }: VersionListProps) {
         </Button>
       </PopoverTrigger>
       <PopoverContent className="w-[250px] p-0">
-        <Command>
+        <Command onValueChange={(x) => setValue(x)}>
           <CommandInput placeholder="Search version..." className="h-9" />
           <CommandList>
             <CommandEmpty>No version found.</CommandEmpty>
@@ -57,7 +64,7 @@ export default function VersionList({ versions, onSelect }: VersionListProps) {
                   key={version?.projectVersionId}
                   value={version?.version}
                   onSelect={(currentValue) => {
-                    setValue(currentValue === value ? "" : currentValue);
+                    setValue(currentValue);
                     onSelect(
                       versions.find(
                         ({ version }) => version?.version === currentValue,
