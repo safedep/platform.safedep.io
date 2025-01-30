@@ -4,60 +4,61 @@ import { Tabs, TabsList, TabsTrigger, TabsContent } from "@/components/ui/tabs";
 import { Card, CardContent } from "@/components/ui/card";
 import { Shield } from "lucide-react";
 import VersionList from "@/components/projects/version-list";
-import {
+import type {
+  ComponentWithAttributes,
   BOMWithAttributes,
   ProjectVersionWithAttributes,
 } from "@buf/safedep_api.bufbuild_es/safedep/services/controltower/v1/project_pb";
 import { useEffect, useState } from "react";
-import { BOM_Status } from "@buf/safedep_api.bufbuild_es/safedep/messages/controltower/v1/bom_pb";
 import ComponentsTable from "@/components/projects/components-table";
 import BOMSTable from "@/components/projects/boms-table";
+import { useParams } from "next/navigation";
+import {
+  listBOMComponents,
+  listProjectVersionBOM,
+  listProjectVersions,
+} from "./actions";
+import { Skeleton } from "@/components/ui/skeleton";
 
 export default function ProjectDetails() {
-  const versions = [
-    new ProjectVersionWithAttributes({
-      version: {
-        projectId: "IDKLMN",
-        version: "1.0.0",
-        projectVersionId: "KTR",
-      },
-    }),
-    new ProjectVersionWithAttributes({
-      version: {
-        projectId: "IDABCD",
-        version: "2.0.0",
-        projectVersionId: "PTR",
-      },
-    }),
-    new ProjectVersionWithAttributes({
-      version: {
-        projectId: "IDABCD",
-        version: "C.0.0",
-        projectVersionId: "CTR",
-      },
-    }),
-  ];
+  const { projectId } = useParams<{ projectId: string }>();
 
-  const boms = [
-    new BOMWithAttributes({
-      attributes: {},
-      bom: {
-        bomId: "a",
-        createdAt: undefined,
-        status: BOM_Status.LATEST,
-        updatedAt: undefined,
-      },
-    }),
-  ];
+  const [versions, setVersions] = useState<ProjectVersionWithAttributes[]>();
+  const [boms, setBoms] = useState<BOMWithAttributes[]>();
+  const [components, setComponents] = useState<ComponentWithAttributes[]>();
 
-  const [version, setVersion] = useState<ProjectVersionWithAttributes | null>();
+  const [selectedVersion, setSelectedVersion] =
+    useState<ProjectVersionWithAttributes>();
 
-  // TODO: fetch boms
+  const [error, setError] = useState<Error>();
+
   useEffect(() => {
-    if (version) {
-      // const service =
+    listProjectVersions(projectId)
+      .then((x) => setVersions(x.projectVersions))
+      .catch((e) => setError(e));
+  }, [projectId]);
+
+  // version is selected, fetch BOMs
+  useEffect(() => {
+    if (selectedVersion?.version?.projectVersionId) {
+      listProjectVersionBOM(selectedVersion.version?.projectVersionId)
+        .then(({ boms }) => setBoms(boms))
+        .catch((e) => setError(e));
     }
-  }, [version]);
+  }, [selectedVersion?.version?.projectVersionId]);
+
+  // list LATEST BOM components for the selected version
+  useEffect(() => {
+    if (selectedVersion?.version?.projectVersionId) {
+      listBOMComponents(selectedVersion.version?.projectVersionId)
+        .then(({ components }) => setComponents(components))
+        .catch((e) => setError(e));
+    }
+  }, [selectedVersion?.version?.projectVersionId]);
+
+  if (error) {
+    return <div>{error.message}</div>;
+  }
 
   return (
     <div className="min-h-screen bg-background p-6">
@@ -67,32 +68,40 @@ export default function ProjectDetails() {
             <Shield className="h-6 w-6 text-primary" />
           </div>
           <h1 className="text-2xl font-semibold tracking-tight">
-            apache/maven
+            {projectId} Project Details
           </h1>
         </div>
-        <VersionList versions={versions} onSelect={setVersion} />
-      </div>
-
-      {/* Metadata */}
-      <div className="mb-6 text-sm text-muted-foreground">
-        Last updated: 2 hours ago
+        {versions?.length ? (
+          <VersionList versions={versions} onSelect={setSelectedVersion} />
+        ) : (
+          <Skeleton className="w-[250px] h-9" />
+        )}
       </div>
 
       {/* Info Cards */}
       <div className="mb-8 grid gap-6 sm:grid-cols-2 lg:grid-cols-3">
-        <Card>
-          <CardContent className="flex flex-col items-center justify-center p-6">
-            <span className="text-3xl font-bold">{versions.length}</span>
-            <span className="text-sm text-muted-foreground">
-              Versions Available
-            </span>
-          </CardContent>
+        <Card className="flex flex-col items-center justify-center p-6">
+          {versions?.length ? (
+            <InfoCardContent
+              value={versions.length}
+              message="Versions Available"
+            />
+          ) : (
+            <>
+              <Skeleton className="h-8 w-16 mb-2" />
+              <Skeleton className="h-4 w-24" />
+            </>
+          )}
         </Card>
-        <Card>
-          <CardContent className="flex flex-col items-center justify-center p-6">
-            <span className="text-3xl font-bold">{boms.length}</span>
-            <span className="text-sm text-muted-foreground">BOMs</span>
-          </CardContent>
+        <Card className="flex flex-col items-center justify-center p-6">
+          {boms?.length ? (
+            <InfoCardContent value={boms.length} message="BOMS" />
+          ) : (
+            <>
+              <Skeleton className="h-8 w-16 mb-2" />
+              <Skeleton className="h-4 w-24" />
+            </>
+          )}
         </Card>
       </div>
 
@@ -103,15 +112,35 @@ export default function ProjectDetails() {
           <TabsTrigger value="boms">BOMs</TabsTrigger>
         </TabsList>
 
+        {/* BOM Components */}
         <TabsContent value="components">
-          <ComponentsTable />
+          {components ? (
+            <ComponentsTable components={components} />
+          ) : (
+            <div>Loading...</div>
+          )}
         </TabsContent>
 
         {/* BOM values */}
         <TabsContent value="boms">
-          <BOMSTable boms={boms} />
+          {boms ? <BOMSTable boms={boms} /> : <div>Loading...</div>}
         </TabsContent>
       </Tabs>
     </div>
+  );
+}
+
+function InfoCardContent({
+  value,
+  message,
+}: {
+  value: number;
+  message: string;
+}) {
+  return (
+    <CardContent className="flex flex-col items-center justify-center p-6">
+      <span className="text-3xl font-bold">{value}</span>
+      <span className="text-sm text-muted-foreground">{message}</span>
+    </CardContent>
   );
 }

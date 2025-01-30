@@ -59,7 +59,7 @@ export default function VersionList({ versions, onSelect }: VersionListProps) {
           <CommandList>
             <CommandEmpty>No version found.</CommandEmpty>
             <CommandGroup>
-              {versions.map(({ version }) => (
+              {versions?.map(({ version }) => (
                 <CommandItem
                   key={version?.projectVersionId}
                   value={version?.version}

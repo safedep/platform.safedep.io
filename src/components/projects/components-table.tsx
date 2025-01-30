@@ -1,3 +1,4 @@
+import type { ComponentWithAttributes } from "@buf/safedep_api.bufbuild_es/safedep/services/controltower/v1/project_pb";
 import {
   Table,
   TableHeader,
@@ -7,44 +8,28 @@ import {
   TableCell,
 } from "../ui/table";
 
-export default function ComponentsTable() {
+export default function ComponentsTable({
+  components,
+}: {
+  components: ComponentWithAttributes[];
+}) {
   return (
     <Table>
       <TableHeader>
         <TableRow>
           <TableHead>Name</TableHead>
           <TableHead>Version</TableHead>
-          <TableHead>Status</TableHead>
+          <TableHead>Ecosystem</TableHead>
         </TableRow>
       </TableHeader>
       <TableBody>
-        <TableRow>
-          <TableCell className="font-medium">dependency-1</TableCell>
-          <TableCell>v2.1.0</TableCell>
-          <TableCell>
-            <span className="rounded-full bg-green-100 px-2 py-1 text-xs font-medium text-green-700">
-              Secure
-            </span>
-          </TableCell>
-        </TableRow>
-        <TableRow>
-          <TableCell className="font-medium">dependency-2</TableCell>
-          <TableCell>v1.8.3</TableCell>
-          <TableCell>
-            <span className="rounded-full bg-green-100 px-2 py-1 text-xs font-medium text-green-700">
-              Secure
-            </span>
-          </TableCell>
-        </TableRow>
-        <TableRow>
-          <TableCell className="font-medium">dependency-3</TableCell>
-          <TableCell>v3.0.1</TableCell>
-          <TableCell>
-            <span className="rounded-full bg-yellow-100 px-2 py-1 text-xs font-medium text-yellow-700">
-              Review Required
-            </span>
-          </TableCell>
-        </TableRow>
+        {components.map(({ component }) => (
+          <TableRow key={component?.componentId}>
+            <TableCell className="font-medium">{component?.name}</TableCell>
+            <TableCell>{component?.version}</TableCell>
+            <TableCell>{component?.ecosystem}</TableCell>
+          </TableRow>
+        ))}
       </TableBody>
     </Table>
   );
