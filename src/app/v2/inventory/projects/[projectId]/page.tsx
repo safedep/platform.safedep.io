@@ -1,3 +1,5 @@
+"use client";
+
 import { Tabs, TabsList, TabsTrigger, TabsContent } from "@/components/ui/tabs";
 import { Card, CardContent } from "@/components/ui/card";
 import { Shield } from "lucide-react";
@@ -10,12 +12,38 @@ import {
   TableRow,
 } from "@/components/ui/table";
 import VersionList from "@/components/projects/version-list";
+import { ProjectVersionWithAttributes } from "@buf/safedep_api.bufbuild_es/safedep/services/controltower/v1/project_pb";
+import { useState } from "react";
 
 export default function ProjectDetails() {
+  const versions = [
+    new ProjectVersionWithAttributes({
+      version: {
+        projectId: "IDKLMN",
+        version: "1.0.0",
+        projectVersionId: "KTR",
+      },
+    }),
+    new ProjectVersionWithAttributes({
+      version: {
+        projectId: "IDABCD",
+        version: "2.0.0",
+        projectVersionId: "PTR",
+      },
+    }),
+    new ProjectVersionWithAttributes({
+      version: {
+        projectId: "IDABCD",
+        version: "C.0.0",
+        projectVersionId: "CTR",
+      },
+    }),
+  ];
+
+  const [, setVersion] = useState<ProjectVersionWithAttributes | null>();
+
   return (
     <div className="min-h-screen bg-background p-6">
-      {/* Header */}
-
       <div className="mb-8 flex items-center justify-between">
         <div className="flex items-center gap-3">
           <div className="rounded-lg border bg-card p-2">
@@ -25,7 +53,7 @@ export default function ProjectDetails() {
             apache/maven
           </h1>
         </div>
-        <VersionList />
+        <VersionList versions={versions} onSelect={setVersion} />
       </div>
 
       {/* Metadata */}

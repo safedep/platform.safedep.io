@@ -1,5 +1,3 @@
-"use client";
-
 import { Check, ChevronsUpDown, GitBranch } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { Button } from "@/components/ui/button";
@@ -17,19 +15,21 @@ import {
   PopoverTrigger,
 } from "@/components/ui/popover";
 import { useMemo, useState } from "react";
+import type { ProjectVersionWithAttributes } from "@buf/safedep_api.bufbuild_es/safedep/services/controltower/v1/project_pb";
 
-export default function VersionList() {
+export interface VersionListProps {
+  versions: ProjectVersionWithAttributes[];
+  onSelect: (version?: ProjectVersionWithAttributes) => void;
+}
+
+export default function VersionList({ versions, onSelect }: VersionListProps) {
   // this becomes the part of our props
-  const [value, setValue] = useState("");
-  const frameworks = useMemo(() => {
-    const frameworks = Array.from({ length: 100 }).map((_, index) => ({
-      value: `v${index}`,
-      label: `Version ${index}`,
-    }));
-    return frameworks;
-  }, []);
-
+  const [value, setValue] = useState(""); // this is the version name not the label
   const [open, setOpen] = useState(false);
+
+  const selectedVersion = useMemo(() => {
+    return versions.find(({ version }) => version?.version === value);
+  }, [value, versions]);
 
   return (
     <Popover open={open} onOpenChange={setOpen}>
@@ -37,14 +37,11 @@ export default function VersionList() {
         <Button
           variant="outline"
           role="slider"
-          //   aria-expanded={open}
           className="w-[250px] justify-between"
         >
           <span className="flex gap-2 items-center">
             <GitBranch className="opacity-50" />
-            {value
-              ? frameworks.find((framework) => framework.value === value)?.label
-              : "Select version..."}
+            {value ? selectedVersion?.version?.version : "Select version..."}
           </span>
           <ChevronsUpDown className="opacity-50" />
         </Button>
@@ -55,20 +52,25 @@ export default function VersionList() {
           <CommandList>
             <CommandEmpty>No version found.</CommandEmpty>
             <CommandGroup>
-              {frameworks.map((framework) => (
+              {versions.map(({ version }) => (
                 <CommandItem
-                  key={framework.value}
-                  value={framework.value}
+                  key={version?.projectVersionId}
+                  value={version?.version}
                   onSelect={(currentValue) => {
                     setValue(currentValue === value ? "" : currentValue);
+                    onSelect(
+                      versions.find(
+                        ({ version }) => version?.version === currentValue,
+                      ),
+                    );
                     setOpen(false);
                   }}
                 >
-                  {framework.label}
+                  {version?.version}
                   <Check
                     className={cn(
                       "ml-auto",
-                      value === framework.value ? "opacity-100" : "opacity-0",
+                      value === version?.version ? "opacity-100" : "opacity-0",
                     )}
                   />
                 </CommandItem>
