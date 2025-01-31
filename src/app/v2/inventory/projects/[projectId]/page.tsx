@@ -57,7 +57,7 @@ export default function ProjectDetails() {
   }, [selectedVersion?.version?.projectVersionId]);
 
   if (error) {
-    return <div>{error.message}</div>;
+    return <div>Not found</div>;
   }
 
   return (
