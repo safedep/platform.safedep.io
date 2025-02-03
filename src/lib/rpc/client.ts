@@ -69,7 +69,7 @@ export const createUserServiceClient = (token: string) => {
   return createClient(UserService, transport);
 };
 
-export function createProjectListClient(tenant: string, token: string) {
+export function createProjectServiceClient(tenant: string, token: string) {
   const transport = createTransport(cloudApiBaseUrl, tenant, token);
   return createClient(ProjectService, transport);
 }

@@ -1,5 +1,5 @@
 "use server";
-import { createProjectListClient } from "@/lib/rpc/client";
+import { createProjectServiceClient } from "@/lib/rpc/client";
 import { sessionMustGetTenant } from "@/lib/session/session";
 import { getAccessToken } from "@auth0/nextjs-auth0";
 
@@ -9,7 +9,7 @@ export async function listProjectVersions(projectId: string) {
     throw new Error("No access token found");
   }
   const tenant = await sessionMustGetTenant();
-  const service = createProjectListClient(tenant, accessToken);
+  const service = createProjectServiceClient(tenant, accessToken);
   return await service.listProjectVersions({ projectId });
 }
 
@@ -19,7 +19,7 @@ export async function listProjectVersionBOM(versionId: string) {
     throw new Error("No access token found");
   }
   const tenant = await sessionMustGetTenant();
-  const service = createProjectListClient(tenant, accessToken);
+  const service = createProjectServiceClient(tenant, accessToken);
   return await service.listProjectVersionBOM({ projectVersionId: versionId });
 }
 
@@ -32,6 +32,6 @@ export async function listBOMComponents(
     throw new Error("No access token found");
   }
   const tenant = await sessionMustGetTenant();
-  const service = createProjectListClient(tenant, accessToken);
+  const service = createProjectServiceClient(tenant, accessToken);
   return await service.listBOMComponents({ bomId, projectVersionId });
 }
