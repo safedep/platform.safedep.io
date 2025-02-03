@@ -19,6 +19,7 @@ import {
   listProjectVersions,
 } from "./actions";
 import { Skeleton } from "@/components/ui/skeleton";
+import ErrorPage from "@/components/projects/error-page";
 
 export default function ProjectDetails() {
   const { projectId } = useParams<{ projectId: string }>();
@@ -57,7 +58,11 @@ export default function ProjectDetails() {
   }, [selectedVersion?.version?.projectVersionId]);
 
   if (error) {
-    return <div>Not found</div>;
+    return (
+      <div className="container mx-auto p-4 space-y-6 max-w-6xl min-h-[50vh] grid place-items-center">
+        <ErrorPage error={error} />
+      </div>
+    );
   }
 
   return (
