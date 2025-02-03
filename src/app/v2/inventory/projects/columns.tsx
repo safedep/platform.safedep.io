@@ -16,7 +16,8 @@ import {
   SiGitlab,
 } from "@icons-pack/react-simple-icons";
 import type { ColumnDef } from "@tanstack/react-table";
-import { Box, MoreHorizontal, ScrollText } from "lucide-react";
+import { ArrowUpRight, Box, MoreHorizontal, ScrollText } from "lucide-react";
+import Link from "next/link";
 
 export interface Project {
   id: string;
@@ -29,6 +30,16 @@ export const columns: ColumnDef<Project>[] = [
   {
     accessorKey: "name",
     header: "Name",
+    cell: ({ row }) => {
+      return (
+        <Link href={`/v2/inventory/projects/${row.original.id}`}>
+          <div className="flex items-center gap-1">
+            <span>{row.original.name}</span>
+            <ArrowUpRight className="h-4 w-4" />
+          </div>
+        </Link>
+      );
+    },
   },
   {
     accessorKey: "version",
