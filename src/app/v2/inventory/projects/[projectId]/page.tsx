@@ -84,8 +84,8 @@ export default function ProjectDetails() {
       </div>
 
       {/* Info Cards */}
-      <div className="mb-8 grid gap-6 sm:grid-cols-2 lg:grid-cols-4">
-        <Card className="lg:col-start-2 flex flex-col items-center justify-center p-6">
+      <div className="mb-8 grid gap-6 sm:grid-cols-2 lg:grid-cols-3">
+        <Card className="flex flex-col items-center justify-center p-6">
           {versions?.length ? (
             <InfoCardContent
               value={versions.length}
@@ -98,7 +98,7 @@ export default function ProjectDetails() {
             </>
           )}
         </Card>
-        <Card className="lg:col-start-3 flex flex-col items-center justify-center p-6">
+        <Card className="flex flex-col items-center justify-center p-6">
           {boms?.length ? (
             <InfoCardContent value={boms.length} message="BOMS" />
           ) : (
