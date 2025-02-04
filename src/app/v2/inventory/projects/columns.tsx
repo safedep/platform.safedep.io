@@ -79,14 +79,10 @@ export const columns: ColumnDef<Project>[] = [
           </DropdownMenuTrigger>
           <DropdownMenuContent align="end">
             <DropdownMenuLabel>Actions</DropdownMenuLabel>
-            <DropdownMenuItem
-              className="cursor-pointer"
-              onClick={() => {
-                // Here we will redirect to project details page
-                console.log("View details for: ", key.id);
-              }}
-            >
-              View Details
+            <DropdownMenuItem className="cursor-pointer">
+              <Link href={`/v2/inventory/projects/${key.id}`}>
+                View Details
+              </Link>
             </DropdownMenuItem>
             <DropdownMenuItem
               className="cursor-pointer"
