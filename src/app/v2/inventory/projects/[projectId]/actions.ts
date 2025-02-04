@@ -14,12 +14,14 @@ async function getClient() {
 
 export async function listProjectVersions(projectId: string) {
   const service = await getClient();
-  return await service.listProjectVersions({ projectId });
+  return (await service.listProjectVersions({ projectId })).toBinary();
 }
 
 export async function listProjectVersionBOM(versionId: string) {
   const service = await getClient();
-  return await service.listProjectVersionBOM({ projectVersionId: versionId });
+  return (
+    await service.listProjectVersionBOM({ projectVersionId: versionId })
+  ).toBinary();
 }
 
 export async function listBOMComponents(
@@ -27,5 +29,7 @@ export async function listBOMComponents(
   bomId?: string,
 ) {
   const service = await getClient();
-  return await service.listBOMComponents({ bomId, projectVersionId });
+  return (
+    await service.listBOMComponents({ bomId, projectVersionId })
+  ).toBinary();
 }

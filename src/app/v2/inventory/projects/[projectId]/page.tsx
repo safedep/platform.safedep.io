@@ -4,10 +4,13 @@ import { Tabs, TabsList, TabsTrigger, TabsContent } from "@/components/ui/tabs";
 import { Card, CardContent } from "@/components/ui/card";
 import { Shield } from "lucide-react";
 import VersionList from "@/components/projects/version-list";
-import type {
-  ComponentWithAttributes,
-  BOMWithAttributes,
-  ProjectVersionWithAttributes,
+import {
+  type ComponentWithAttributes,
+  type BOMWithAttributes,
+  type ProjectVersionWithAttributes,
+  ListProjectVersionsResponse,
+  ListProjectVersionBOMResponse,
+  ListBOMComponentsResponse,
 } from "@buf/safedep_api.bufbuild_es/safedep/services/controltower/v1/project_pb";
 import { useEffect, useState } from "react";
 import ComponentsTable from "@/components/projects/components-table";
@@ -35,7 +38,10 @@ export default function ProjectDetails() {
 
   useEffect(() => {
     listProjectVersions(projectId)
-      .then((x) => setVersions(x.projectVersions))
+      .then((x) => {
+        const parsed = ListProjectVersionsResponse.fromBinary(x);
+        setVersions(parsed.projectVersions);
+      })
       .catch((e) => setError(e));
   }, [projectId]);
 
@@ -43,7 +49,10 @@ export default function ProjectDetails() {
   useEffect(() => {
     if (selectedVersion?.version?.projectVersionId) {
       listProjectVersionBOM(selectedVersion.version?.projectVersionId)
-        .then(({ boms }) => setBoms(boms))
+        .then((x) => {
+          const parsed = ListProjectVersionBOMResponse.fromBinary(x);
+          setBoms(parsed.boms);
+        })
         .catch((e) => setError(e));
     }
   }, [selectedVersion?.version?.projectVersionId]);
@@ -52,7 +61,10 @@ export default function ProjectDetails() {
   useEffect(() => {
     if (selectedVersion?.version?.projectVersionId) {
       listBOMComponents(selectedVersion.version?.projectVersionId)
-        .then(({ components }) => setComponents(components))
+        .then((x) => {
+          const parsed = ListBOMComponentsResponse.fromBinary(x);
+          setComponents(parsed.components);
+        })
         .catch((e) => setError(e));
     }
   }, [selectedVersion?.version?.projectVersionId]);
