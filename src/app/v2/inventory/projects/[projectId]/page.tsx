@@ -39,7 +39,7 @@ export default function ProjectDetails() {
   useEffect(() => {
     listProjectVersions(projectId)
       .then((x) => {
-        const parsed = ListProjectVersionsResponse.fromBinary(x);
+        const parsed = ListProjectVersionsResponse.fromJson(x);
         setVersions(parsed.projectVersions);
       })
       .catch((e) => setError(e));
@@ -51,7 +51,7 @@ export default function ProjectDetails() {
       setBoms(undefined);
       listProjectVersionBOM(selectedVersion.version?.projectVersionId)
         .then((x) => {
-          const parsed = ListProjectVersionBOMResponse.fromBinary(x);
+          const parsed = ListProjectVersionBOMResponse.fromJson(x);
           setBoms(parsed.boms);
         })
         .catch((e) => setError(e));
@@ -67,7 +67,7 @@ export default function ProjectDetails() {
       setComponents(undefined);
       listBOMComponents(selectedVersion.version?.projectVersionId)
         .then((x) => {
-          const parsed = ListBOMComponentsResponse.fromBinary(x);
+          const parsed = ListBOMComponentsResponse.fromJson(x);
           setComponents(parsed.components);
         })
         .catch((e) => setError(e));
