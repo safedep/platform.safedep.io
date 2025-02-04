@@ -48,6 +48,7 @@ export default function ProjectDetails() {
   // version is selected, fetch BOMs
   useEffect(() => {
     if (selectedVersion?.version?.projectVersionId) {
+      setBoms(undefined);
       listProjectVersionBOM(selectedVersion.version?.projectVersionId)
         .then((x) => {
           const parsed = ListProjectVersionBOMResponse.fromBinary(x);
@@ -60,6 +61,10 @@ export default function ProjectDetails() {
   // list LATEST BOM components for the selected version
   useEffect(() => {
     if (selectedVersion?.version?.projectVersionId) {
+      // The user changed the version name from the drop down menu. Hence, put
+      // the table in loading state because we are about to fetch component list
+      // again.
+      setComponents(undefined);
       listBOMComponents(selectedVersion.version?.projectVersionId)
         .then((x) => {
           const parsed = ListBOMComponentsResponse.fromBinary(x);
