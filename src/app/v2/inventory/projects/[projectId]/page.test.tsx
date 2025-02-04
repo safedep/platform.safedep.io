@@ -39,7 +39,7 @@ vi.mock("./actions", () => ({
           },
         },
       ],
-    }).toBinary();
+    }).toJson();
   },
   async listProjectVersionBOM() {
     // this response represents the latest version's BOM
@@ -51,7 +51,7 @@ vi.mock("./actions", () => ({
         { bom: { bomId: "BOM-2", status: BOM_Status.UNSPECIFIED } },
         { bom: { bomId: "BOM-3", status: BOM_Status.HISTORICAL } },
       ],
-    }).toBinary();
+    }).toJson();
   },
   async listBOMComponents() {
     return new ListBOMComponentsResponse({
@@ -74,7 +74,7 @@ vi.mock("./actions", () => ({
           },
         },
       ],
-    }).toBinary();
+    }).toJson();
   },
 }));
 
