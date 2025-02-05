@@ -29,6 +29,26 @@ pnpm config set @buf:registry https://buf.build/gen/npm/v1/
 pnpm install
 ```
 
+#### Buf SDK Update
+
+When new version of API is published we need to update the SDK version in this application. We have a [weird](https://github.com/pnpm/pnpm/issues/4940) issue with `pnpm` where versions like `^1.10.0-20250203053921-75ead1519f84.1` in `package.json` are converted into `1.10.0-20250203053921-75ead1519f84.1` by `pnpm update`. To update Buf SDK, perform the following
+
+- Apply a `^` for `buf` SDK packages
+
+```
+-    "@buf/safedep_api.bufbuild_es": "1.10.0-20250203053921-75ead1519f84.1",
+-    "@buf/safedep_api.connectrpc_es": "1.6.1-20250203053921-75ead1519f84.2",
++    "@buf/safedep_api.bufbuild_es": "^1.10.0-20250203053921-75ead1519f84.1",
++    "@buf/safedep_api.connectrpc_es": "^1.6.1-20250203053921-75ead1519f84.2",
+```
+
+- Run the following commands
+
+```
+pnpm install
+pnpm update @buf/safedep_api.bufbuild_es @buf/safedep_api.connectrpc_es
+```
+
 ### Configuration
 
 - Create `.env.local` file based on `env.local.sample` (example)
