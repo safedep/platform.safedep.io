@@ -46,7 +46,7 @@ When new version of API is published we need to update the SDK version in this a
 
 ```
 pnpm install
-pnpm @buf/safedep_api.bufbuild_es @buf/safedep_api.connectrpc_es
+pnpm update @buf/safedep_api.bufbuild_es @buf/safedep_api.connectrpc_es
 ```
 
 ### Configuration
