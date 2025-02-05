@@ -31,7 +31,7 @@ pnpm install
 
 #### Buf SDK Update
 
-When new version of API is published we need to update the SDK version in this application. We have a [weird](https://github.com/pnpm/pnpm/issues/4940) issue with `pnpm` where versions like `^1.10.0-20250203053921-75ead1519f84.1` in `package.json` are converted into `1.10.0-20250203053921-75ead1519f84.1` by `pnpm update`. To update  Buf SDK, perform the following
+When new version of API is published we need to update the SDK version in this application. We have a [weird](https://github.com/pnpm/pnpm/issues/4940) issue with `pnpm` where versions like `^1.10.0-20250203053921-75ead1519f84.1` in `package.json` are converted into `1.10.0-20250203053921-75ead1519f84.1` by `pnpm update`. To update Buf SDK, perform the following
 
 - Apply a `^` for `buf` SDK packages
 
