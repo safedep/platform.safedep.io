@@ -23,9 +23,7 @@ describe("packageRegistryUrl", () => {
   it("returns # for undefined package", () => {
     expect(packageRegistryUrl(undefined)).toBe("#");
   });
-});
 
-describe("packageRegistryUrl additional tests", () => {
   it("returns the correct URL for MAVEN packages", () => {
     const p = new PackageVersion({
       package: { ecosystem: Ecosystem.MAVEN, name: "foo" },
