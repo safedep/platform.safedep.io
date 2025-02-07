@@ -69,7 +69,7 @@ const data = {
       items: [
         {
           title: "Violations",
-          url: "#",
+          url: "/v2/policy/violations",
         },
         {
           title: "Manage",
