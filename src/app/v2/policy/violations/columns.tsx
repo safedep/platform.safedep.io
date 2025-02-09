@@ -14,6 +14,8 @@ import {
 } from "lucide-react";
 
 export interface Violation {
+  projectName?: string;
+  projectVersion?: string;
   ruleName?: string;
   ruleDescription?: string;
   check?: RuleCheck;
@@ -98,6 +100,14 @@ function checkToName(check: RuleCheck) {
 }
 
 export const columns: ColumnDef<Violation>[] = [
+  {
+    accessorKey: "projectName",
+    header: "Project",
+  },
+  {
+    accessorKey: "projectVersion",
+    header: "Project Version",
+  },
   {
     accessorKey: "ruleName",
     header: "Rule",

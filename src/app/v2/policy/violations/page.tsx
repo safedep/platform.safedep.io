@@ -5,12 +5,16 @@ import { columns } from "./columns";
 export default async function Page() {
   const { violation } = await listPolicyViolations();
 
-  const tableData = violation.map((v) => ({
-    ruleName: v.rule?.name,
-    ruleDescription: v.rule?.description,
-    detectedAt: v.detectedAt?.toDate(),
-    check: v.rule?.check,
-  }));
+  const tableData = violation.map(
+    ({ projectName, projectVersion, violation }) => ({
+      projectName: projectName,
+      projectVersion: projectVersion,
+      ruleName: violation?.rule?.name,
+      ruleDescription: violation?.rule?.description,
+      detectedAt: violation?.detectedAt?.toDate(),
+      check: violation?.rule?.check,
+    }),
+  );
 
   return (
     <div className="container mx-auto flex flex-col gap-4 p-4">
