@@ -12,12 +12,15 @@ vi.mock("./actions", () => ({
         violation: {
           rule: {
             name: "ruleName-1",
-            description: "ruleDescription-1",
             check: RuleCheck.POPULARITY,
           },
           detectedAt: {
             toDate: () => new Date("2021-01-01"),
           },
+        },
+        component: {
+          name: "componentName-1",
+          version: "componentVersion-1",
         },
       },
     ],
@@ -36,7 +39,7 @@ describe("Violations page", async () => {
     getByText("projectName-1");
     getByText("projectVersion-1");
     getByText("ruleName-1");
-    getByText("ruleDescription-1");
+    getByText("componentName-1@componentVersion-1");
     getByText("Popularity");
   });
 });

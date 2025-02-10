@@ -17,7 +17,7 @@ export interface Violation {
   projectName?: string;
   projectVersion?: string;
   ruleName?: string;
-  ruleDescription?: string;
+  affectedComponent?: string;
   check?: RuleCheck;
   detectedAt?: Date;
 }
@@ -113,8 +113,8 @@ export const columns: ColumnDef<Violation>[] = [
     header: "Rule",
   },
   {
-    accessorKey: "ruleDescription",
-    header: "Description",
+    accessorKey: "affectedComponent",
+    header: "Affected Component",
   },
   {
     accessorKey: "check",
