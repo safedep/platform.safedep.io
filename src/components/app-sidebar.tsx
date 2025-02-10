@@ -5,7 +5,7 @@ import {
   Bot,
   Frame,
   GalleryVerticalEnd,
-  Map,
+  Map as LucideMap,
   PieChart,
   Settings2,
   SquareTerminal,
@@ -73,7 +73,7 @@ const data = {
         },
         {
           title: "Manage",
-          url: "#",
+          url: "/v2/policy/manage",
         },
       ],
     },
@@ -139,7 +139,7 @@ const data = {
     {
       name: "Travel",
       url: "#",
-      icon: Map,
+      icon: LucideMap,
     },
   ],
 };
