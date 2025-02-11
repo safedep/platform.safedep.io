@@ -24,6 +24,7 @@ export const columns: ColumnDef<PolicyGroup>[] = [
   {
     accessorKey: "name",
     header: "Name",
+    cell: ({ row }) => <span className="font-medium">{row.original.name}</span>,
   },
   {
     accessorKey: "updatedAt",
