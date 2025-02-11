@@ -3,14 +3,18 @@
 import { DataTable } from "@/components/policy/data-table";
 import { columns, type Policy } from "./columns";
 import { useState } from "react";
-import { useParams } from "next/navigation";
+import { useParams, useRouter } from "next/navigation";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import PolicyGroupForm, {
   type PolicyGroupFormValues,
 } from "@/components/policy/group-form";
+import { Button } from "@/components/ui/button";
+import Link from "next/link";
 
 export default function Page() {
   const { groupId } = useParams<{ groupId: string }>();
+
+  // TODO: get policies from API
   const [data] = useState<Policy[]>([
     {
       id: "1",
@@ -24,21 +28,32 @@ export default function Page() {
     },
   ]);
 
-  function onSubmit(values: PolicyGroupFormValues) {
+  // TODO: get policy group data from API
+  const [policyGroupData, setPolicyGroupData] = useState({
+    name: "Policy Group 1",
+    description: "This is a description" as string | undefined,
+  });
+
+  const router = useRouter();
+
+  async function onSubmit(values: PolicyGroupFormValues) {
+    await new Promise((resolve) => setTimeout(resolve, 1000));
+    setPolicyGroupData({ description: values.description, name: values.name });
     console.log(values);
   }
 
   return (
-    <div className="container mx-auto py-6 flex flex-col gap-4">
-      <div className="flex items-center justify-between gap-1">
-        <div>
+    <div className="container mx-auto py-6 flex flex-col gap-6">
+      <div className="flex flex-col gap-1">
+        <div className="flex justify-between">
           <h1 className="text-3xl font-bold tracking-tight">
             Policy Group {groupId}
           </h1>
-          <p className="text-muted-foreground">
-            View or edit your policy group.
-          </p>
+          <Button variant="secondary" onClick={router.back}>
+            Go Back
+          </Button>
         </div>
+        <p className="text-muted-foreground">View or edit your policy group.</p>
       </div>
 
       <Card>
@@ -46,13 +61,23 @@ export default function Page() {
           <CardTitle>Edit Policy Group details</CardTitle>
         </CardHeader>
         <CardContent>
-          <PolicyGroupForm onSubmit={onSubmit} />
+          <PolicyGroupForm
+            onSubmit={onSubmit}
+            defaultValues={policyGroupData}
+          />
         </CardContent>
       </Card>
 
       <Card>
         <CardHeader>
-          <CardTitle>Policies attached to the group</CardTitle>
+          <CardTitle>
+            <div className="flex justify-between items-start">
+              <h1>Policies in Policy Group {groupId}</h1>
+              <Button asChild>
+                <Link href="#">Add Policy</Link>
+              </Button>
+            </div>
+          </CardTitle>
         </CardHeader>
         <CardContent>
           <DataTable columns={columns} data={data} />
