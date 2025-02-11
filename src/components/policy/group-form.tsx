@@ -14,7 +14,7 @@ import {
 } from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 
 const formSchema = v.object({
   name: v.pipe(
@@ -31,24 +31,34 @@ const formSchema = v.object({
 
 export type PolicyGroupFormValues = v.InferInput<typeof formSchema>;
 
-export interface PolicyGroupFormProps {
-  onSubmit(values: PolicyGroupFormValues): void;
+interface FormValues {
+  name: string;
+  description?: string;
 }
 
-export default function PolicyGroupForm({ onSubmit }: PolicyGroupFormProps) {
+export interface PolicyGroupFormProps {
+  defaultValues: FormValues;
+  onSubmit(values: PolicyGroupFormValues): Promise<void>;
+}
+
+export default function PolicyGroupForm({
+  onSubmit,
+  defaultValues,
+}: PolicyGroupFormProps) {
   const form = useForm<PolicyGroupFormValues>({
     resolver: valibotResolver(formSchema),
-    defaultValues: {
-      name: "",
-      description: undefined,
-    },
+    defaultValues,
   });
   const [isSubmitting, setIsSubmitting] = useState(false);
 
-  function onSubmitWrapper(values: PolicyGroupFormValues) {
+  useEffect(() => {
+    form.reset(defaultValues);
+  }, [defaultValues, form]);
+
+  async function onSubmitWrapper(values: PolicyGroupFormValues) {
     setIsSubmitting(true);
     try {
-      onSubmit(values);
+      await onSubmit(values);
       toast(
         <pre className="mt-2 w-[340px] rounded-md bg-slate-950 p-4">
           <code className="text-white">{JSON.stringify(values, null, 2)}</code>
@@ -65,7 +75,7 @@ export default function PolicyGroupForm({ onSubmit }: PolicyGroupFormProps) {
     <Form {...form}>
       <form
         onSubmit={form.handleSubmit(onSubmitWrapper)}
-        className="flex flex-col gap-8"
+        className="flex flex-col gap-4"
       >
         <FormField
           control={form.control}
@@ -93,6 +103,7 @@ export default function PolicyGroupForm({ onSubmit }: PolicyGroupFormProps) {
               <FormControl>
                 <Textarea
                   placeholder="This policy group is used by admins..."
+                  rows={3}
                   {...field}
                 />
               </FormControl>
@@ -104,7 +115,7 @@ export default function PolicyGroupForm({ onSubmit }: PolicyGroupFormProps) {
           )}
         />
         <div className="flex justify-end">
-          <Button type="submit" disabled={isSubmitting}>
+          <Button type="submit" disabled={isSubmitting} className="w-40">
             {isSubmitting ? "Updating..." : "Update Policy Group"}
           </Button>
         </div>
