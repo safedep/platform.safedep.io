@@ -66,7 +66,7 @@ export const TagsInput = React.forwardRef<HTMLDivElement, TagsInputProps>(
           onValueChange([...value, val]);
         }
       },
-      [value],
+      [onValueChange, parseMaxItems, value],
     );
 
     const RemoveValue = React.useCallback(
@@ -75,7 +75,7 @@ export const TagsInput = React.forwardRef<HTMLDivElement, TagsInputProps>(
           onValueChange(value.filter((item) => item !== val));
         }
       },
-      [value],
+      [onValueChange, parseMinItems, value],
     );
 
     const handlePaste = React.useCallback(
@@ -83,7 +83,7 @@ export const TagsInput = React.forwardRef<HTMLDivElement, TagsInputProps>(
         e.preventDefault();
         const tags = e.clipboardData.getData("text").split(SPLITTER_REGEX);
         const newValue = [...value];
-        tags.forEach((item) => {
+        for (const item of tags) {
           const parsedItem = item.replaceAll(FORMATTING_REGEX, "").trim();
           if (
             parsedItem.length > 0 &&
@@ -92,11 +92,11 @@ export const TagsInput = React.forwardRef<HTMLDivElement, TagsInputProps>(
           ) {
             newValue.push(parsedItem);
           }
-        });
+        }
         onValueChange(newValue);
         setInputValue("");
       },
-      [value],
+      [onValueChange, parseMaxItems, value],
     );
 
     const handleSelect = React.useCallback(
@@ -129,7 +129,7 @@ export const TagsInput = React.forwardRef<HTMLDivElement, TagsInputProps>(
         }
       };
       VerifyDisable();
-    }, [value]);
+    }, [parseMaxItems, parseMinItems, value]);
 
     // ? check: Under build , default option support
     // * support : for the uncontrolled && controlled ui
@@ -209,10 +209,11 @@ export const TagsInput = React.forwardRef<HTMLDivElement, TagsInputProps>(
             }
             break;
 
-          case "Escape":
+          case "Escape": {
             const newIndex = activeIndex === -1 ? value.length - 1 : -1;
             setActiveIndex(newIndex);
             break;
+          }
 
           case "Enter":
             if (inputValue.trim() !== "") {
@@ -223,7 +224,16 @@ export const TagsInput = React.forwardRef<HTMLDivElement, TagsInputProps>(
             break;
         }
       },
-      [activeIndex, value, inputValue, RemoveValue],
+      [
+        activeIndex,
+        value,
+        dir,
+        inputValue,
+        RemoveValue,
+        selectedValue,
+        isValueSelected,
+        onValueChangeHandler,
+      ],
     );
 
     const mousePreventDefault = React.useCallback((e: React.MouseEvent) => {
@@ -242,6 +252,7 @@ export const TagsInput = React.forwardRef<HTMLDivElement, TagsInputProps>(
       <TagInputContext.Provider
         value={{
           value,
+          // @ts-expect-error: value is not a string
           onValueChange,
           inputValue,
           setInputValue,
