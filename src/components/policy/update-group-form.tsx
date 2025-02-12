@@ -41,7 +41,7 @@ export interface PolicyGroupFormProps {
   onSubmit(values: PolicyGroupFormValues): Promise<void>;
 }
 
-export default function PolicyGroupForm({
+export default function UpdatePolicyGroupForm({
   onSubmit,
   defaultValues,
 }: PolicyGroupFormProps) {
