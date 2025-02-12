@@ -73,7 +73,10 @@ export default function Page() {
   if (response?.status === AnalysisStatus.COMPLETED && response.report) {
     return (
       <div className="flex py-8 min-h-dvh">
-        <MalwareAnalysisReportCard report={response.report} />
+        <MalwareAnalysisReportCard
+          report={response.report}
+          verificationRecord={response.verificationRecord}
+        />
       </div>
     );
   }
