@@ -5,9 +5,9 @@ import { columns, type Policy } from "./columns";
 import { useState } from "react";
 import { useParams, useRouter } from "next/navigation";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
-import PolicyGroupForm, {
+import UpdatePolicyGroupForm, {
   type PolicyGroupFormValues,
-} from "@/components/policy/group-form";
+} from "@/components/policy/update-group-form";
 import { Button } from "@/components/ui/button";
 import Link from "next/link";
 
@@ -61,7 +61,7 @@ export default function Page() {
           <CardTitle>Edit Policy Group details</CardTitle>
         </CardHeader>
         <CardContent>
-          <PolicyGroupForm
+          <UpdatePolicyGroupForm
             onSubmit={onSubmit}
             defaultValues={policyGroupData}
           />
