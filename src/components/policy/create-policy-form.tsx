@@ -133,10 +133,8 @@ export default function CreatePolicyForm() {
   return (
     <Form {...form}>
       <form
-        onSubmit={(e) => {
-          e.preventDefault();
-          form.handleSubmit(onSubmit)(e);
-        }}
+        onKeyDown={(e) => e.key === "Enter" && e.preventDefault()}
+        onSubmit={form.handleSubmit(onSubmit)}
         className="flex max-w-2xl flex-col gap-8"
       >
         <FormField
