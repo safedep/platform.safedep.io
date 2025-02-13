@@ -79,7 +79,7 @@ export default function EditPolicyPage() {
         </Button>
       </div>
 
-      <CreatePolicyForm defaultValues={policyData} />
+      <CreatePolicyForm defaultValues={policyData} mode="update" />
     </div>
   );
 }

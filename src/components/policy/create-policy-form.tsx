@@ -93,10 +93,12 @@ export type CreatePolicyFormValues = v.InferInput<typeof formSchema>;
 
 interface CreatePolicyFormProps {
   defaultValues?: CreatePolicyFormValues;
+  mode?: "create" | "update";
 }
 
 export default function CreatePolicyForm({
   defaultValues,
+  mode = "create",
 }: CreatePolicyFormProps) {
   const [targets] = useState(["vet"]);
   const [versions] = useState(["v1", "v2"]);
@@ -297,7 +299,13 @@ export default function CreatePolicyForm({
 
         <div className="flex justify-end">
           <Button type="submit" disabled={isSubmitting} className="w-40">
-            {isSubmitting ? "Creating..." : "Create Policy"}
+            {isSubmitting
+              ? mode === "create"
+                ? "Creating..."
+                : "Updating..."
+              : mode === "create"
+                ? "Create Policy"
+                : "Update Policy"}
           </Button>
         </div>
       </form>
