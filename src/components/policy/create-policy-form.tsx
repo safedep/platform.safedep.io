@@ -91,13 +91,19 @@ const formSchema = v.object({
 
 export type CreatePolicyFormValues = v.InferInput<typeof formSchema>;
 
-export default function CreatePolicyForm() {
+interface CreatePolicyFormProps {
+  defaultValues?: CreatePolicyFormValues;
+}
+
+export default function CreatePolicyForm({
+  defaultValues,
+}: CreatePolicyFormProps) {
   const [targets] = useState(["vet"]);
   const [versions] = useState(["v1", "v2"]);
 
   const form = useForm<CreatePolicyFormValues>({
     resolver: valibotResolver(formSchema),
-    defaultValues: {
+    defaultValues: defaultValues ?? {
       name: "",
       labels: [],
       version: versions.at(-1),
@@ -291,7 +297,7 @@ export default function CreatePolicyForm() {
 
         <div className="flex justify-end">
           <Button type="submit" disabled={isSubmitting} className="w-40">
-            {isSubmitting ? "Creating..." : "Create Policy Group"}
+            {isSubmitting ? "Creating..." : "Create Policy"}
           </Button>
         </div>
       </form>
