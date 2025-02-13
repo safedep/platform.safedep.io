@@ -19,9 +19,9 @@ import {
 } from "@/components/ui/select";
 import { ChevronDown, ChevronUp, Plus, X } from "lucide-react";
 import { useFieldArray, useFormContext } from "react-hook-form";
-import type { CreatePolicyFormValues } from "./create-policy-form";
+import type { PolicyFormValues } from "./policy-form";
 import { cn } from "@/lib/utils";
-import { ruleTypeDisplayNames } from "./create-policy-form";
+import { ruleTypeDisplayNames } from "./policy-form";
 import { useState } from "react";
 
 interface RuleFormProps {
@@ -30,7 +30,7 @@ interface RuleFormProps {
 }
 
 export function RuleForm({ index, onRemove }: RuleFormProps) {
-  const { control, watch } = useFormContext<CreatePolicyFormValues>();
+  const { control, watch } = useFormContext<PolicyFormValues>();
   const [isExpanded, setIsExpanded] = useState(true);
 
   const {

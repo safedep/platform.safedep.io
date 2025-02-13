@@ -3,12 +3,10 @@
 import { useEffect, useState } from "react";
 import { useParams, useRouter } from "next/navigation";
 import { Button } from "@/components/ui/button";
-import CreatePolicyForm, {
-  CreatePolicyFormValues,
-} from "@/components/policy/create-policy-form";
+import PolicyForm, { PolicyFormValues } from "@/components/policy/policy-form";
 
 // Mock data for demonstration
-const mockPolicyData: CreatePolicyFormValues = {
+const mockPolicyData: PolicyFormValues = {
   name: "Sample Policy",
   version: "v2",
   target: "vet",
@@ -38,9 +36,7 @@ export default function EditPolicyPage() {
   const { policyId } = useParams<{ policyId: string }>();
   const router = useRouter();
   const [isLoading, setIsLoading] = useState(true);
-  const [policyData, setPolicyData] = useState<CreatePolicyFormValues | null>(
-    null,
-  );
+  const [policyData, setPolicyData] = useState<PolicyFormValues | null>(null);
 
   useEffect(() => {
     // Simulate API call to fetch policy data
@@ -59,7 +55,7 @@ export default function EditPolicyPage() {
     fetchPolicyData();
   }, [policyId]);
 
-  async function handleSubmit(values: CreatePolicyFormValues) {
+  async function handleSubmit(values: PolicyFormValues) {
     // TODO: Replace with actual API call
     await new Promise((resolve) => setTimeout(resolve, 1000));
     console.log("Updating policy:", policyId, values);
@@ -90,7 +86,7 @@ export default function EditPolicyPage() {
         </Button>
       </div>
 
-      <CreatePolicyForm
+      <PolicyForm
         defaultValues={policyData}
         mode="update"
         onSubmit={handleSubmit}
