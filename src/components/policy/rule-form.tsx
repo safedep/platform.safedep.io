@@ -21,20 +21,12 @@ import { Plus, X } from "lucide-react";
 import { useFieldArray, useFormContext } from "react-hook-form";
 import type { CreatePolicyFormValues } from "./create-policy-form";
 import { cn } from "@/lib/utils";
+import { ruleTypeDisplayNames } from "./create-policy-form";
 
 interface RuleFormProps {
   index: number;
   onRemove: () => void;
 }
-
-const ruleCheckNames = {
-  LICENSE: "license" as const,
-  MAINTENANCE: "maintenance" as const,
-  PROVENANCE: "provenance" as const,
-  VULNERABILITY: "vulnerability" as const,
-  MALWARE: "malware" as const,
-  POPULARITY: "popularity" as const,
-};
 
 export function RuleForm({ index, onRemove }: RuleFormProps) {
   const { control } = useFormContext<CreatePolicyFormValues>();
@@ -91,11 +83,13 @@ export function RuleForm({ index, onRemove }: RuleFormProps) {
                   </SelectTrigger>
                 </FormControl>
                 <SelectContent>
-                  {Object.entries(ruleCheckNames).map(([key, value]) => (
-                    <SelectItem key={key} value={value}>
-                      {key.toLowerCase()}
-                    </SelectItem>
-                  ))}
+                  {Object.entries(ruleTypeDisplayNames).map(
+                    ([enumKey, value]) => (
+                      <SelectItem key={enumKey} value={value}>
+                        {value.charAt(0).toUpperCase() + value.slice(1)}
+                      </SelectItem>
+                    ),
+                  )}
                 </SelectContent>
               </Select>
               <FormDescription>Type of check to perform.</FormDescription>
@@ -135,7 +129,11 @@ export function RuleForm({ index, onRemove }: RuleFormProps) {
           <FormItem>
             <FormLabel>Rule Value</FormLabel>
             <FormControl>
-              <Input placeholder="Rule value" {...field} />
+              <Input
+                placeholder="license.id == 'MIT' || license.id == 'Apache-2.0'"
+                {...field}
+                className="font-mono"
+              />
             </FormControl>
             <FormDescription>The value to check against.</FormDescription>
             <FormMessage />
