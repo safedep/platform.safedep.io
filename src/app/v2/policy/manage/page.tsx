@@ -21,7 +21,7 @@ export default function Page() {
   ] as PolicyGroup[]);
   return (
     <div className="container mx-auto py-6">
-      <div className="flex items-center justify-between mb-6">
+      <div className="mb-6 flex items-center justify-between">
         <div>
           <h1 className="text-3xl font-bold tracking-tight">Policy Groups</h1>
           <p className="text-muted-foreground">Manage your policy groups.</p>
@@ -33,7 +33,6 @@ export default function Page() {
           </Link>
         </Button>
       </div>
-      {/* <PolicyList /> */}
 
       <DataTable columns={columns} data={foo} />
     </div>

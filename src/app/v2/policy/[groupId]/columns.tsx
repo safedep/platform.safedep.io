@@ -46,11 +46,13 @@ export const columns: ColumnDef<Policy>[] = [
           <DropdownMenuContent align="end">
             <DropdownMenuLabel>Actions</DropdownMenuLabel>
             <DropdownMenuItem className="cursor-pointer" asChild>
-              <Link href={`/v2/policy/${row.original.id}`}>Edit Policy</Link>
+              <Link href={`/v2/policy/edit-policy/${row.original.id}`}>
+                Edit Policy
+              </Link>
             </DropdownMenuItem>
             <DropdownMenuSeparator />
             <DropdownMenuItem
-              className="text-destructive cursor-pointer"
+              className="cursor-pointer text-destructive"
               // onClick={onDeletePolicyGroup}
             >
               Delete
