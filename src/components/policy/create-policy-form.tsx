@@ -1,7 +1,11 @@
 "use client";
-import { toast } from "sonner";
+
+import { useState } from "react";
 import { useForm } from "react-hook-form";
+import { toast } from "sonner";
 import * as v from "valibot";
+import { valibotResolver } from "@hookform/resolvers/valibot";
+import { RuleCheck } from "@buf/safedep_api.bufbuild_es/safedep/messages/policy/v1/rule_pb";
 import { Button } from "@/components/ui/button";
 import {
   Form,
@@ -22,8 +26,56 @@ import {
 } from "@/components/ui/select";
 import { Switch } from "@/components/ui/switch";
 import { TagsInput } from "@/components/ui/tags-input";
-import { valibotResolver } from "@hookform/resolvers/valibot";
-import { useState } from "react";
+
+const ruleCheckNames = {
+  [RuleCheck.UNSPECIFIED]: "unspecified" as const,
+  [RuleCheck.LICENSE]: "license" as const,
+  [RuleCheck.MAINTENANCE]: "maintenance" as const,
+  [RuleCheck.PROVENANCE]: "provenance" as const,
+  [RuleCheck.VULNERABILITY]: "vulnerability" as const,
+  [RuleCheck.MALWARE]: "malware" as const,
+  [RuleCheck.POPULARITY]: "popularity" as const,
+};
+
+const referenceSchema = v.object({
+  url: v.pipe(
+    v.string("Invalid URL"),
+    v.minLength(1, "URL must be at least 1 character"),
+    v.maxLength(2048, "URL must be at most 2048 characters"),
+  ),
+});
+
+export type CreatePolicyFormReference = v.InferOutput<typeof referenceSchema>;
+
+const ruleSchema = v.object({
+  name: v.pipe(
+    v.string("Invalid name"),
+    v.minLength(1, "Name must be at least 1 character"),
+    v.maxLength(250, "Name must be at most 250 characters"),
+  ),
+  check: v.enum(ruleCheckNames),
+  description: v.optional(v.string("Invalid description")),
+  value: v.pipe(
+    v.string("Invalid rule value"),
+    v.minLength(1, "Rule value must be at least 1 character"),
+    v.maxLength(1000, "Rule value must be at most 1000 characters"),
+  ),
+  references: v.optional(v.array(referenceSchema)),
+  labels: v.optional(
+    v.pipe(
+      v.array(
+        v.pipe(
+          v.string("Invalid label"),
+          v.minLength(1, "Label must be at least 1 character"),
+          v.maxLength(50, "Label must be at most 50 characters"),
+        ),
+      ),
+      v.maxLength(10, "Maximum 10 labels allowed"),
+    ),
+  ),
+});
+
+export type CreatePolicyFormRule = v.InferInput<typeof ruleSchema>;
 
 const formSchema = v.object({
   name: v.pipe(
@@ -34,6 +86,7 @@ const formSchema = v.object({
   target: v.string("Invalid target. Please select a target from the list"),
   type: v.optional(v.boolean()),
   labels: v.optional(v.pipe(v.array(v.string("Invalid label")))),
+  rules: v.array(ruleSchema),
 });
 
 export type CreatePolicyFormValues = v.InferInput<typeof formSchema>;
@@ -49,15 +102,12 @@ export default function CreatePolicyForm() {
       labels: [],
       version: versions.at(-1),
       target: targets.at(-1),
-      type: true,
+      type: false,
+      rules: [],
     },
   });
 
   const [isSubmitting, setIsSubmitting] = useState(false);
-
-  // useEffect(() => {
-  //   form.reset(defaultValues);
-  // }, [defaultValues, form]);
 
   function onSubmit(values: CreatePolicyFormValues) {
     setIsSubmitting(true);
@@ -79,7 +129,7 @@ export default function CreatePolicyForm() {
     <Form {...form}>
       <form
         onSubmit={form.handleSubmit(onSubmit)}
-        className="flex flex-col gap-8 max-w-2xl"
+        className="flex max-w-2xl flex-col gap-8"
       >
         <FormField
           control={form.control}
@@ -168,7 +218,7 @@ export default function CreatePolicyForm() {
           render={({ field }) => (
             <FormItem className="flex flex-row items-center justify-between rounded-lg border p-4">
               <div className="space-y-0.5">
-                <FormLabel>Enable</FormLabel>
+                <FormLabel>Allow</FormLabel>
                 <FormDescription>
                   Enable or disable the policy rule. TODO NEED REVIEW
                 </FormDescription>
