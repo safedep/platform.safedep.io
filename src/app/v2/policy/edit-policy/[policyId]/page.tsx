@@ -59,6 +59,17 @@ export default function EditPolicyPage() {
     fetchPolicyData();
   }, [policyId]);
 
+  async function handleSubmit(values: CreatePolicyFormValues) {
+    // TODO: Replace with actual API call
+    await new Promise((resolve) => setTimeout(resolve, 1000));
+    console.log("Updating policy:", policyId, values);
+    // After successful update, you might want to:
+    // 1. Show a success message
+    // 2. Redirect back to the policies list
+    // 3. Refresh the data
+    router.back();
+  }
+
   if (isLoading) {
     return <div>Loading...</div>;
   }
@@ -79,7 +90,11 @@ export default function EditPolicyPage() {
         </Button>
       </div>
 
-      <CreatePolicyForm defaultValues={policyData} mode="update" />
+      <CreatePolicyForm
+        defaultValues={policyData}
+        mode="update"
+        onSubmit={handleSubmit}
+      />
     </div>
   );
 }
