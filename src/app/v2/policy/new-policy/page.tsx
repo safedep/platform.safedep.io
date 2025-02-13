@@ -1,3 +1,4 @@
+"use client";
 import PolicyForm from "@/components/policy/policy-form";
 
 export default function Page() {
