@@ -107,7 +107,7 @@ export default function CreatePolicyForm() {
     },
   });
 
-  const { fields, append, remove } = useFieldArray({
+  const { fields, remove } = useFieldArray({
     control: form.control,
     name: "rules",
   });
@@ -264,7 +264,17 @@ export default function CreatePolicyForm() {
             <Button
               type="button"
               variant="outline"
-              onClick={() => append({ name: "", value: "", check: "License" })}
+              onClick={() => {
+                const newRule = {
+                  name: "",
+                  value: "",
+                  check: "License" as const,
+                  description: "",
+                  references: [],
+                  labels: [],
+                };
+                form.setValue("rules", [newRule, ...form.getValues("rules")]);
+              }}
             >
               Add Rule
             </Button>
