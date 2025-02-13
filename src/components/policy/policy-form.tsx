@@ -94,7 +94,7 @@ export type PolicyFormValues = v.InferInput<typeof formSchema>;
 interface PolicyFormProps {
   defaultValues?: PolicyFormValues;
   mode?: "create" | "update";
-  onSubmit: (values: PolicyFormValues) => Promise<void>;
+  onSubmit(values: PolicyFormValues): Promise<void>;
 }
 
 export default function PolicyForm({
