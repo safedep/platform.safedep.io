@@ -1,4 +1,4 @@
-import CreatePolicyForm from "@/components/policy/create-policy-form";
+import PolicyForm from "@/components/policy/policy-form";
 
 export default function Page() {
   return (
@@ -7,7 +7,7 @@ export default function Page() {
         <h1 className="text-3xl font-bold tracking-tight">Create New Policy</h1>
       </div>
 
-      <CreatePolicyForm onSubmit={async () => {}} />
+      <PolicyForm onSubmit={async () => {}} />
     </div>
   );
 }

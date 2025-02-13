@@ -75,7 +75,7 @@ const ruleSchema = v.object({
   ),
 });
 
-export type CreatePolicyFormRule = v.InferInput<typeof ruleSchema>;
+export type PolicyFormRule = v.InferInput<typeof ruleSchema>;
 
 const formSchema = v.object({
   name: v.pipe(
@@ -89,23 +89,23 @@ const formSchema = v.object({
   rules: v.array(ruleSchema),
 });
 
-export type CreatePolicyFormValues = v.InferInput<typeof formSchema>;
+export type PolicyFormValues = v.InferInput<typeof formSchema>;
 
-interface CreatePolicyFormProps {
-  defaultValues?: CreatePolicyFormValues;
+interface PolicyFormProps {
+  defaultValues?: PolicyFormValues;
   mode?: "create" | "update";
-  onSubmit: (values: CreatePolicyFormValues) => Promise<void>;
+  onSubmit: (values: PolicyFormValues) => Promise<void>;
 }
 
-export default function CreatePolicyForm({
+export default function PolicyForm({
   defaultValues,
   mode = "create",
   onSubmit,
-}: CreatePolicyFormProps) {
+}: PolicyFormProps) {
   const [targets] = useState(["vet"]);
   const [versions] = useState(["v1", "v2"]);
 
-  const form = useForm<CreatePolicyFormValues>({
+  const form = useForm<PolicyFormValues>({
     resolver: valibotResolver(formSchema),
     defaultValues: defaultValues ?? {
       name: "",
@@ -124,7 +124,7 @@ export default function CreatePolicyForm({
 
   const [isSubmitting, setIsSubmitting] = useState(false);
 
-  async function handleSubmit(values: CreatePolicyFormValues) {
+  async function handleSubmit(values: PolicyFormValues) {
     setIsSubmitting(true);
     try {
       await onSubmit(values);
