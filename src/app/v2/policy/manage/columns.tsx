@@ -57,7 +57,7 @@ export const columns: ColumnDef<PolicyGroup>[] = [
             </DropdownMenuItem>
             <DropdownMenuSeparator />
             <DropdownMenuItem
-              className="text-destructive cursor-pointer"
+              className="cursor-pointer text-destructive"
               onClick={onDeletePolicyGroup}
             >
               Delete

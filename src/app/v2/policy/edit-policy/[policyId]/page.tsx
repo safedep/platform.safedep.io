@@ -63,7 +63,7 @@ export default function EditPolicyPage() {
     // 1. Show a success message
     // 2. Redirect back to the policies list
     // 3. Refresh the data
-    router.back();
+    // router.back();
   }
 
   if (isLoading) {

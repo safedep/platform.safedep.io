@@ -43,7 +43,7 @@ export default function Page() {
   }
 
   return (
-    <div className="container mx-auto py-6 flex flex-col gap-6">
+    <div className="container mx-auto flex flex-col gap-6 py-6">
       <div className="flex flex-col gap-1">
         <div className="flex justify-between">
           <h1 className="text-3xl font-bold tracking-tight">
@@ -71,10 +71,11 @@ export default function Page() {
       <Card>
         <CardHeader>
           <CardTitle>
-            <div className="flex justify-between items-start">
+            <div className="flex items-start justify-between">
               <h1>Policies in Policy Group {groupId}</h1>
               <Button asChild>
-                <Link href="#">Add Policy</Link>
+                {/* TODO: the policy group id should be passed in the url */}
+                <Link href="/v2/policy/new-policy">Add Policy</Link>
               </Button>
             </div>
           </CardTitle>
