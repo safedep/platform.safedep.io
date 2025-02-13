@@ -40,7 +40,8 @@ const ruleCheckNames = {
 
 const referenceSchema = v.object({
   url: v.pipe(
-    v.string("Invalid URL"),
+    v.string(),
+    v.url("Invalid URL"),
     v.minLength(1, "URL must be at least 1 character"),
     v.maxLength(2048, "URL must be at most 2048 characters"),
   ),
@@ -134,7 +135,10 @@ export default function CreatePolicyForm() {
   return (
     <Form {...form}>
       <form
-        onSubmit={form.handleSubmit(onSubmit)}
+        onSubmit={(e) => {
+          e.preventDefault();
+          form.handleSubmit(onSubmit)(e);
+        }}
         className="flex max-w-2xl flex-col gap-8"
       >
         <FormField
