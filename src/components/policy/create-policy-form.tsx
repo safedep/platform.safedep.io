@@ -94,11 +94,13 @@ export type CreatePolicyFormValues = v.InferInput<typeof formSchema>;
 interface CreatePolicyFormProps {
   defaultValues?: CreatePolicyFormValues;
   mode?: "create" | "update";
+  onSubmit: (values: CreatePolicyFormValues) => Promise<void>;
 }
 
 export default function CreatePolicyForm({
   defaultValues,
   mode = "create",
+  onSubmit,
 }: CreatePolicyFormProps) {
   const [targets] = useState(["vet"]);
   const [versions] = useState(["v1", "v2"]);
@@ -122,16 +124,12 @@ export default function CreatePolicyForm({
 
   const [isSubmitting, setIsSubmitting] = useState(false);
 
-  function onSubmit(values: CreatePolicyFormValues) {
+  async function handleSubmit(values: CreatePolicyFormValues) {
     setIsSubmitting(true);
     try {
-      console.log(values);
-      toast(
-        <pre className="mt-2 w-[340px] rounded-md bg-slate-950 p-4">
-          <code className="text-white">{JSON.stringify(values, null, 2)}</code>
-        </pre>,
-      );
-    } catch {
+      await onSubmit(values);
+    } catch (error) {
+      console.error("Form submission failed:", error);
       toast.error("Failed to submit the form. Please try again.");
     } finally {
       setIsSubmitting(false);
@@ -142,7 +140,7 @@ export default function CreatePolicyForm({
     <Form {...form}>
       <form
         onKeyDown={(e) => e.key === "Enter" && e.preventDefault()}
-        onSubmit={form.handleSubmit(onSubmit)}
+        onSubmit={form.handleSubmit(handleSubmit)}
         className="flex max-w-2xl flex-col gap-8"
       >
         <FormField
