@@ -17,9 +17,10 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
-import { X } from "lucide-react";
-import { useFormContext } from "react-hook-form";
+import { Plus, X } from "lucide-react";
+import { useFieldArray, useFormContext } from "react-hook-form";
 import type { CreatePolicyFormValues } from "./create-policy-form";
+import { cn } from "@/lib/utils";
 
 interface RuleFormProps {
   index: number;
@@ -38,31 +39,71 @@ const ruleCheckNames = {
 export function RuleForm({ index, onRemove }: RuleFormProps) {
   const { control } = useFormContext<CreatePolicyFormValues>();
 
-  return (
-    <div className="relative space-y-6 rounded-lg border p-6">
-      <Button
-        variant="ghost"
-        size="icon"
-        className="absolute right-4 top-4"
-        onClick={onRemove}
-      >
-        <X className="h-4 w-4" />
-      </Button>
+  const {
+    fields: references,
+    append: appendReference,
+    remove: removeReference,
+  } = useFieldArray({
+    control,
+    name: `rules.${index}.references`,
+  });
 
-      <FormField
-        control={control}
-        name={`rules.${index}.name`}
-        render={({ field }) => (
-          <FormItem>
-            <FormLabel>Name</FormLabel>
-            <FormControl>
-              <Input placeholder="my-rule" {...field} />
-            </FormControl>
-            <FormDescription>Name of the rule.</FormDescription>
-            <FormMessage />
-          </FormItem>
-        )}
-      />
+  return (
+    <div className="relative space-y-6 rounded-lg border border-gray-200 bg-white p-6 shadow-sm">
+      <div className="absolute right-4 top-4 flex items-center gap-2">
+        <Button
+          variant="ghost"
+          size="icon"
+          onClick={onRemove}
+          className="h-8 w-8 text-gray-500 hover:text-gray-900"
+        >
+          <X className="h-4 w-4" />
+          <span className="sr-only">Remove rule</span>
+        </Button>
+      </div>
+
+      <div className="grid grid-cols-2 gap-6">
+        <FormField
+          control={control}
+          name={`rules.${index}.name`}
+          render={({ field }) => (
+            <FormItem>
+              <FormLabel>Name</FormLabel>
+              <FormControl>
+                <Input placeholder="my-rule" {...field} />
+              </FormControl>
+              <FormDescription>Name of the rule.</FormDescription>
+              <FormMessage />
+            </FormItem>
+          )}
+        />
+
+        <FormField
+          control={control}
+          name={`rules.${index}.check`}
+          render={({ field }) => (
+            <FormItem>
+              <FormLabel>Rule Type</FormLabel>
+              <Select onValueChange={field.onChange} value={field.value}>
+                <FormControl>
+                  <SelectTrigger>
+                    <SelectValue placeholder="Select a rule type" />
+                  </SelectTrigger>
+                </FormControl>
+                <SelectContent>
+                  {Object.entries(ruleCheckNames).map(([key, value]) => (
+                    <SelectItem key={key} value={value}>
+                      {key.toLowerCase()}
+                    </SelectItem>
+                  ))}
+                </SelectContent>
+              </Select>
+              <FormDescription>Type of check to perform.</FormDescription>
+              <FormMessage />
+            </FormItem>
+          )}
+        />
+      </div>
 
       <FormField
         control={control}
@@ -75,37 +116,13 @@ export function RuleForm({ index, onRemove }: RuleFormProps) {
                 placeholder="This rule checks for..."
                 {...field}
                 value={field.value || ""}
+                className="resize-none"
+                rows={3}
               />
             </FormControl>
             <FormDescription>
               Description of what this rule does.
             </FormDescription>
-            <FormMessage />
-          </FormItem>
-        )}
-      />
-
-      <FormField
-        control={control}
-        name={`rules.${index}.check`}
-        render={({ field }) => (
-          <FormItem>
-            <FormLabel>Rule Type</FormLabel>
-            <Select onValueChange={field.onChange} value={field.value}>
-              <FormControl>
-                <SelectTrigger>
-                  <SelectValue placeholder="Select a rule type" />
-                </SelectTrigger>
-              </FormControl>
-              <SelectContent>
-                {Object.entries(ruleCheckNames).map(([key, value]) => (
-                  <SelectItem key={key} value={value}>
-                    {key.toLowerCase()}
-                  </SelectItem>
-                ))}
-              </SelectContent>
-            </Select>
-            <FormDescription>Type of check to perform.</FormDescription>
             <FormMessage />
           </FormItem>
         )}
@@ -126,6 +143,54 @@ export function RuleForm({ index, onRemove }: RuleFormProps) {
         )}
       />
 
+      <div className="space-y-4">
+        <div className="flex items-center justify-between">
+          <FormLabel className="text-sm font-medium">References</FormLabel>
+          <Button
+            type="button"
+            variant="outline"
+            size="sm"
+            className="h-8"
+            onClick={() => appendReference({ url: "" })}
+          >
+            <Plus className="mr-2 h-4 w-4" />
+            Add Reference
+          </Button>
+        </div>
+
+        <div className={cn("space-y-3", references?.length === 0 && "hidden")}>
+          {references?.map((reference, referenceIndex) => (
+            <div key={reference.id} className="flex items-start gap-2">
+              <FormField
+                control={control}
+                name={`rules.${index}.references.${referenceIndex}.url`}
+                render={({ field }) => (
+                  <FormItem className="flex-1">
+                    <FormControl>
+                      <Input
+                        placeholder="https://example.com/reference"
+                        {...field}
+                      />
+                    </FormControl>
+                    <FormMessage />
+                  </FormItem>
+                )}
+              />
+              <Button
+                type="button"
+                variant="ghost"
+                size="icon"
+                className="mt-1 h-8 w-8"
+                onClick={() => removeReference(referenceIndex)}
+              >
+                <X className="h-4 w-4" />
+                <span className="sr-only">Remove reference</span>
+              </Button>
+            </div>
+          ))}
+        </div>
+      </div>
+
       <FormField
         control={control}
         name={`rules.${index}.labels`}
@@ -139,7 +204,9 @@ export function RuleForm({ index, onRemove }: RuleFormProps) {
                 placeholder="Enter labels"
               />
             </FormControl>
-            <FormDescription>Labels for this rule.</FormDescription>
+            <FormDescription>
+              Labels for this rule (maximum 10).
+            </FormDescription>
             <FormMessage />
           </FormItem>
         )}
