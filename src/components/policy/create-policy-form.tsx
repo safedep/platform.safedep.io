@@ -5,7 +5,6 @@ import { useForm, useFieldArray } from "react-hook-form";
 import { toast } from "sonner";
 import * as v from "valibot";
 import { valibotResolver } from "@hookform/resolvers/valibot";
-import { RuleCheck } from "@buf/safedep_api.bufbuild_es/safedep/messages/policy/v1/rule_pb";
 import { Button } from "@/components/ui/button";
 import {
   Form,
@@ -27,15 +26,16 @@ import {
 import { Switch } from "@/components/ui/switch";
 import { TagsInput } from "@/components/ui/tags-input";
 import { RuleForm } from "./rule-form";
+import { RuleCheck } from "@buf/safedep_api.bufbuild_es/safedep/messages/policy/v1/rule_pb";
 
-const ruleCheckNames = {
-  // [RuleCheck.UNSPECIFIED]: "unspecified" as const,
-  [RuleCheck.LICENSE]: "license" as const,
-  [RuleCheck.MAINTENANCE]: "maintenance" as const,
-  [RuleCheck.PROVENANCE]: "provenance" as const,
-  [RuleCheck.VULNERABILITY]: "vulnerability" as const,
-  [RuleCheck.MALWARE]: "malware" as const,
-  [RuleCheck.POPULARITY]: "popularity" as const,
+// Display names for the rule types
+export const ruleTypeDisplayNames = {
+  [RuleCheck.LICENSE]: "License" as const,
+  [RuleCheck.MAINTENANCE]: "Maintenance" as const,
+  [RuleCheck.PROVENANCE]: "Provenance" as const,
+  [RuleCheck.VULNERABILITY]: "Vulnerability" as const,
+  [RuleCheck.MALWARE]: "Malware" as const,
+  [RuleCheck.POPULARITY]: "Popularity" as const,
 };
 
 const referenceSchema = v.object({
@@ -47,8 +47,6 @@ const referenceSchema = v.object({
   ),
 });
 
-export type CreatePolicyFormReference = v.InferOutput<typeof referenceSchema>;
-
 const ruleSchema = v.object({
   name: v.pipe(
     v.string("Invalid name"),
@@ -56,7 +54,7 @@ const ruleSchema = v.object({
     v.maxLength(250, "Name must be at most 250 characters"),
   ),
   description: v.optional(v.string("Invalid description")),
-  check: v.enum(ruleCheckNames),
+  check: v.enum(ruleTypeDisplayNames),
   value: v.pipe(
     v.string("Invalid rule value"),
     v.minLength(1, "Rule value must be at least 1 character"),
@@ -268,7 +266,7 @@ export default function CreatePolicyForm() {
             <Button
               type="button"
               variant="outline"
-              onClick={() => append({ name: "", value: "", check: "license" })}
+              onClick={() => append({ name: "", value: "", check: "License" })}
             >
               Add Rule
             </Button>
