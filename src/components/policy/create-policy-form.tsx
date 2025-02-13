@@ -1,7 +1,7 @@
 "use client";
 
 import { useState } from "react";
-import { useForm } from "react-hook-form";
+import { useForm, useFieldArray } from "react-hook-form";
 import { toast } from "sonner";
 import * as v from "valibot";
 import { valibotResolver } from "@hookform/resolvers/valibot";
@@ -26,9 +26,10 @@ import {
 } from "@/components/ui/select";
 import { Switch } from "@/components/ui/switch";
 import { TagsInput } from "@/components/ui/tags-input";
+import { RuleForm } from "./rule-form";
 
 const ruleCheckNames = {
-  [RuleCheck.UNSPECIFIED]: "unspecified" as const,
+  // [RuleCheck.UNSPECIFIED]: "unspecified" as const,
   [RuleCheck.LICENSE]: "license" as const,
   [RuleCheck.MAINTENANCE]: "maintenance" as const,
   [RuleCheck.PROVENANCE]: "provenance" as const,
@@ -53,8 +54,8 @@ const ruleSchema = v.object({
     v.minLength(1, "Name must be at least 1 character"),
     v.maxLength(250, "Name must be at most 250 characters"),
   ),
-  check: v.enum(ruleCheckNames),
   description: v.optional(v.string("Invalid description")),
+  check: v.enum(ruleCheckNames),
   value: v.pipe(
     v.string("Invalid rule value"),
     v.minLength(1, "Rule value must be at least 1 character"),
@@ -105,6 +106,11 @@ export default function CreatePolicyForm() {
       type: false,
       rules: [],
     },
+  });
+
+  const { fields, append, remove } = useFieldArray({
+    control: form.control,
+    name: "rules",
   });
 
   const [isSubmitting, setIsSubmitting] = useState(false);
@@ -251,6 +257,27 @@ export default function CreatePolicyForm() {
             </FormItem>
           )}
         />
+
+        <div className="space-y-4">
+          <div className="flex items-center justify-between">
+            <h3 className="text-lg font-medium">Rules</h3>
+            <Button
+              type="button"
+              variant="outline"
+              onClick={() => append({ name: "", value: "", check: "license" })}
+            >
+              Add Rule
+            </Button>
+          </div>
+
+          {fields.map((field, index) => (
+            <RuleForm
+              key={field.id}
+              index={index}
+              onRemove={() => remove(index)}
+            />
+          ))}
+        </div>
 
         <div className="flex justify-end">
           <Button type="submit" disabled={isSubmitting} className="w-40">
