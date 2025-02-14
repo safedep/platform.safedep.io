@@ -285,30 +285,38 @@ interface PolicyListItemProps {
 
 function PolicyListItem({ policy, isSelected, onToggle }: PolicyListItemProps) {
   return (
-    <div className="flex items-center border-b px-3 py-2 hover:bg-muted/50">
+    <div className="flex border-b px-3 py-2 hover:bg-muted/50">
       <Checkbox
         checked={isSelected}
         onCheckedChange={onToggle}
         aria-label={`Select ${policy.name}`}
-        className="mr-2"
+        className="mr-2 mt-1.5"
       />
-      <div className="flex flex-1 items-center justify-between">
-        <div>
-          <div className="font-medium">{policy.name}</div>
-          <div className="text-xs text-muted-foreground">
-            {policy.version} • {policy.target}
+      <div className="min-w-0 flex-1">
+        <div className="flex flex-col gap-2 sm:flex-row sm:items-center sm:justify-between">
+          <div className="min-w-0">
+            <div className="truncate font-medium">{policy.name}</div>
+            <div className="text-xs text-muted-foreground">
+              {policy.version} • {policy.target}
+            </div>
           </div>
-        </div>
-        <div className="flex items-center gap-2">
-          <Badge variant={policy.type ? "default" : "destructive"}>
-            {policy.type ? "Allow" : "Deny"}
-          </Badge>
-          <div className="flex gap-1">
-            {policy.labels.map((label) => (
-              <Badge key={label} variant="secondary">
-                {label}
-              </Badge>
-            ))}
+          <div className="flex flex-wrap items-center gap-2">
+            <Badge variant={policy.type ? "default" : "destructive"}>
+              {policy.type ? "Allow" : "Deny"}
+            </Badge>
+            <ScrollArea className="w-full max-w-[200px] sm:w-auto">
+              <div className="flex gap-1">
+                {policy.labels.map((label) => (
+                  <Badge
+                    key={label}
+                    variant="secondary"
+                    className="whitespace-nowrap"
+                  >
+                    {label}
+                  </Badge>
+                ))}
+              </div>
+            </ScrollArea>
           </div>
         </div>
       </div>
