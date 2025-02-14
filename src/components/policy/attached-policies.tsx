@@ -31,6 +31,9 @@ export default function AttachedPolicies({
   onAttach,
   onDetach,
 }: AttachedPoliciesProps) {
+  // Get the IDs of currently attached policies
+  const attachedPolicyIds = attachedPolicies.map((policy) => policy.id);
+
   return (
     <Card>
       <CardHeader>
@@ -39,6 +42,7 @@ export default function AttachedPolicies({
             <h1>Policies in Policy Group {groupId}</h1>
             <AttachPolicyDialog
               policies={availablePolicies}
+              attachedPolicyIds={attachedPolicyIds}
               onAttach={onAttach}
             />
           </div>

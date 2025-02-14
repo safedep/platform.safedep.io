@@ -35,11 +35,13 @@ interface Policy {
 
 interface AttachPolicyDialogProps {
   policies: Policy[];
+  attachedPolicyIds: string[];
   onAttach(policyIds: string[]): Promise<void>;
 }
 
 export function AttachPolicyDialog({
   policies,
+  attachedPolicyIds,
   onAttach,
 }: AttachPolicyDialogProps) {
   const [isOpen, setIsOpen] = useState(false);
@@ -50,10 +52,14 @@ export function AttachPolicyDialog({
   );
   const [isAttaching, setIsAttaching] = useState(false);
 
-  // Memoize the filtered policies to prevent unnecessary recalculations
+  // First filter out attached policies, then apply search and type filters
   const filteredPolicies = useMemo(() => {
+    const unattachedPolicies = policies.filter(
+      (policy) => !attachedPolicyIds.includes(policy.id),
+    );
+
     const searchLower = searchQuery.toLowerCase();
-    return policies.filter((policy) => {
+    return unattachedPolicies.filter((policy) => {
       const matchesSearch =
         policy.name.toLowerCase().includes(searchLower) ||
         policy.labels.some((label) =>
@@ -67,7 +73,7 @@ export function AttachPolicyDialog({
 
       return matchesSearch && matchesType;
     });
-  }, [policies, searchQuery, typeFilter]);
+  }, [policies, attachedPolicyIds, searchQuery, typeFilter]);
 
   const handleSearchChange = useCallback(
     (e: React.ChangeEvent<HTMLInputElement>) => {
