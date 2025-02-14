@@ -44,7 +44,7 @@ export default function PolicyListPage() {
     <div className="container mx-auto py-6">
       <div className="mb-6 flex items-center justify-between">
         <h1 className="text-2xl font-semibold">Policies</h1>
-        <Button onClick={() => router.push("/v2/policy/new")}>
+        <Button onClick={() => router.push("/v2/policy/new-policy")}>
           <Plus className="mr-2 h-4 w-4" />
           New Policy
         </Button>

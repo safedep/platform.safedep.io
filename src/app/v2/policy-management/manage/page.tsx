@@ -27,7 +27,7 @@ export default function Page() {
           <p className="text-muted-foreground">Manage your policy groups.</p>
         </div>
         <Button asChild>
-          <Link href="/v2/policy/new">
+          <Link href="/v2/policy-management/new">
             <PlusCircle className="mr-2 h-4 w-4" />
             Create Policy Group
           </Link>
