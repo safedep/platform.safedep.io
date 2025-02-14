@@ -63,7 +63,7 @@ export const columns = (
           <DropdownMenuContent align="end">
             <DropdownMenuLabel>Actions</DropdownMenuLabel>
             <DropdownMenuItem className="cursor-pointer" asChild>
-              <Link href={`/v2/policy/edit-policy/${row.original.id}`}>
+              <Link href={`/v2/policy/edit/${row.original.id}`}>
                 Edit Policy
               </Link>
             </DropdownMenuItem>

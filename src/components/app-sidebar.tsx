@@ -90,7 +90,7 @@ const data = {
         },
         {
           title: "New Policy",
-          url: "/v2/policy/new",
+          url: "/v2/policy/new-policy",
         },
         {
           title: "Violations",

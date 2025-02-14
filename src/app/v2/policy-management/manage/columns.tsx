@@ -51,7 +51,7 @@ export const columns: ColumnDef<PolicyGroup>[] = [
           <DropdownMenuContent align="end">
             <DropdownMenuLabel>Actions</DropdownMenuLabel>
             <DropdownMenuItem className="cursor-pointer" asChild>
-              <Link href={`/v2/policy/${row.original.id}`}>
+              <Link href={`/v2/policy-management/${row.original.id}`}>
                 Edit Policy Group
               </Link>
             </DropdownMenuItem>
