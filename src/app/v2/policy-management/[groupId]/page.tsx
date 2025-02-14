@@ -91,7 +91,7 @@ export default function PolicyGroupPage() {
     description: "This is a description" as string | undefined,
   });
 
-  const handleUpdateGroup = async (values: PolicyGroupFormValues) => {
+  async function handleUpdateGroup(values: PolicyGroupFormValues) {
     try {
       // TODO: Implement group update
       await new Promise((resolve) => setTimeout(resolve, 1000));
@@ -104,7 +104,7 @@ export default function PolicyGroupPage() {
       console.error("Failed to update group:", error);
       throw error;
     }
-  };
+  }
 
   async function handleAttachPolicies(policyIds: string[]) {
     try {
