@@ -19,8 +19,8 @@ function generateMockPolicies(count: number) {
     "License",
     "Dependency",
   ];
-  const targets = ["vet", "scan", "monitor"];
-  const versions = ["v1", "v2", "v3"];
+  const targets = ["vet"];
+  const versions = ["v1", "v2"];
   const labelPool = [
     "security",
     "production",
