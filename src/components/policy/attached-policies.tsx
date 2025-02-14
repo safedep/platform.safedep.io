@@ -20,8 +20,8 @@ interface AttachedPoliciesProps {
     labels: string[];
     rulesCount: number;
   }>;
-  onAttach: (policyIds: string[]) => Promise<void>;
-  onDetach: (policyId: string) => Promise<void>;
+  onAttach(policyIds: string[]): Promise<void>;
+  onDetach(policyId: string): Promise<void>;
 }
 
 export default function AttachedPolicies({
