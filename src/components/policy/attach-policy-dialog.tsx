@@ -35,7 +35,7 @@ interface Policy {
 
 interface AttachPolicyDialogProps {
   policies: Policy[];
-  onAttach: (policyIds: string[]) => Promise<void>;
+  onAttach(policyIds: string[]): Promise<void>;
 }
 
 export function AttachPolicyDialog({
@@ -69,6 +69,17 @@ export function AttachPolicyDialog({
     });
   }, [policies, searchQuery, typeFilter]);
 
+  const handleSearchChange = useCallback(
+    (e: React.ChangeEvent<HTMLInputElement>) => {
+      setSearchQuery(e.target.value);
+    },
+    [],
+  );
+
+  const handleTypeFilterChange = useCallback((value: string) => {
+    setTypeFilter(value);
+  }, []);
+
   const togglePolicy = useCallback((policyId: string) => {
     setSelectedPolicies((prev) => {
       const newSelected = new Set(prev);
@@ -81,26 +92,30 @@ export function AttachPolicyDialog({
     });
   }, []);
 
+  // Update toggleAll to only affect visible policies
   const toggleAll = useCallback(() => {
-    setSelectedPolicies((prev) =>
-      prev.size === filteredPolicies.length
-        ? new Set()
-        : new Set(filteredPolicies.map((p) => p.id)),
-    );
+    setSelectedPolicies((prev) => {
+      const visibleSelected = filteredPolicies.every((policy) =>
+        prev.has(policy.id),
+      );
+
+      if (visibleSelected) {
+        // Unselect only the visible ones
+        const newSelected = new Set(prev);
+        filteredPolicies.forEach((policy) => {
+          newSelected.delete(policy.id);
+        });
+        return newSelected;
+      } else {
+        // Select all visible ones while keeping previous selections
+        const newSelected = new Set(prev);
+        filteredPolicies.forEach((policy) => {
+          newSelected.add(policy.id);
+        });
+        return newSelected;
+      }
+    });
   }, [filteredPolicies]);
-
-  const handleSearchChange = useCallback(
-    (e: React.ChangeEvent<HTMLInputElement>) => {
-      setSearchQuery(e.target.value);
-      setSelectedPolicies(new Set());
-    },
-    [],
-  );
-
-  const handleTypeFilterChange = useCallback((value: string) => {
-    setTypeFilter(value);
-    setSelectedPolicies(new Set());
-  }, []);
 
   const handleAttach = async () => {
     try {
@@ -120,7 +135,11 @@ export function AttachPolicyDialog({
       open={isOpen}
       onOpenChange={(open) => {
         setIsOpen(open);
-        if (!open) setSelectedPolicies(new Set());
+        if (!open) {
+          setSelectedPolicies(new Set());
+          setSearchQuery("");
+          setTypeFilter("all");
+        }
       }}
     >
       <DialogTrigger asChild>
@@ -162,15 +181,22 @@ export function AttachPolicyDialog({
           <div className="border-b px-3 py-2">
             <Checkbox
               checked={
-                selectedPolicies.size === filteredPolicies.length &&
-                filteredPolicies.length > 0
+                filteredPolicies.length > 0 &&
+                filteredPolicies.every((policy) =>
+                  selectedPolicies.has(policy.id),
+                )
               }
               onCheckedChange={toggleAll}
-              aria-label="Select all"
+              aria-label="Select all visible policies"
               className="mr-2"
             />
             <span className="text-sm text-muted-foreground">
               {selectedPolicies.size} selected
+              {filteredPolicies.length < policies.length && (
+                <span className="ml-1">
+                  ({filteredPolicies.length} visible)
+                </span>
+              )}
             </span>
           </div>
           <ScrollArea className="h-[300px]">

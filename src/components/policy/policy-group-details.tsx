@@ -12,7 +12,7 @@ interface PolicyGroupData {
 
 interface PolicyGroupDetailsProps {
   data: PolicyGroupData;
-  onUpdate: (values: PolicyGroupFormValues) => Promise<void>;
+  onUpdate(values: PolicyGroupFormValues): Promise<void>;
 }
 
 export default function PolicyGroupDetails({
