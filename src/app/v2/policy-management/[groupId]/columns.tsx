@@ -11,25 +11,42 @@ import {
 import type { ColumnDef } from "@tanstack/react-table";
 import { MoreHorizontal } from "lucide-react";
 import Link from "next/link";
+import { formatDistanceToNow } from "date-fns";
 
-export interface Policy {
+export type Policy = {
   id: string;
   name: string;
   updatedAt: Date;
-}
+};
 
-export const columns: ColumnDef<Policy>[] = [
+export const columns = (
+  onDetach?: (id: string) => void,
+): ColumnDef<Policy>[] => [
   {
     accessorKey: "name",
     header: "Name",
-    cell: ({ row }) => <span className="font-medium">{row.original.name}</span>,
   },
   {
     accessorKey: "updatedAt",
     header: "Last Updated",
-    cell: ({ row }) => (
-      <span>{row.original.updatedAt.toLocaleDateString()}</span>
-    ),
+    cell: ({ row }) => {
+      const date = row.getValue("updatedAt") as Date;
+      return formatDistanceToNow(date, { addSuffix: true });
+    },
+  },
+  {
+    id: "actions1",
+    cell: ({ row }) => {
+      const policy = row.original;
+
+      return (
+        <div className="flex gap-2">
+          <Button variant="ghost" onClick={() => onDetach?.(policy.id)}>
+            Detach
+          </Button>
+        </div>
+      );
+    },
   },
   {
     accessorKey: "actions",
