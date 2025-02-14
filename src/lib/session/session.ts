@@ -1,5 +1,6 @@
 import "server-only";
 import { cookies } from "next/headers";
+import { redirect } from "next/navigation";
 
 export async function sessionSetTenant(domain: string) {
   const cookieStore = await cookies();
@@ -14,7 +15,7 @@ export async function sessionGetTenant(): Promise<string | undefined> {
 export async function sessionMustGetTenant(): Promise<string> {
   const tenant = await sessionGetTenant();
   if (!tenant) {
-    throw new Error("Tenant not found in session");
+    redirect("/");
   }
 
   return tenant;

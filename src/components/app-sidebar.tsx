@@ -63,17 +63,38 @@ const data = {
       ],
     },
     {
-      title: "Policy",
+      title: "Policy Groups",
       url: "#",
+      urlPrefix: "/v2/policy-management",
       icon: Bot,
       items: [
         {
-          title: "Violations",
-          url: "/v2/policy/violations",
+          title: "All Groups",
+          url: "/v2/policy-management/manage",
         },
         {
-          title: "Manage",
-          url: "/v2/policy/manage",
+          title: "New Group",
+          url: "/v2/policy-management/new",
+        },
+      ],
+    },
+    {
+      title: "Policies",
+      url: "#",
+      urlPrefix: "/v2/policy",
+      icon: Bot,
+      items: [
+        {
+          title: "All Policies",
+          url: "/v2/policy/list",
+        },
+        {
+          title: "New Policy",
+          url: "/v2/policy/new",
+        },
+        {
+          title: "Violations",
+          url: "/v2/policy/violations",
         },
       ],
     },
