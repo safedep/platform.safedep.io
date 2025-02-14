@@ -46,7 +46,7 @@ export function AttachPolicyDialog({
 }: AttachPolicyDialogProps) {
   const [isOpen, setIsOpen] = useState(false);
   const [searchQuery, setSearchQuery] = useState("");
-  const [typeFilter, setTypeFilter] = useState<string>("all");
+  const [typeFilter, setTypeFilter] = useState<"all" | "allow" | "deny">("all");
   const [selectedPolicies, setSelectedPolicies] = useState<Set<string>>(
     new Set(),
   );
@@ -82,9 +82,12 @@ export function AttachPolicyDialog({
     [],
   );
 
-  const handleTypeFilterChange = useCallback((value: string) => {
-    setTypeFilter(value);
-  }, []);
+  const handleTypeFilterChange = useCallback(
+    (value: "all" | "allow" | "deny") => {
+      setTypeFilter(value);
+    },
+    [],
+  );
 
   const togglePolicy = useCallback((policyId: string) => {
     setSelectedPolicies((prev) => {

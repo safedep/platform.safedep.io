@@ -8,7 +8,7 @@ import AttachedPolicies from "@/components/policy/attached-policies";
 import type { PolicyGroupFormValues } from "@/components/policy/update-group-form";
 import type { Policy } from "./columns";
 
-// Function to generate mock policies
+// Function to generate mock policies with deterministic values
 function generateMockPolicies(count: number) {
   const policyTypes = [
     "Security",
@@ -21,45 +21,33 @@ function generateMockPolicies(count: number) {
   ];
   const targets = ["vet"];
   const versions = ["v1", "v2"];
-  const labelPool = [
-    "security",
-    "production",
-    "development",
-    "testing",
-    "critical",
-    "high",
-    "medium",
-    "low",
-    "internal",
-    "external",
-    "compliance",
-    "audit",
-    "performance",
-    "quality",
-    "license",
-    "frontend",
-    "backend",
-    "infrastructure",
-    "database",
-    "network",
+  const labelSets = [
+    ["security", "production"],
+    ["development", "testing"],
+    ["critical", "high"],
+    ["medium", "low"],
+    ["internal", "external"],
+    ["compliance", "audit"],
+    ["performance", "quality"],
+    ["frontend", "backend"],
+    ["infrastructure", "database"],
+    ["network", "security"],
   ];
 
   return Array.from({ length: count }, (_, index) => {
-    const type = policyTypes[Math.floor(Math.random() * policyTypes.length)];
-    const randomLabels = Array.from(
-      { length: Math.floor(Math.random() * 4) + 1 },
-      () => labelPool[Math.floor(Math.random() * labelPool.length)],
-    );
-    const uniqueLabels = Array.from(new Set(randomLabels));
+    const typeIndex = index % policyTypes.length;
+    const labelSetIndex = index % labelSets.length;
+    const versionIndex = index % versions.length;
+    const isAllow = index % 3 !== 0; // Every third policy is deny
 
     return {
       id: `policy-${index + 1}`,
-      name: `${type} Policy ${index + 1}`,
-      version: versions[Math.floor(Math.random() * versions.length)],
-      target: targets[Math.floor(Math.random() * targets.length)],
-      type: Math.random() > 0.3,
-      labels: uniqueLabels,
-      rulesCount: Math.floor(Math.random() * 10) + 1,
+      name: `${policyTypes[typeIndex]} Policy ${index + 1}`,
+      version: versions[versionIndex],
+      target: targets[0],
+      type: isAllow,
+      labels: labelSets[labelSetIndex],
+      rulesCount: (index % 5) + 1, // 1 to 5 rules
     };
   });
 }
@@ -68,22 +56,21 @@ export default function PolicyGroupPage() {
   const { groupId } = useParams<{ groupId: string }>();
   const router = useRouter();
 
-  // TODO: get policies from API
-  const [attachedPolicies] = useState<Policy[]>([
-    {
-      id: "1",
-      name: "policy-1",
-      updatedAt: new Date("1/1/2025"),
-    },
-    {
-      id: "2",
-      name: "policy-2",
-      updatedAt: new Date("1/2/2024"),
-    },
-  ]);
+  // Generate mock policies with deterministic values
+  const [allMockPolicies] = useState(() => generateMockPolicies(2000));
 
-  // Generate 2000 mock policies
-  const [availablePolicies] = useState(() => generateMockPolicies(2000));
+  // Take first 5 policies as attached (deterministic selection)
+  const [attachedPolicies] = useState<Policy[]>(() => {
+    const selectedPolicies = allMockPolicies.slice(0, 5).map((policy) => ({
+      id: policy.id,
+      name: policy.name,
+      updatedAt: new Date("2024-01-01"), // Fixed date for deterministic behavior
+    }));
+    return selectedPolicies;
+  });
+
+  // Use all mock policies as available policies
+  const [availablePolicies] = useState(() => allMockPolicies);
 
   // TODO: get policy group data from API
   const [policyGroupData, setPolicyGroupData] = useState({
