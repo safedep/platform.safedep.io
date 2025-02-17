@@ -3,22 +3,16 @@ import { DataTable } from "@/components/policy/data-table";
 import { Button } from "@/components/ui/button";
 import { PlusCircle } from "lucide-react";
 import Link from "next/link";
-import { columns, type PolicyGroup } from "./columns";
-import { useState } from "react";
+import { columns, PolicyGroup } from "./columns";
+import { useState, useEffect } from "react";
+import { listPolicyGroups } from "./actions";
 
 export default function Page() {
-  const [foo] = useState([
-    {
-      id: "1",
-      name: "Admin group",
-      updatedAt: new Date("1/1/2025"),
-    },
-    {
-      id: "2",
-      name: "Frontend Team",
-      updatedAt: new Date("1/11/2024"),
-    },
-  ] as PolicyGroup[]);
+  const [policyGroups, setPolicyGroups] = useState<PolicyGroup[]>([]);
+  useEffect(() => {
+    listPolicyGroups().then(setPolicyGroups);
+  }, []);
+
   return (
     <div className="container mx-auto py-6">
       <div className="mb-6 flex items-center justify-between">
@@ -34,7 +28,7 @@ export default function Page() {
         </Button>
       </div>
 
-      <DataTable columns={columns} data={foo} />
+      <DataTable columns={columns} data={policyGroups} />
     </div>
   );
 }

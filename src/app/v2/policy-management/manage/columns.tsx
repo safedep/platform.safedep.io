@@ -18,6 +18,8 @@ export interface PolicyGroup {
   id: string;
   name?: string;
   updatedAt?: Date;
+  createdAt?: Date;
+  description?: string;
 }
 
 export const columns: ColumnDef<PolicyGroup>[] = [
@@ -25,6 +27,13 @@ export const columns: ColumnDef<PolicyGroup>[] = [
     accessorKey: "name",
     header: "Name",
     cell: ({ row }) => <span className="font-medium">{row.original.name}</span>,
+  },
+  {
+    accessorKey: "description",
+    header: "Description",
+    cell: ({ row }) => (
+      <span className="font-medium">{row.original.description}</span>
+    ),
   },
   {
     accessorKey: "updatedAt",
