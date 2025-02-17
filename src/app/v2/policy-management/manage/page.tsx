@@ -5,12 +5,12 @@ import { PlusCircle } from "lucide-react";
 import Link from "next/link";
 import { columns, PolicyGroup } from "./columns";
 import { useState, useEffect } from "react";
-import { listPolicyGroups } from "./actions";
+import { getPolicyGroups } from "./actions";
 
 export default function Page() {
   const [policyGroups, setPolicyGroups] = useState<PolicyGroup[]>([]);
   useEffect(() => {
-    listPolicyGroups().then(setPolicyGroups);
+    getPolicyGroups().then(setPolicyGroups);
   }, []);
 
   return (

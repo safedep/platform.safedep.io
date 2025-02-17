@@ -8,11 +8,21 @@ import {
   DropdownMenuSeparator,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
-// import { toast } from "@/hooks/use-toast";
-// import { useClipboard } from "@mantine/hooks";
 import type { ColumnDef } from "@tanstack/react-table";
 import { MoreHorizontal } from "lucide-react";
 import Link from "next/link";
+import { deletePolicyGroup } from "./actions";
+import {
+  AlertDialog,
+  AlertDialogAction,
+  AlertDialogCancel,
+  AlertDialogContent,
+  AlertDialogDescription,
+  AlertDialogFooter,
+  AlertDialogHeader,
+  AlertDialogTitle,
+  AlertDialogTrigger,
+} from "@/components/ui/alert-dialog";
 
 export interface PolicyGroup {
   id: string;
@@ -36,6 +46,11 @@ export const columns: ColumnDef<PolicyGroup>[] = [
     ),
   },
   {
+    accessorKey: "createdAt",
+    header: "Created At",
+    cell: ({ row }) => row.original.createdAt?.toLocaleDateString(),
+  },
+  {
     accessorKey: "updatedAt",
     header: "Last Updated",
     cell: ({ row }) => row.original.updatedAt?.toLocaleDateString(),
@@ -44,9 +59,8 @@ export const columns: ColumnDef<PolicyGroup>[] = [
     accessorKey: "actions",
     header: "",
     cell: ({ row }) => {
-      // eslint-disable-next-line react-hooks/rules-of-hooks
-      function onDeletePolicyGroup() {
-        console.log("Delete policy group");
+      async function onDeletePolicyGroup() {
+        await deletePolicyGroup(row.original.id);
       }
 
       return (
@@ -65,12 +79,34 @@ export const columns: ColumnDef<PolicyGroup>[] = [
               </Link>
             </DropdownMenuItem>
             <DropdownMenuSeparator />
-            <DropdownMenuItem
-              className="cursor-pointer text-destructive"
-              onClick={onDeletePolicyGroup}
-            >
-              Delete
-            </DropdownMenuItem>
+            <AlertDialog>
+              <AlertDialogTrigger asChild>
+                <DropdownMenuItem
+                  className="cursor-pointer text-destructive"
+                  onSelect={(e) => e.preventDefault()}
+                >
+                  Delete
+                </DropdownMenuItem>
+              </AlertDialogTrigger>
+              <AlertDialogContent>
+                <AlertDialogHeader>
+                  <AlertDialogTitle>Are you absolutely sure?</AlertDialogTitle>
+                  <AlertDialogDescription>
+                    This action will permanently delete this policy group. This
+                    action cannot be undone.
+                  </AlertDialogDescription>
+                </AlertDialogHeader>
+                <AlertDialogFooter>
+                  <AlertDialogCancel>Cancel</AlertDialogCancel>
+                  <AlertDialogAction
+                    onClick={onDeletePolicyGroup}
+                    className="bg-destructive text-destructive-foreground hover:bg-destructive/90"
+                  >
+                    Delete
+                  </AlertDialogAction>
+                </AlertDialogFooter>
+              </AlertDialogContent>
+            </AlertDialog>
           </DropdownMenuContent>
         </DropdownMenu>
       );

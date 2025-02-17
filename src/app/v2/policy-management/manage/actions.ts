@@ -9,7 +9,7 @@ async function getTenantAndToken() {
   return { accessToken, tenant };
 }
 
-export async function listPolicyGroups() {
+export async function getPolicyGroups() {
   const { accessToken, tenant } = await getTenantAndToken();
   const policyServiceClient = createPolicyService(
     tenant,
@@ -24,4 +24,13 @@ export async function listPolicyGroups() {
       updatedAt: updatedAt?.toDate(),
     }),
   );
+}
+
+export async function deletePolicyGroup(id: string) {
+  const { accessToken, tenant } = await getTenantAndToken();
+  const policyServiceClient = createPolicyService(
+    tenant,
+    accessToken as string,
+  );
+  await policyServiceClient.deletePolicyGroup({ policyGroupId: id });
 }
