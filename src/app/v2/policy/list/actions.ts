@@ -2,11 +2,16 @@
 import { sessionMustGetTenant } from "@/lib/session/session";
 import { getAccessToken } from "@auth0/nextjs-auth0";
 import { createPolicyService } from "@/lib/rpc/client";
+import { redirect } from "next/navigation";
 
 async function getTenantAndToken() {
-  const { accessToken } = await getAccessToken();
   const tenant = await sessionMustGetTenant();
-  return { accessToken, tenant };
+  try {
+    const { accessToken } = await getAccessToken();
+    return { accessToken, tenant };
+  } catch {
+    redirect("/auth");
+  }
 }
 
 export async function getPolicies() {

@@ -11,7 +11,7 @@ export default function EditPolicyPage() {
     name: "Security Policy",
     version: "v1",
     target: "vet",
-    type: true,
+    policyType: true,
     labels: ["security", "production"],
     rules: [],
   };

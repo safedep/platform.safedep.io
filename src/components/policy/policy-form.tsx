@@ -27,6 +27,10 @@ import { Switch } from "@/components/ui/switch";
 import { TagsInput } from "@/components/ui/tags-input";
 import { RuleForm } from "./rule-form";
 import { RuleCheck } from "@buf/safedep_api.bufbuild_es/safedep/messages/policy/v1/rule_pb";
+import {
+  PolicyTarget,
+  PolicyVersion,
+} from "@buf/safedep_api.bufbuild_es/safedep/messages/policy/v1/policy_pb";
 
 // Display names for the rule types
 export const ruleTypeDisplayNames = {
@@ -36,6 +40,16 @@ export const ruleTypeDisplayNames = {
   [RuleCheck.VULNERABILITY]: "Vulnerability" as const,
   [RuleCheck.MALWARE]: "Malware" as const,
   [RuleCheck.POPULARITY]: "Popularity" as const,
+};
+
+const policyTargetDisplayNames = {
+  [PolicyTarget.UNSPECIFIED]: "Unspecified" as const,
+  [PolicyTarget.VET]: "Vet" as const,
+};
+
+const policyVersionDisplayNames = {
+  [PolicyVersion.V1]: "v1" as const,
+  [PolicyVersion.V2]: "v2" as const,
 };
 
 const referenceSchema = v.object({
@@ -60,18 +74,16 @@ const ruleSchema = v.object({
     v.minLength(1, "Rule value must be at least 1 character"),
     v.maxLength(1000, "Rule value must be at most 1000 characters"),
   ),
-  references: v.optional(v.array(referenceSchema)),
-  labels: v.optional(
-    v.pipe(
-      v.array(
-        v.pipe(
-          v.string("Invalid label"),
-          v.minLength(1, "Label must be at least 1 character"),
-          v.maxLength(50, "Label must be at most 50 characters"),
-        ),
+  references: v.array(referenceSchema),
+  labels: v.pipe(
+    v.array(
+      v.pipe(
+        v.string("Invalid label"),
+        v.minLength(1, "Label must be at least 1 character"),
+        v.maxLength(50, "Label must be at most 50 characters"),
       ),
-      v.maxLength(10, "Maximum 10 labels allowed"),
     ),
+    v.maxLength(10, "Maximum 10 labels allowed"),
   ),
 });
 
@@ -82,11 +94,14 @@ const formSchema = v.object({
     v.string("Invalid name"),
     v.minLength(1, "Name must be at least 1 character"),
   ),
-  version: v.string("Invalid version. Please select a version from the list"),
-  target: v.string("Invalid target. Please select a target from the list"),
-  type: v.optional(v.boolean()),
+  version: v.enum(policyVersionDisplayNames),
+  target: v.enum(policyTargetDisplayNames),
+  policyType: v.optional(v.boolean()),
   labels: v.optional(v.pipe(v.array(v.string("Invalid label")))),
-  rules: v.array(ruleSchema),
+  rules: v.pipe(
+    v.array(ruleSchema),
+    v.minLength(1, "At least one rule is required"),
+  ),
 });
 
 export type PolicyFormValues = v.InferInput<typeof formSchema>;
@@ -102,18 +117,24 @@ export default function PolicyForm({
   mode = "create",
   onSubmit,
 }: PolicyFormProps) {
-  const [targets] = useState(["vet"]);
-  const [versions] = useState(["v1", "v2"]);
-
   const form = useForm<PolicyFormValues>({
     resolver: valibotResolver(formSchema),
     defaultValues: defaultValues ?? {
       name: "",
       labels: [],
-      version: versions.at(-1),
-      target: targets.at(-1),
-      type: false,
-      rules: [],
+      version: "v2",
+      target: "Vet",
+      policyType: false,
+      rules: [
+        {
+          name: "",
+          value: "",
+          check: "License" as const,
+          description: "",
+          references: [],
+          labels: [],
+        },
+      ],
     },
   });
 
@@ -176,11 +197,13 @@ export default function PolicyForm({
                       </SelectTrigger>
                     </FormControl>
                     <SelectContent>
-                      {versions.map((version) => (
-                        <SelectItem key={version} value={version}>
-                          {version}
-                        </SelectItem>
-                      ))}
+                      {Object.entries(policyVersionDisplayNames).map(
+                        ([key, value]) => (
+                          <SelectItem key={key} value={value}>
+                            {value}
+                          </SelectItem>
+                        ),
+                      )}
                     </SelectContent>
                   </Select>
                   <FormDescription>Version of the policy.</FormDescription>
@@ -207,11 +230,13 @@ export default function PolicyForm({
                       </SelectTrigger>
                     </FormControl>
                     <SelectContent>
-                      {targets.map((target) => (
-                        <SelectItem key={target} value={target}>
-                          {target}
-                        </SelectItem>
-                      ))}
+                      {Object.entries(policyTargetDisplayNames).map(
+                        ([key, value]) => (
+                          <SelectItem key={key} value={value}>
+                            {value}
+                          </SelectItem>
+                        ),
+                      )}
                     </SelectContent>
                   </Select>
                   <FormDescription>
@@ -226,7 +251,7 @@ export default function PolicyForm({
 
         <FormField
           control={form.control}
-          name="type"
+          name="policyType"
           render={({ field }) => (
             <FormItem className="flex flex-row items-center justify-between rounded-lg border p-4">
               <div className="space-y-0.5">

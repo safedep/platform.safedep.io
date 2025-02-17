@@ -10,7 +10,7 @@ const mockPolicyData: PolicyFormValues = {
   name: "Sample Policy",
   version: "v2",
   target: "vet",
-  type: true,
+  policyType: true,
   labels: ["security", "compliance"],
   rules: [
     {
