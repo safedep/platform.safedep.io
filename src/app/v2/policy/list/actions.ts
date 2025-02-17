@@ -29,6 +29,8 @@ export async function getPolicies() {
   );
 }
 
+export type Policy = Awaited<ReturnType<typeof getPolicies>>[number];
+
 export async function deletePolicy(id: string) {
   const { accessToken, tenant } = await getTenantAndToken();
   const policyServiceClient = createPolicyService(
