@@ -19,7 +19,6 @@ const ruleCheckMap = {
 };
 
 const policyTargetMap = {
-  Unspecified: PolicyTarget.UNSPECIFIED,
   Vet: PolicyTarget.VET,
 };
 

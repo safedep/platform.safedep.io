@@ -43,7 +43,6 @@ export const ruleTypeDisplayNames = {
 };
 
 const policyTargetDisplayNames = {
-  [PolicyTarget.UNSPECIFIED]: "Unspecified" as const,
   [PolicyTarget.VET]: "Vet" as const,
 };
 

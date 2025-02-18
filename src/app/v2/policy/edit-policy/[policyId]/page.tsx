@@ -9,7 +9,7 @@ import PolicyForm, { PolicyFormValues } from "@/components/policy/policy-form";
 const mockPolicyData: PolicyFormValues = {
   name: "Sample Policy",
   version: "v2",
-  target: "vet",
+  target: "Vet",
   policyType: true,
   labels: ["security", "compliance"],
   rules: [
