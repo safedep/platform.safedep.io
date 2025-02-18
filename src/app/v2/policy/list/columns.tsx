@@ -27,6 +27,10 @@ import {
 
 export const columns: ColumnDef<Policy>[] = [
   {
+    header: "ID",
+    accessorKey: "id",
+  },
+  {
     header: "Name",
     accessorKey: "name",
     cell: ({ row }) => {
@@ -95,7 +99,7 @@ export const columns: ColumnDef<Policy>[] = [
           <DropdownMenuContent align="end">
             <DropdownMenuLabel>Actions</DropdownMenuLabel>
             <DropdownMenuItem className="cursor-pointer" asChild>
-              <Link href={`/v2/policy-management/${row.original.id}`}>
+              <Link href={`/v2/policy/edit-policy/${row.original.id}`}>
                 Edit Policy
               </Link>
             </DropdownMenuItem>

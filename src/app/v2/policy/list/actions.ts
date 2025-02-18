@@ -21,7 +21,8 @@ export async function getPolicies() {
     accessToken as string,
   );
 
-  return (await policyServiceClient.listPolicies({})).policies.map(
+  const policies = (await policyServiceClient.listPolicies({})).policies;
+  return policies.map(
     ({ labels, name, policyId, rules, version, type, target }) => ({
       id: policyId,
       name,
