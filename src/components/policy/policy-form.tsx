@@ -29,26 +29,32 @@ import { RuleForm } from "./rule-form";
 import { RuleCheck } from "@buf/safedep_api.bufbuild_es/safedep/messages/policy/v1/rule_pb";
 import {
   PolicyTarget,
+  PolicyType,
   PolicyVersion,
 } from "@buf/safedep_api.bufbuild_es/safedep/messages/policy/v1/policy_pb";
 
 // Display names for the rule types
 export const ruleTypeDisplayNames = {
-  [RuleCheck.LICENSE]: "License" as const,
-  [RuleCheck.MAINTENANCE]: "Maintenance" as const,
-  [RuleCheck.PROVENANCE]: "Provenance" as const,
-  [RuleCheck.VULNERABILITY]: "Vulnerability" as const,
-  [RuleCheck.MALWARE]: "Malware" as const,
-  [RuleCheck.POPULARITY]: "Popularity" as const,
+  License: RuleCheck.LICENSE,
+  Maintenance: RuleCheck.MAINTENANCE,
+  Provenance: RuleCheck.PROVENANCE,
+  Vulnerability: RuleCheck.VULNERABILITY,
+  Malware: RuleCheck.MALWARE,
+  Popularity: RuleCheck.POPULARITY,
 };
 
 const policyTargetDisplayNames = {
-  [PolicyTarget.VET]: "Vet" as const,
+  Vet: PolicyTarget.VET,
 };
 
 const policyVersionDisplayNames = {
-  [PolicyVersion.V1]: "v1" as const,
-  [PolicyVersion.V2]: "v2" as const,
+  v1: PolicyVersion.V1,
+  v2: PolicyVersion.V2,
+};
+
+const policyTypeDisplayNames = {
+  Allow: PolicyType.ALLOW,
+  Deny: PolicyType.DENY,
 };
 
 const referenceSchema = v.object({
@@ -95,7 +101,7 @@ const formSchema = v.object({
   ),
   version: v.enum(policyVersionDisplayNames),
   target: v.enum(policyTargetDisplayNames),
-  policyType: v.optional(v.boolean()),
+  policyType: v.enum(policyTypeDisplayNames),
   labels: v.optional(v.pipe(v.array(v.string("Invalid label")))),
   rules: v.pipe(
     v.array(ruleSchema),
@@ -121,14 +127,14 @@ export default function PolicyForm({
     defaultValues: defaultValues ?? {
       name: "",
       labels: [],
-      version: "v2",
-      target: "Vet",
-      policyType: false,
+      version: PolicyVersion.V2,
+      target: PolicyTarget.VET,
+      policyType: PolicyType.DENY,
       rules: [
         {
           name: "",
           value: "",
-          check: "License" as const,
+          check: RuleCheck.LICENSE,
           description: "",
           references: [],
           labels: [],
@@ -188,7 +194,7 @@ export default function PolicyForm({
                   <FormLabel>Version</FormLabel>
                   <Select
                     onValueChange={field.onChange}
-                    defaultValue={field.value}
+                    defaultValue={field.value.toString()}
                   >
                     <FormControl>
                       <SelectTrigger>
@@ -197,9 +203,12 @@ export default function PolicyForm({
                     </FormControl>
                     <SelectContent>
                       {Object.entries(policyVersionDisplayNames).map(
-                        ([key, value]) => (
-                          <SelectItem key={key} value={value}>
-                            {value}
+                        ([displayName, value]) => (
+                          <SelectItem
+                            key={displayName}
+                            value={value.toString()}
+                          >
+                            {displayName}
                           </SelectItem>
                         ),
                       )}
@@ -221,7 +230,7 @@ export default function PolicyForm({
                   <FormLabel>Target</FormLabel>
                   <Select
                     onValueChange={field.onChange}
-                    defaultValue={field.value}
+                    defaultValue={field.value.toString()}
                   >
                     <FormControl>
                       <SelectTrigger>
@@ -231,8 +240,8 @@ export default function PolicyForm({
                     <SelectContent>
                       {Object.entries(policyTargetDisplayNames).map(
                         ([key, value]) => (
-                          <SelectItem key={key} value={value}>
-                            {value}
+                          <SelectItem key={key} value={value.toString()}>
+                            {key}
                           </SelectItem>
                         ),
                       )}
@@ -261,8 +270,15 @@ export default function PolicyForm({
               </div>
               <FormControl>
                 <Switch
-                  checked={field.value}
-                  onCheckedChange={field.onChange}
+                  checked={field.value === PolicyType.ALLOW}
+                  onCheckedChange={() => {
+                    form.setValue(
+                      "policyType",
+                      field.value === PolicyType.ALLOW
+                        ? PolicyType.DENY
+                        : PolicyType.ALLOW,
+                    );
+                  }}
                 />
               </FormControl>
             </FormItem>
@@ -298,7 +314,7 @@ export default function PolicyForm({
                 const newRule = {
                   name: "",
                   value: "",
-                  check: "License" as const,
+                  check: RuleCheck.LICENSE,
                   description: "",
                   references: [],
                   labels: [],

@@ -43,7 +43,7 @@ export function RuleForm({ index, onRemove }: RuleFormProps) {
   });
 
   const ruleName = watch(`rules.${index}.name`) || "New Rule";
-  const ruleType = watch(`rules.${index}.check`) || "Not selected";
+  const ruleType = watch(`rules.${index}.check`);
 
   return (
     <div className="rounded-lg border border-gray-200 bg-white shadow-sm">
@@ -100,7 +100,10 @@ export function RuleForm({ index, onRemove }: RuleFormProps) {
               render={({ field }) => (
                 <FormItem>
                   <FormLabel>Rule Type</FormLabel>
-                  <Select onValueChange={field.onChange} value={field.value}>
+                  <Select
+                    onValueChange={field.onChange}
+                    value={field.value.toString()}
+                  >
                     <FormControl>
                       <SelectTrigger>
                         <SelectValue placeholder="Select a rule type" />
@@ -109,8 +112,8 @@ export function RuleForm({ index, onRemove }: RuleFormProps) {
                     <SelectContent>
                       {Object.entries(ruleTypeDisplayNames).map(
                         ([enumKey, value]) => (
-                          <SelectItem key={enumKey} value={value}>
-                            {value}
+                          <SelectItem key={enumKey} value={value.toString()}>
+                            {enumKey}
                           </SelectItem>
                         ),
                       )}

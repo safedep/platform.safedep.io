@@ -27,13 +27,16 @@ export async function getPolicy(policyId: string) {
     target: policy?.target,
     policyType: policy?.type,
     labels: policy?.labels ?? [],
-    rules: policy?.rules.map(({ name, check, description, value, references, labels }) => ({
-      name,
-      check,
-      description,
-      value,
-      references,
-      labels,
-    })),
+    rules:
+      policy?.rules.map(
+        ({ name, check, description, value, references, labels }) => ({
+          name,
+          check,
+          description,
+          value,
+          references,
+          labels,
+        }),
+      ) ?? [],
   };
 }
