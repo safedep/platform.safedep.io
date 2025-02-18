@@ -170,6 +170,11 @@ export default function PolicyForm({
           await form.handleSubmit(handleSubmit)(e);
         }}
         className="flex max-w-2xl flex-col gap-8"
+        onKeyDown={(e) => {
+          if (e.key === "Enter" && e.target instanceof HTMLInputElement) {
+            e.preventDefault();
+          }
+        }}
       >
         <FormField
           control={form.control}
@@ -312,7 +317,14 @@ export default function PolicyForm({
 
         <div className="space-y-4">
           <div className="flex items-center justify-between">
-            <h3 className="text-lg font-medium">Rules</h3>
+            <div>
+              <h3 className="text-lg font-medium">Rules</h3>
+              <FormField
+                control={form.control}
+                name="rules"
+                render={() => <FormMessage />}
+              />
+            </div>
             <Button
               type="button"
               variant="outline"
@@ -325,7 +337,11 @@ export default function PolicyForm({
                   references: [],
                   labels: [],
                 };
-                form.setValue("rules", [newRule, ...form.getValues("rules")]);
+                const currentRules = form.getValues("rules") || [];
+                form.setValue("rules", [newRule, ...currentRules], {
+                  shouldValidate: true,
+                  shouldDirty: true,
+                });
               }}
             >
               Add Rule

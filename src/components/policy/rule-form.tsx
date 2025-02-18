@@ -149,7 +149,7 @@ export function RuleForm({ index, onRemove }: RuleFormProps) {
                     placeholder="This rule checks for..."
                     {...field}
                     value={field.value || ""}
-                    className="resize-none"
+                    className="resize-y"
                     rows={3}
                   />
                 </FormControl>

@@ -1,17 +1,17 @@
 "use client";
 
-import { redirect, useParams } from "next/navigation";
+import { useParams, useRouter } from "next/navigation";
 import { Button } from "@/components/ui/button";
 import PolicyForm, { PolicyFormValues } from "@/components/policy/policy-form";
 import { useQuery } from "@tanstack/react-query";
 import { getPolicy, updatePolicy } from "./actions";
-import router from "next/router";
 import { PolicyVersion } from "@buf/safedep_api.bufbuild_es/safedep/messages/policy/v1/policy_pb";
 import { PolicyTarget } from "@buf/safedep_api.bufbuild_es/safedep/messages/policy/v1/policy_pb";
 import { PolicyType } from "@buf/safedep_api.bufbuild_es/safedep/messages/policy/v1/policy_pb";
 
 export default function EditPolicyPage() {
   const { policyId } = useParams<{ policyId: string }>();
+  const router = useRouter();
 
   const {
     data: policy,
@@ -24,7 +24,7 @@ export default function EditPolicyPage() {
 
   async function handleSubmit(values: PolicyFormValues) {
     await updatePolicy(policyId, values);
-    redirect("/v2/policy/list");
+    router.push("/v2/policy/list");
   }
 
   if (isLoading) {
