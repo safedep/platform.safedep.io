@@ -22,7 +22,7 @@ import { useFieldArray, useFormContext } from "react-hook-form";
 import type { PolicyFormValues } from "./policy-form";
 import { cn } from "@/lib/utils";
 import { ruleTypeDisplayNames } from "./policy-form";
-import { useState } from "react";
+import { useMemo, useState } from "react";
 
 interface RuleFormProps {
   index: number;
@@ -43,7 +43,15 @@ export function RuleForm({ index, onRemove }: RuleFormProps) {
   });
 
   const ruleName = watch(`rules.${index}.name`) || "New Rule";
-  const ruleType = watch(`rules.${index}.check`);
+  const ruleType = watch(`rules.${index}.check`) || "Not selected";
+
+  const ruleTypeDisplayName = useMemo(() => {
+    return (
+      Object.entries(ruleTypeDisplayNames).find(
+        ([, value]) => value === ruleType,
+      )?.[0] ?? "Not selected"
+    );
+  }, [ruleType]);
 
   return (
     <div className="rounded-lg border border-gray-200 bg-white shadow-sm">
@@ -62,7 +70,9 @@ export function RuleForm({ index, onRemove }: RuleFormProps) {
           </span>
           <div>
             <span className="font-medium">{ruleName}</span>
-            <span className="ml-2 text-sm text-gray-500">({ruleType})</span>
+            <span className="ml-2 text-sm text-gray-500">
+              ({ruleTypeDisplayName})
+            </span>
           </div>
         </button>
         <Button
@@ -101,7 +111,9 @@ export function RuleForm({ index, onRemove }: RuleFormProps) {
                 <FormItem>
                   <FormLabel>Rule Type</FormLabel>
                   <Select
-                    onValueChange={field.onChange}
+                    onValueChange={(value) => {
+                      field.onChange(Number.parseInt(value));
+                    }}
                     value={field.value.toString()}
                   >
                     <FormControl>

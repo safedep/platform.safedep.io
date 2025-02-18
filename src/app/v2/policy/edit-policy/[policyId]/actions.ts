@@ -3,6 +3,7 @@ import { sessionMustGetTenant } from "@/lib/session/session";
 import { getAccessToken } from "@auth0/nextjs-auth0";
 import { createPolicyService } from "@/lib/rpc/client";
 import { redirect } from "next/navigation";
+import { PolicyFormValues } from "@/components/policy/policy-form";
 
 async function getTenantAndToken() {
   const tenant = await sessionMustGetTenant();
@@ -39,4 +40,18 @@ export async function getPolicy(policyId: string) {
         }),
       ) ?? [],
   };
+}
+
+export async function updatePolicy(policyId: string, policy: PolicyFormValues) {
+  const { accessToken, tenant } = await getTenantAndToken();
+  const policyServiceClient = createPolicyService(tenant, accessToken);
+  await policyServiceClient.updatePolicy({
+    policyId,
+    labels: policy.labels,
+    name: policy.name,
+    type: policy.policyType,
+    target: policy.target,
+    version: policy.version,
+    rules: policy.rules,
+  });
 }

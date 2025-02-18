@@ -102,7 +102,7 @@ const formSchema = v.object({
   version: v.enum(policyVersionDisplayNames),
   target: v.enum(policyTargetDisplayNames),
   policyType: v.enum(policyTypeDisplayNames),
-  labels: v.optional(v.pipe(v.array(v.string("Invalid label")))),
+  labels: v.pipe(v.array(v.string("Invalid label"))),
   rules: v.pipe(
     v.array(ruleSchema),
     v.minLength(1, "At least one rule is required"),
@@ -193,7 +193,9 @@ export default function PolicyForm({
                 <FormItem>
                   <FormLabel>Version</FormLabel>
                   <Select
-                    onValueChange={field.onChange}
+                    onValueChange={(value) => {
+                      field.onChange(Number.parseInt(value));
+                    }}
                     defaultValue={field.value.toString()}
                   >
                     <FormControl>
@@ -229,7 +231,9 @@ export default function PolicyForm({
                 <FormItem>
                   <FormLabel>Target</FormLabel>
                   <Select
-                    onValueChange={field.onChange}
+                    onValueChange={(value) => {
+                      field.onChange(Number.parseInt(value));
+                    }}
                     defaultValue={field.value.toString()}
                   >
                     <FormControl>

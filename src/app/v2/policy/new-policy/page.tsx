@@ -6,7 +6,6 @@ import { redirect } from "next/navigation";
 export default async function Page() {
   async function submitHandler(form: PolicyFormValues) {
     "use server";
-    console.log(form);
     const policyRequest = new CreatePolicyRequest({
       labels: form.labels ?? [],
       name: form.name,
@@ -16,8 +15,11 @@ export default async function Page() {
       rules: form.rules,
     });
 
-    console.log(policyRequest);
-    await createPolicy(policyRequest);
+    try {
+      await createPolicy(policyRequest);
+    } catch {
+      // TODO(arunanshub): render sonner
+    }
     redirect("/v2/policy/list");
   }
   return (
