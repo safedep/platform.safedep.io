@@ -27,10 +27,6 @@ import {
 
 export const columns: ColumnDef<Policy>[] = [
   {
-    header: "ID",
-    accessorKey: "id",
-  },
-  {
     header: "Name",
     accessorKey: "name",
     cell: ({ row }) => {
