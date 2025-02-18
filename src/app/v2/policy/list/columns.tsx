@@ -2,7 +2,7 @@
 import { deletePolicy, Policy } from "./actions";
 import { ColumnDef } from "@tanstack/react-table";
 import { Badge } from "@/components/ui/badge";
-import { MoreHorizontal } from "lucide-react";
+import { MoreHorizontal, Loader2 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import {
   DropdownMenu,
@@ -25,7 +25,7 @@ import {
   AlertDialogTrigger,
 } from "@/components/ui/alert-dialog";
 import { useRouter } from "next/navigation";
-
+import { useState } from "react";
 export const columns: ColumnDef<Policy>[] = [
   {
     header: "Name",
@@ -88,9 +88,28 @@ export const columns: ColumnDef<Policy>[] = [
 
 function ActionsDropdown({ id }: { id: string }) {
   const router = useRouter();
+  const [isDeleting, setIsDeleting] = useState(false);
+
   async function onDeletePolicyGroup() {
-    await deletePolicy(id);
-    router.refresh();
+    setIsDeleting(true);
+    try {
+      await deletePolicy(id);
+      router.refresh();
+    } catch {
+      // TODO: show an error toast
+    } finally {
+      setIsDeleting(false);
+    }
+  }
+
+  // show a loading spinner if the policy is being deleted
+  if (isDeleting) {
+    return (
+      <Button variant="ghost" className="h-8 w-8 p-0">
+        <span className="sr-only">Open menu</span>
+        <Loader2 className="animate-spin" />
+      </Button>
+    );
   }
 
   return (
