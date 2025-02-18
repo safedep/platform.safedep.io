@@ -165,8 +165,10 @@ export default function PolicyForm({
   return (
     <Form {...form}>
       <form
-        onKeyDown={(e) => e.key === "Enter" && e.preventDefault()}
-        onSubmit={form.handleSubmit(handleSubmit)}
+        onSubmit={async (e) => {
+          e.preventDefault();
+          await form.handleSubmit(handleSubmit)(e);
+        }}
         className="flex max-w-2xl flex-col gap-8"
       >
         <FormField
@@ -331,11 +333,9 @@ export default function PolicyForm({
           </div>
 
           {fields.map((field, index) => (
-            <RuleForm
-              key={field.id}
-              index={index}
-              onRemove={() => remove(index)}
-            />
+            <div key={field.id}>
+              <RuleForm index={index} onRemove={() => remove(index)} />
+            </div>
           ))}
         </div>
 
