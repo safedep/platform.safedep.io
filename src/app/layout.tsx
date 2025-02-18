@@ -5,6 +5,8 @@ import localFont from "next/font/local";
 import "./globals.css";
 import { Theme } from "@radix-ui/themes";
 import { Toaster } from "@/components/ui/toaster";
+import TanstackQueryProvider from "@/components/providers/tanstack-query";
+import { ReactQueryDevtools } from '@tanstack/react-query-devtools'
 
 const geistSans = localFont({
   src: "./fonts/GeistVF.woff",
@@ -36,12 +38,15 @@ export default function RootLayout({
     <html lang="en">
       <UserProvider>
         <body
-          className={`${geistSans.variable} ${geistMono.variable} antialiased flex flex-col min-h-screen`}
+          className={`${geistSans.variable} ${geistMono.variable} flex min-h-screen flex-col antialiased`}
         >
-          <Theme>
-            <main className="flex-grow">{children}</main>
-            <Toaster />
-          </Theme>
+          <TanstackQueryProvider>
+            <Theme>
+              <main className="flex-grow">{children}</main>
+              <Toaster />
+            </Theme>
+            <ReactQueryDevtools initialIsOpen={false} />
+          </TanstackQueryProvider>
         </body>
       </UserProvider>
     </html>
