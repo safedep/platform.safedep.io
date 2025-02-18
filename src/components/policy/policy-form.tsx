@@ -143,7 +143,11 @@ export default function PolicyForm({
     },
   });
 
-  const { fields, remove } = useFieldArray({
+  const {
+    fields: ruleFields,
+    append: appendRule,
+    remove: removeRule,
+  } = useFieldArray({
     control: form.control,
     name: "rules",
   });
@@ -319,28 +323,22 @@ export default function PolicyForm({
           <div className="flex items-center justify-between">
             <div>
               <h3 className="text-lg font-medium">Rules</h3>
-              <FormField
-                control={form.control}
-                name="rules"
-                render={() => <FormMessage />}
-              />
+              {/* FIXME: find out how to do nested validation using react-hook-form instead of manually checking the length of the rules array */}
+              {form.getValues("rules").length === 0 && (
+                <FormMessage>At least one rule is required.</FormMessage>
+              )}
             </div>
             <Button
               type="button"
               variant="outline"
               onClick={() => {
-                const newRule = {
+                appendRule({
                   name: "",
                   value: "",
                   check: RuleCheck.LICENSE,
                   description: "",
                   references: [],
                   labels: [],
-                };
-                const currentRules = form.getValues("rules") || [];
-                form.setValue("rules", [newRule, ...currentRules], {
-                  shouldValidate: true,
-                  shouldDirty: true,
                 });
               }}
             >
@@ -348,9 +346,16 @@ export default function PolicyForm({
             </Button>
           </div>
 
-          {fields.map((field, index) => (
+          {ruleFields.map((field, index) => (
             <div key={field.id}>
-              <RuleForm index={index} onRemove={() => remove(index)} />
+              <RuleForm
+                control={form.control}
+                index={index}
+                onRemove={() => {
+                  removeRule(index);
+                  console.log("rules", form.getValues("rules"));
+                }}
+              />
             </div>
           ))}
         </div>

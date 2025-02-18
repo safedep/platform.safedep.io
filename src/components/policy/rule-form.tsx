@@ -18,19 +18,19 @@ import {
   SelectValue,
 } from "@/components/ui/select";
 import { ChevronDown, ChevronUp, Plus, X } from "lucide-react";
-import { useFieldArray, useFormContext } from "react-hook-form";
+import { Control, useFieldArray } from "react-hook-form";
 import type { PolicyFormValues } from "./policy-form";
 import { cn } from "@/lib/utils";
 import { ruleTypeDisplayNames } from "./policy-form";
-import { useMemo, useState } from "react";
+import { useState } from "react";
 
 interface RuleFormProps {
+  control: Control<PolicyFormValues>;
   index: number;
   onRemove: () => void;
 }
 
-export function RuleForm({ index, onRemove }: RuleFormProps) {
-  const { control, watch } = useFormContext<PolicyFormValues>();
+export function RuleForm({ control, index, onRemove }: RuleFormProps) {
   const [isExpanded, setIsExpanded] = useState(true);
 
   const {
@@ -39,19 +39,8 @@ export function RuleForm({ index, onRemove }: RuleFormProps) {
     remove: removeReference,
   } = useFieldArray({
     control,
-    name: `rules.${index}.references`,
+    name: `rules.${index}.references` as const,
   });
-
-  const ruleName = watch(`rules.${index}.name`) || "New Rule";
-  const ruleType = watch(`rules.${index}.check`) || "Not selected";
-
-  const ruleTypeDisplayName = useMemo(() => {
-    return (
-      Object.entries(ruleTypeDisplayNames).find(
-        ([, value]) => value === ruleType,
-      )?.[0] ?? "Not selected"
-    );
-  }, [ruleType]);
 
   return (
     <div className="rounded-lg border border-gray-200 bg-white shadow-sm">
@@ -69,10 +58,26 @@ export function RuleForm({ index, onRemove }: RuleFormProps) {
             )}
           </span>
           <div>
-            <span className="font-medium">{ruleName}</span>
-            <span className="ml-2 text-sm text-gray-500">
-              ({ruleTypeDisplayName})
-            </span>
+            <FormField
+              control={control}
+              name={`rules.${index}.name` as const}
+              render={({ field }) => (
+                <span className="font-medium">{field.value || "New Rule"}</span>
+              )}
+            />
+            <FormField
+              control={control}
+              name={`rules.${index}.check` as const}
+              render={({ field }) => (
+                <span className="ml-2 text-sm text-gray-500">
+                  (
+                  {Object.entries(ruleTypeDisplayNames).find(
+                    ([, value]) => value === field.value,
+                  )?.[0] ?? "Not selected"}
+                  )
+                </span>
+              )}
+            />
           </div>
         </button>
         <Button
@@ -91,7 +96,7 @@ export function RuleForm({ index, onRemove }: RuleFormProps) {
           <div className="grid grid-cols-2 gap-6">
             <FormField
               control={control}
-              name={`rules.${index}.name`}
+              name={`rules.${index}.name` as const}
               render={({ field }) => (
                 <FormItem>
                   <FormLabel>Name</FormLabel>
@@ -106,7 +111,7 @@ export function RuleForm({ index, onRemove }: RuleFormProps) {
 
             <FormField
               control={control}
-              name={`rules.${index}.check`}
+              name={`rules.${index}.check` as const}
               render={({ field }) => (
                 <FormItem>
                   <FormLabel>Rule Type</FormLabel>
@@ -114,7 +119,7 @@ export function RuleForm({ index, onRemove }: RuleFormProps) {
                     onValueChange={(value) => {
                       field.onChange(Number.parseInt(value));
                     }}
-                    value={field.value.toString()}
+                    value={field.value?.toString()}
                   >
                     <FormControl>
                       <SelectTrigger>
@@ -140,7 +145,7 @@ export function RuleForm({ index, onRemove }: RuleFormProps) {
 
           <FormField
             control={control}
-            name={`rules.${index}.description`}
+            name={`rules.${index}.description` as const}
             render={({ field }) => (
               <FormItem>
                 <FormLabel>Description</FormLabel>
@@ -163,7 +168,7 @@ export function RuleForm({ index, onRemove }: RuleFormProps) {
 
           <FormField
             control={control}
-            name={`rules.${index}.value`}
+            name={`rules.${index}.value` as const}
             render={({ field }) => (
               <FormItem>
                 <FormLabel>Rule Value</FormLabel>
@@ -202,7 +207,9 @@ export function RuleForm({ index, onRemove }: RuleFormProps) {
                 <div key={reference.id} className="flex items-start gap-2">
                   <FormField
                     control={control}
-                    name={`rules.${index}.references.${referenceIndex}.url`}
+                    name={
+                      `rules.${index}.references.${referenceIndex}.url` as const
+                    }
                     render={({ field }) => (
                       <FormItem className="flex-1">
                         <FormControl>
@@ -232,7 +239,7 @@ export function RuleForm({ index, onRemove }: RuleFormProps) {
 
           <FormField
             control={control}
-            name={`rules.${index}.labels`}
+            name={`rules.${index}.labels` as const}
             render={({ field }) => (
               <FormItem>
                 <FormLabel>Labels</FormLabel>
