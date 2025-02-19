@@ -23,6 +23,16 @@ export default function PolicyGroupPage() {
   const policyGroupQuery = useQuery({
     queryFn: () => getPolicyGroup(groupId),
     queryKey: ["policy-group", groupId],
+    select({ group: { name, id, description }, policies }) {
+      return {
+        group: {
+          name,
+          id,
+          description,
+        },
+        policies,
+      };
+    },
   });
 
   const queryClient = useQueryClient();
@@ -76,15 +86,15 @@ export default function PolicyGroupPage() {
   });
 
   async function handleUpdatePolicyGroup(values: PolicyGroupFormValues) {
-    policyGroupUpdateMutation.mutate(values);
+    await policyGroupUpdateMutation.mutateAsync(values);
   }
 
   async function handleAttachPolicies(policyIds: string[]) {
-    policyGroupAttachMutation.mutate(policyIds);
+    await policyGroupAttachMutation.mutateAsync(policyIds);
   }
 
   async function handleDetachPolicy(policyId: string) {
-    policyGroupDetachMutation.mutate(policyId);
+    await policyGroupDetachMutation.mutateAsync(policyId);
   }
 
   return (
@@ -103,7 +113,13 @@ export default function PolicyGroupPage() {
         <p className="text-muted-foreground">View or edit your policy group.</p>
       </div>
       <PolicyGroupDetails
-        data={policyGroupQuery.data?.group ?? { name: "", description: "" }}
+        data={
+          policyGroupQuery.data?.group ?? {
+            name: "",
+            id: "",
+            description: "",
+          }
+        }
         onUpdate={handleUpdatePolicyGroup}
         isLoading={policyGroupUpdateMutation.isPending}
       />

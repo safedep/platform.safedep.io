@@ -6,7 +6,7 @@ import UpdatePolicyGroupForm, {
 } from "@/components/policy/update-group-form";
 
 interface PolicyGroupData {
-  name: string;
+  name?: string;
   description?: string;
 }
 

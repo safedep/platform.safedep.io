@@ -32,7 +32,7 @@ const formSchema = v.object({
 export type PolicyGroupFormValues = v.InferInput<typeof formSchema>;
 
 interface FormValues {
-  name: string;
+  name?: string;
   description?: string;
 }
 
