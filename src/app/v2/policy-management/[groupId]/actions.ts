@@ -67,3 +67,32 @@ export async function detachPolicyFromGroup(groupId: string, policyId: string) {
     policyId,
   });
 }
+
+export async function updatePolicyGroup({
+  groupId,
+  name,
+  description,
+}: {
+  groupId: string;
+  name: string;
+  description?: string;
+}) {
+  const { accessToken, tenant } = await getTenantAndToken();
+  const policyServiceClient = createPolicyService(tenant, accessToken);
+  return await policyServiceClient
+    .updatePolicyGroup({
+      policyGroupId: groupId,
+      name,
+      description,
+    })
+    .then((resp) => resp.group)
+    .then((group) => {
+      return {
+        id: group?.policyGroupId,
+        name: group?.name,
+        description: group?.description,
+        createdAt: group?.createdAt?.toDate(),
+        updatedAt: group?.updatedAt?.toDate(),
+      };
+    });
+}

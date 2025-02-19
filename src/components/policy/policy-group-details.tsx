@@ -13,11 +13,13 @@ interface PolicyGroupData {
 interface PolicyGroupDetailsProps {
   data: PolicyGroupData;
   onUpdate(values: PolicyGroupFormValues): Promise<void>;
+  isLoading: boolean;
 }
 
 export default function PolicyGroupDetails({
   data,
   onUpdate,
+  isLoading,
 }: PolicyGroupDetailsProps) {
   return (
     <Card>
@@ -25,7 +27,11 @@ export default function PolicyGroupDetails({
         <CardTitle>Edit Policy Group details</CardTitle>
       </CardHeader>
       <CardContent>
-        <UpdatePolicyGroupForm onSubmit={onUpdate} defaultValues={data} />
+        <UpdatePolicyGroupForm
+          onSubmit={onUpdate}
+          defaultValues={data}
+          isLoading={isLoading}
+        />
       </CardContent>
     </Card>
   );

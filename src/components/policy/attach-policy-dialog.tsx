@@ -31,16 +31,8 @@ import {
   SelectValue,
 } from "@/components/ui/select";
 import { useMediaQuery } from "@/hooks/use-media-query";
-
-interface Policy {
-  id: string;
-  name: string;
-  version: string;
-  target: string;
-  type: boolean;
-  labels: string[];
-  rulesCount: number;
-}
+import { Policy } from "@/app/v2/policy/list/actions";
+import { PolicyType } from "@buf/safedep_api.bufbuild_es/safedep/messages/policy/v1/policy_pb";
 
 interface AttachPolicyDialogProps {
   policies: Policy[];
@@ -301,8 +293,12 @@ function PolicyListItem({ policy, isSelected, onToggle }: PolicyListItemProps) {
             </div>
           </div>
           <div className="flex flex-wrap items-center gap-2">
-            <Badge variant={policy.type ? "default" : "destructive"}>
-              {policy.type ? "Allow" : "Deny"}
+            <Badge
+              variant={
+                policy.type === PolicyType.ALLOW ? "default" : "destructive"
+              }
+            >
+              {policy.type === PolicyType.ALLOW ? "Allow" : "Deny"}
             </Badge>
             <ScrollArea className="w-full max-w-[200px] sm:w-auto">
               <div className="flex gap-1">

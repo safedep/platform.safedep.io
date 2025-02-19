@@ -6,7 +6,19 @@ import { Button } from "@/components/ui/button";
 import PolicyGroupDetails from "@/components/policy/policy-group-details";
 import AttachedPolicies from "@/components/policy/attached-policies";
 import type { PolicyGroupFormValues } from "@/components/policy/update-group-form";
-import type { Policy } from "./columns";
+import type { PolicyGroup } from "./columns";
+import {
+  PolicyTarget,
+  PolicyType,
+  PolicyVersion,
+} from "@buf/safedep_api.bufbuild_es/safedep/messages/policy/v1/policy_pb";
+import {
+  attachPolicyToGroup,
+  detachPolicyFromGroup,
+  getPolicyGroup,
+  updatePolicyGroup,
+} from "./actions";
+import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 
 // Function to generate mock policies with deterministic values
 function generateMockPolicies(count: number) {
@@ -19,8 +31,8 @@ function generateMockPolicies(count: number) {
     "License",
     "Dependency",
   ];
-  const targets = ["vet"];
-  const versions = ["v1", "v2"];
+  const targets = [PolicyTarget.VET];
+  const versions = [PolicyVersion.V1, PolicyVersion.V2];
   const labelSets = [
     ["security", "production"],
     ["development", "testing"],
@@ -38,7 +50,7 @@ function generateMockPolicies(count: number) {
     const typeIndex = index % policyTypes.length;
     const labelSetIndex = index % labelSets.length;
     const versionIndex = index % versions.length;
-    const isAllow = index % 3 !== 0; // Every third policy is deny
+    const isAllow = index % 3 !== 0 ? PolicyType.ALLOW : PolicyType.DENY; // Every third policy is deny
 
     return {
       id: `policy-${index + 1}`,
@@ -60,7 +72,7 @@ export default function PolicyGroupPage() {
   const [allMockPolicies] = useState(() => generateMockPolicies(2000));
 
   // Take first 5 policies as attached (deterministic selection)
-  const [attachedPolicies] = useState<Policy[]>(() => {
+  const [attachedPolicies] = useState<PolicyGroup[]>(() => {
     const selectedPolicies = allMockPolicies.slice(0, 5).map((policy) => ({
       id: policy.id,
       name: policy.name,
@@ -72,46 +84,55 @@ export default function PolicyGroupPage() {
   // Use all mock policies as available policies
   const [availablePolicies] = useState(() => allMockPolicies);
 
-  // TODO: get policy group data from API
-  const [policyGroupData, setPolicyGroupData] = useState({
-    name: "Policy Group 1",
-    description: "This is a description" as string | undefined,
+  // get the policy group data
+  const { data: policyGroup, isFetching: isFetchingPolicyGroup } = useQuery({
+    queryFn: () =>
+      getPolicyGroup(groupId)
+        .then((x) => x.group)
+        .then((x) => ({
+          name: x?.name ?? "",
+          description: x?.description ?? "",
+        })),
+    queryKey: ["policy-group", groupId],
+    placeholderData: {
+      name: "",
+      description: "",
+    },
   });
 
+  const queryClient = useQueryClient();
+  // use a mutation to handle updating the policy group
+  const { mutate: updateGroup, isPending: isUpdatingPolicyGroup } = useMutation(
+    {
+      mutationKey: ["policy-group", groupId],
+      mutationFn: async (values: PolicyGroupFormValues) => {
+        console.log("updateGroup", values);
+        return await updatePolicyGroup({
+          groupId,
+          name: values.name,
+          description: values.description,
+        });
+      },
+      onSettled: () => {
+        queryClient.invalidateQueries({ queryKey: ["policy-group", groupId] });
+      },
+    },
+  );
+
   async function handleUpdateGroup(values: PolicyGroupFormValues) {
-    try {
-      // TODO: Implement group update
-      await new Promise((resolve) => setTimeout(resolve, 1000));
-      setPolicyGroupData({
-        description: values.description,
-        name: values.name,
-      });
-      console.log("Updating group:", values);
-    } catch (error) {
-      console.error("Failed to update group:", error);
-      throw error;
-    }
+    updateGroup(values);
   }
 
   async function handleAttachPolicies(policyIds: string[]) {
-    try {
-      // TODO: Implement batch policy attachment
-      console.log("Attaching policies:", policyIds, "to group:", groupId);
-      await new Promise((resolve) => setTimeout(resolve, 1000));
-    } catch (error) {
-      console.error("Failed to attach policies:", error);
-      throw error;
+    const promises = [];
+    for (const policyId of policyIds) {
+      promises.push(attachPolicyToGroup(groupId, policyId));
     }
+    await Promise.all(promises);
   }
 
   async function handleDetachPolicy(policyId: string) {
-    try {
-      // TODO: Implement policy detachment
-      console.log("Detaching policy:", policyId, "from group:", groupId);
-    } catch (error) {
-      console.error("Failed to detach policy:", error);
-      throw error;
-    }
+    await detachPolicyFromGroup(groupId, policyId);
   }
 
   return (
@@ -119,7 +140,9 @@ export default function PolicyGroupPage() {
       <div className="flex flex-col gap-1">
         <div className="flex justify-between">
           <h1 className="text-3xl font-bold tracking-tight">
-            Policy Group {groupId}
+            <div className="flex items-center gap-2">
+              <span>Manage Policy Group</span>
+            </div>
           </h1>
           <Button variant="secondary" onClick={router.back}>
             Go Back
@@ -128,10 +151,13 @@ export default function PolicyGroupPage() {
         <p className="text-muted-foreground">View or edit your policy group.</p>
       </div>
 
-      <PolicyGroupDetails data={policyGroupData} onUpdate={handleUpdateGroup} />
+      <PolicyGroupDetails
+        data={policyGroup ?? { name: "", description: "" }}
+        onUpdate={handleUpdateGroup}
+        isLoading={isUpdatingPolicyGroup || isFetchingPolicyGroup}
+      />
 
       <AttachedPolicies
-        groupId={groupId}
         attachedPolicies={attachedPolicies}
         availablePolicies={availablePolicies}
         onAttach={handleAttachPolicies}

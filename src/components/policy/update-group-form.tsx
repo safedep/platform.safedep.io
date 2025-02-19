@@ -39,11 +39,13 @@ interface FormValues {
 export interface PolicyGroupFormProps {
   defaultValues: FormValues;
   onSubmit(values: PolicyGroupFormValues): Promise<void>;
+  isLoading: boolean;
 }
 
 export default function UpdatePolicyGroupForm({
   onSubmit,
   defaultValues,
+  isLoading,
 }: PolicyGroupFormProps) {
   const form = useForm<PolicyGroupFormValues>({
     resolver: valibotResolver(formSchema),
@@ -115,7 +117,11 @@ export default function UpdatePolicyGroupForm({
           )}
         />
         <div className="flex justify-end">
-          <Button type="submit" disabled={isSubmitting} className="w-40">
+          <Button
+            type="submit"
+            disabled={isSubmitting || isLoading}
+            className="w-40"
+          >
             {isSubmitting ? "Updating..." : "Update Policy Group"}
           </Button>
         </div>

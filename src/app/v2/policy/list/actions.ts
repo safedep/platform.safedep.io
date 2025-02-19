@@ -27,7 +27,7 @@ export async function getPolicies() {
       id: policyId,
       name,
       version,
-      type: type ? ("allow" as const) : ("deny" as const),
+      type,
       labels,
       rulesCount: rules.length,
       target,
