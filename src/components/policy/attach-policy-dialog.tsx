@@ -32,7 +32,11 @@ import {
 } from "@/components/ui/select";
 import { useMediaQuery } from "@/hooks/use-media-query";
 import { Policy } from "@/app/v2/policy/list/actions";
-import { PolicyType } from "@buf/safedep_api.bufbuild_es/safedep/messages/policy/v1/policy_pb";
+import {
+  PolicyType,
+  PolicyVersion,
+  PolicyTarget,
+} from "@buf/safedep_api.bufbuild_es/safedep/messages/policy/v1/policy_pb";
 
 interface AttachPolicyDialogProps {
   policies: Policy[];
@@ -70,8 +74,8 @@ export function AttachPolicyDialog({
 
       const matchesType =
         typeFilter === "all" ||
-        (typeFilter === "allow" && policy.type) ||
-        (typeFilter === "deny" && !policy.type);
+        (typeFilter === "allow" && policy.type === PolicyType.ALLOW) ||
+        (typeFilter === "deny" && policy.type === PolicyType.DENY);
 
       return matchesSearch && matchesType;
     });
@@ -275,6 +279,17 @@ interface PolicyListItemProps {
   onToggle: () => void;
 }
 
+const versionToLabel = {
+  [PolicyVersion.V1]: "v1",
+  [PolicyVersion.V2]: "v2",
+  [PolicyVersion.UNSPECIFIED]: "Unknown",
+};
+
+const targetToLabel = {
+  [PolicyTarget.UNSPECIFIED]: "Unspecified",
+  [PolicyTarget.VET]: "Vet",
+};
+
 function PolicyListItem({ policy, isSelected, onToggle }: PolicyListItemProps) {
   return (
     <div className="flex border-b px-3 py-2 hover:bg-muted/50">
@@ -289,7 +304,7 @@ function PolicyListItem({ policy, isSelected, onToggle }: PolicyListItemProps) {
           <div className="min-w-0">
             <div className="truncate font-medium">{policy.name}</div>
             <div className="text-xs text-muted-foreground">
-              {policy.version} • {policy.target}
+              {versionToLabel[policy.version]} • {targetToLabel[policy.target]}
             </div>
           </div>
           <div className="flex flex-wrap items-center gap-2">

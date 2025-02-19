@@ -26,6 +26,29 @@ import {
 } from "@/components/ui/alert-dialog";
 import { useRouter } from "next/navigation";
 import { useState } from "react";
+import {
+  PolicyType,
+  PolicyVersion,
+  PolicyTarget,
+} from "@buf/safedep_api.bufbuild_es/safedep/messages/policy/v1/policy_pb";
+
+const versionToLabel = {
+  [PolicyVersion.V1]: "v1",
+  [PolicyVersion.V2]: "v2",
+  [PolicyVersion.UNSPECIFIED]: "Unknown",
+};
+
+const targetToLabel = {
+  [PolicyTarget.VET]: "Vet",
+  [PolicyTarget.UNSPECIFIED]: "Unknown",
+};
+
+const typeToLabel = {
+  [PolicyType.ALLOW]: "Allow",
+  [PolicyType.DENY]: "Deny",
+  [PolicyType.UNSPECIFIED]: "Unknown",
+};
+
 export const columns: ColumnDef<Policy>[] = [
   {
     header: "Name",
@@ -37,10 +60,22 @@ export const columns: ColumnDef<Policy>[] = [
   {
     header: "Version",
     accessorKey: "version",
+    cell: ({ row }) => {
+      return (
+        <Badge variant="secondary">
+          {versionToLabel[row.original.version]}
+        </Badge>
+      );
+    },
   },
   {
     header: "Target",
     accessorKey: "target",
+    cell: ({ row }) => {
+      return (
+        <Badge variant="secondary">{targetToLabel[row.original.target]}</Badge>
+      );
+    },
   },
   {
     header: "Type",
@@ -48,9 +83,11 @@ export const columns: ColumnDef<Policy>[] = [
     cell: ({ row }) => {
       return (
         <Badge
-          variant={row.original.type === "allow" ? "default" : "destructive"}
+          variant={
+            row.original.type === PolicyType.ALLOW ? "default" : "destructive"
+          }
         >
-          {row.original.type}
+          {typeToLabel[row.original.type]}
         </Badge>
       );
     },
