@@ -4,14 +4,14 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { DataTable } from "@/components/policy/data-table";
 import {
   columns,
-  type PolicyGroup,
+  type Policy,
 } from "@/app/v2/policy-management/[groupId]/columns";
 import { AttachPolicyDialog } from "./attach-policy-dialog";
-import { Policy } from "@/app/v2/policy/list/actions";
+import { Policy as PolicyResponse } from "@/app/v2/policy/list/actions";
 
 interface AttachedPoliciesProps {
-  attachedPolicies: PolicyGroup[];
-  availablePolicies: Policy[];
+  attachedPolicies: Policy[];
+  availablePolicies: PolicyResponse[];
   onAttach(policyIds: string[]): Promise<void>;
   onDetach(policyId: string): Promise<void>;
 }

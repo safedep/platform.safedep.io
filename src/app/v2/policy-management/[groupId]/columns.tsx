@@ -11,29 +11,25 @@ import {
 import type { ColumnDef } from "@tanstack/react-table";
 import { Loader2, MoreHorizontal } from "lucide-react";
 import Link from "next/link";
-import { formatDistanceToNow } from "date-fns";
 import { useState } from "react";
 
-export type PolicyGroup = {
+export type Policy = {
   id: string;
   name: string;
-  updatedAt: Date;
+  rulesCount: number;
+  labels: string[];
 };
 
 export const columns = (
   onDetach?: (id: string) => Promise<void>,
-): ColumnDef<PolicyGroup>[] => [
+): ColumnDef<Policy>[] => [
   {
     accessorKey: "name",
     header: "Name",
   },
   {
-    accessorKey: "updatedAt",
-    header: "Last Updated",
-    cell: ({ row }) => {
-      const date = row.getValue("updatedAt") as Date;
-      return formatDistanceToNow(date, { addSuffix: true });
-    },
+    accessorKey: "rulesCount",
+    header: "No. of Rules",
   },
   {
     accessorKey: "actions",

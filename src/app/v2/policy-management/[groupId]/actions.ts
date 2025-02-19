@@ -31,22 +31,16 @@ export async function getPolicyGroup(groupId: string) {
       createdAt: group?.createdAt?.toDate(),
       updatedAt: group?.updatedAt?.toDate(),
     },
-    policies: policies.map(({ labels, name, policyId, rules, target }) => ({
-      id: policyId,
-      name,
-      target,
-      labels,
-      rules: rules.map(
-        ({ description, name, check, labels, references, value }) => ({
-          description,
-          name,
-          check,
-          labels,
-          references,
-          value,
-        }),
-      ),
-    })),
+    policies: policies.map(
+      ({ labels, name, policyId, rules, target, type }) => ({
+        id: policyId,
+        name,
+        target,
+        labels,
+        type,
+        rulesCount: rules.length,
+      }),
+    ),
   };
 }
 
