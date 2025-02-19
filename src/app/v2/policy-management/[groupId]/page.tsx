@@ -13,7 +13,6 @@ import {
 } from "./actions";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { getPolicies } from "../../policy/list/actions";
-import { ReactQueryDevtools } from "@tanstack/react-query-devtools";
 
 export default function PolicyGroupPage() {
   const { groupId } = useParams<{ groupId: string }>();
@@ -129,8 +128,6 @@ export default function PolicyGroupPage() {
         onAttach={handleAttachPolicies}
         onDetach={handleDetachPolicy}
       />
-      {policyGroupDetachMutation.error?.message} = det err
-      <ReactQueryDevtools initialIsOpen={false} />
     </div>
   );
 }
