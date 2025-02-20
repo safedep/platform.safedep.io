@@ -7,7 +7,6 @@ import { columns } from "./columns";
 import { DataTable } from "@/components/policy/data-table";
 import { useQuery } from "@tanstack/react-query";
 import { getPolicyGroups } from "./actions";
-import { ReactQueryDevtools } from "@tanstack/react-query-devtools";
 
 export default function PolicyManagementClient() {
   const { data: policyGroups } = useQuery({
@@ -32,7 +31,6 @@ export default function PolicyManagementClient() {
       </div>
 
       <DataTable columns={columns} data={policyGroups} />
-      <ReactQueryDevtools />
     </div>
   );
 }

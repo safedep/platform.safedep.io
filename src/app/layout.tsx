@@ -6,6 +6,7 @@ import "./globals.css";
 import { Theme } from "@radix-ui/themes";
 import { Toaster } from "@/components/ui/sonner";
 import TanstackQueryProvider from "@/components/providers/tanstack-query";
+import { ReactQueryDevtools } from "@tanstack/react-query-devtools";
 
 const geistSans = localFont({
   src: "./fonts/GeistVF.woff",
@@ -44,6 +45,7 @@ export default function RootLayout({
               <main className="flex-grow">{children}</main>
               <Toaster />
             </Theme>
+            <ReactQueryDevtools />
           </TanstackQueryProvider>
         </body>
       </UserProvider>
