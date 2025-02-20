@@ -106,23 +106,23 @@ describe("Create Policy Group page", () => {
 
   // FIXME(arunanshub): this test is passing with unhandled rejection caused
   // when the button is clicked.
-  // it("handles API errors correctly", async () => {
-  //   // Mock API error
-  //   mocks.createPolicyGroup.mockRejectedValue(new Error("API Error"));
+  it.skip("handles API errors correctly", async () => {
+    // Mock API error
+    mocks.createPolicyGroup.mockRejectedValueOnce(new Error("API Error"));
 
-  //   const user = userEvent.setup();
-  //   await setupComponent();
+    const user = userEvent.setup();
+    await setupComponent();
 
-  //   // Fill out the form
-  //   await user.type(screen.getByLabelText(/name/i), "Test Policy Group");
-  //   // Submit the form
-  //   await user.click(screen.getByRole("button", { name: /create/i }));
+    // Fill out the form
+    await user.type(screen.getByLabelText(/name/i), "Test Policy Group");
+    // Submit the form
+    await user.click(screen.getByRole("button", { name: /create/i }));
 
-  //   // Check error handling
-  //   await waitFor(() => {
-  //     expect(mocks.toast.error).toHaveBeenCalledOnce();
-  //   });
-  // });
+    // Check error handling
+    await waitFor(async () => {
+      expect(mocks.toast.error).toHaveBeenCalledOnce();
+    });
+  });
 
   it("submits form without description", async () => {
     const user = userEvent.setup();
