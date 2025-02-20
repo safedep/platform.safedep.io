@@ -24,13 +24,13 @@ import {
   AlertDialogContent,
   AlertDialogTrigger,
 } from "@/components/ui/alert-dialog";
-import { useRouter } from "next/navigation";
-import { useState } from "react";
 import {
   PolicyType,
   PolicyVersion,
   PolicyTarget,
 } from "@buf/safedep_api.bufbuild_es/safedep/messages/policy/v1/policy_pb";
+import { useMutation, useQueryClient } from "@tanstack/react-query";
+import { toast } from "sonner";
 
 const versionToLabel = {
   [PolicyVersion.V1]: "v1",
@@ -124,23 +124,23 @@ export const columns: ColumnDef<Policy>[] = [
 ];
 
 function ActionsDropdown({ id }: { id: string }) {
-  const router = useRouter();
-  const [isDeleting, setIsDeleting] = useState(false);
+  const queryClient = useQueryClient();
 
-  async function onDeletePolicyGroup() {
-    setIsDeleting(true);
-    try {
-      await deletePolicy(id);
-      router.refresh();
-    } catch {
-      // TODO: show an error toast
-    } finally {
-      setIsDeleting(false);
-    }
-  }
+  const { mutateAsync: deletePolicyHandler, isPending } = useMutation({
+    mutationKey: ["policies"],
+    mutationFn: () => deletePolicy(id),
+    onSuccess: () => {
+      toast.success("Policy deleted");
+    },
+    onSettled: () => {
+      queryClient.invalidateQueries({ queryKey: ["policies"] });
+    },
+    onError: () => {
+      toast.error("Failed to delete policy");
+    },
+  });
 
-  // show a loading spinner if the policy is being deleted
-  if (isDeleting) {
+  if (isPending) {
     return (
       <Button variant="ghost" className="h-8 w-8 p-0">
         <span className="sr-only">Open menu</span>
@@ -183,7 +183,7 @@ function ActionsDropdown({ id }: { id: string }) {
             <AlertDialogFooter>
               <AlertDialogCancel>Cancel</AlertDialogCancel>
               <AlertDialogAction
-                onClick={onDeletePolicyGroup}
+                onClick={() => deletePolicyHandler()}
                 className="bg-destructive text-destructive-foreground hover:bg-destructive/90"
               >
                 Delete
