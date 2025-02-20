@@ -20,12 +20,7 @@ const formSchema = v.object({
     v.string("Name is required"),
     v.minLength(1, "Name must be at least 1 character"),
   ),
-  description: v.optional(
-    v.pipe(
-      v.string(),
-      v.minLength(1, "Description must be at least 1 character"),
-    ),
-  ),
+  description: v.optional(v.string()),
 });
 
 export type PolicyGroupFormValues = v.InferInput<typeof formSchema>;
