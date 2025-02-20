@@ -101,7 +101,7 @@ const formSchema = v.object({
   ),
   version: v.enum(policyVersionDisplayNames),
   target: v.enum(policyTargetDisplayNames),
-  policyType: v.enum(policyTypeDisplayNames),
+  type: v.enum(policyTypeDisplayNames),
   labels: v.pipe(v.array(v.string("Invalid label"))),
   rules: v.pipe(
     v.array(ruleSchema),
@@ -129,7 +129,7 @@ export default function PolicyForm({
       labels: [],
       version: PolicyVersion.V2,
       target: PolicyTarget.VET,
-      policyType: PolicyType.DENY,
+      type: PolicyType.DENY,
       rules: [
         {
           name: "",
@@ -157,6 +157,7 @@ export default function PolicyForm({
   async function handleSubmit(values: PolicyFormValues) {
     setIsSubmitting(true);
     try {
+      console.log("values", values);
       await onSubmit(values);
     } catch (error) {
       console.error("Form submission failed:", error);
@@ -274,7 +275,7 @@ export default function PolicyForm({
 
         <FormField
           control={form.control}
-          name="policyType"
+          name="type"
           render={({ field }) => (
             <FormItem className="flex flex-row items-center justify-between rounded-lg border p-4">
               <div className="space-y-0.5">
@@ -288,7 +289,7 @@ export default function PolicyForm({
                   checked={field.value === PolicyType.ALLOW}
                   onCheckedChange={() => {
                     form.setValue(
-                      "policyType",
+                      "type",
                       field.value === PolicyType.ALLOW
                         ? PolicyType.DENY
                         : PolicyType.ALLOW,

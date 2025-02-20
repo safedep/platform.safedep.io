@@ -54,12 +54,12 @@ export default function EditPolicyPage() {
 
       <PolicyForm
         defaultValues={{
-          name: policy.name,
+          name: policy.name ?? "",
           version: policy.version ?? PolicyVersion.UNSPECIFIED,
           target: policy.target ?? PolicyTarget.UNSPECIFIED,
-          policyType: policy.policyType ?? PolicyType.UNSPECIFIED,
-          labels: policy.labels,
-          rules: policy.rules,
+          type: policy.type ?? PolicyType.UNSPECIFIED,
+          labels: policy.labels ?? [],
+          rules: policy.rules ?? [],
         }}
         mode="update"
         onSubmit={handleSubmit}

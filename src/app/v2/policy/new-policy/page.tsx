@@ -9,6 +9,7 @@ export default async function Page() {
     const policyRequest = new CreatePolicyRequest({ ...form });
     try {
       await createPolicy(policyRequest);
+      console.log(policyRequest);
     } catch {
       // TODO(arunanshub): render sonner
     }
