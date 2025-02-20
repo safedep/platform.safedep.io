@@ -6,15 +6,7 @@ import { redirect } from "next/navigation";
 export default async function Page() {
   async function submitHandler(form: PolicyFormValues) {
     "use server";
-    const policyRequest = new CreatePolicyRequest({
-      labels: form.labels ?? [],
-      name: form.name,
-      target: form.target,
-      type: form.policyType,
-      version: form.version,
-      rules: form.rules,
-    });
-
+    const policyRequest = new CreatePolicyRequest({ ...form });
     try {
       await createPolicy(policyRequest);
     } catch {

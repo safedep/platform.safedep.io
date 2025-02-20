@@ -1,29 +1,12 @@
 "use server";
-import { sessionMustGetTenant } from "@/lib/session/session";
-import { getAccessToken } from "@auth0/nextjs-auth0";
-import { createPolicyService } from "@/lib/rpc/client";
-import { redirect } from "next/navigation";
-
-async function getTenantAndToken() {
-  const tenant = await sessionMustGetTenant();
-  try {
-    const { accessToken } = await getAccessToken();
-    return { accessToken, tenant };
-  } catch {
-    redirect("/auth");
-  }
-}
+import { createPolicyService, getTenantAndToken } from "@/lib/rpc/client";
 
 export async function getPolicies() {
   const { accessToken, tenant } = await getTenantAndToken();
-  const policyServiceClient = createPolicyService(
-    tenant,
-    accessToken as string,
-  );
-
-  const policies = (await policyServiceClient.listPolicies({})).policies;
+  const policyServiceClient = createPolicyService(tenant, accessToken);
+  const { policies } = await policyServiceClient.listPolicies({});
   return policies.map(
-    ({ labels, name, policyId, rules, version, type, target }) => ({
+    ({ labels, name, policyId, rules, target, type, version }) => ({
       id: policyId,
       name,
       version,
@@ -37,11 +20,10 @@ export async function getPolicies() {
 
 export type Policy = Awaited<ReturnType<typeof getPolicies>>[number];
 
-export async function deletePolicy(id: string) {
+export async function deletePolicy(policyId: string) {
   const { accessToken, tenant } = await getTenantAndToken();
-  const policyServiceClient = createPolicyService(
-    tenant,
-    accessToken as string,
-  );
-  await policyServiceClient.deletePolicy({ policyId: id });
+  const policyServiceClient = createPolicyService(tenant, accessToken);
+  await policyServiceClient.deletePolicy({
+    policyId,
+  });
 }
