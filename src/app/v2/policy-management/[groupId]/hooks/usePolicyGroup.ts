@@ -7,6 +7,7 @@ import {
   updatePolicyGroup,
 } from "../actions";
 import { getPolicies } from "@/app/v2/policy/list/actions";
+import { toast } from "@/hooks/use-toast";
 
 export function usePolicyGroup(groupId: string) {
   const queryClient = useQueryClient();
@@ -27,6 +28,12 @@ export function usePolicyGroup(groupId: string) {
     },
   });
 
+  // fetch all policies available to attach to the policy group
+  const policiesQuery = useQuery({
+    queryKey: ["policies"],
+    queryFn: () => getPolicies(),
+  });
+
   // use a mutation to handle updating the policy group
   const policyGroupUpdateMutation = useMutation({
     mutationKey: ["policy-group", groupId],
@@ -37,15 +44,23 @@ export function usePolicyGroup(groupId: string) {
         description: values.description,
       });
     },
+    onSuccess: () => {
+      toast({
+        title: "Policy group updated",
+        description: "The policy group has been updated.",
+        variant: "default",
+      });
+    },
+    onError: () => {
+      toast({
+        title: "Failed to update policy group",
+        description: "Please try again.",
+        variant: "destructive",
+      });
+    },
     onSettled: () => {
       queryClient.invalidateQueries({ queryKey: ["policy-group", groupId] });
     },
-  });
-
-  // fetch all policies available to attach to the policy group
-  const policiesQuery = useQuery({
-    queryKey: ["policies"],
-    queryFn: () => getPolicies(),
   });
 
   // use a mutation to handle attaching policies to the policy group
@@ -58,6 +73,20 @@ export function usePolicyGroup(groupId: string) {
       }
       await Promise.all(promises);
     },
+    onSuccess: () => {
+      toast({
+        title: "Policies attached",
+        description: "The policies have been attached to the policy group.",
+        variant: "default",
+      });
+    },
+    onError: () => {
+      toast({
+        title: "Failed to attach policies",
+        description: "Please try again.",
+        variant: "destructive",
+      });
+    },
     onSettled: () => {
       queryClient.invalidateQueries({ queryKey: ["policy-group", groupId] });
     },
@@ -67,8 +96,21 @@ export function usePolicyGroup(groupId: string) {
   const policyGroupDetachMutation = useMutation({
     mutationKey: ["policy-group", groupId],
     mutationFn: async (policyId: string) => {
-      console.log("detachPolicy policyId", policyId, "groupId", groupId);
       return await detachPolicyFromGroup(groupId, policyId);
+    },
+    onSuccess: () => {
+      toast({
+        title: "Policy detached",
+        description: "The policy has been detached from the policy group.",
+        variant: "default",
+      });
+    },
+    onError: () => {
+      toast({
+        title: "Failed to detach policy",
+        description: "Please try again.",
+        variant: "destructive",
+      });
     },
     onSettled: () => {
       queryClient.invalidateQueries({ queryKey: ["policy-group", groupId] });

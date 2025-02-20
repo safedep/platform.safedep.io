@@ -39,7 +39,7 @@ export async function updatePolicyGroup({
 }) {
   const { accessToken, tenant } = await getTenantAndToken();
   const policyServiceClient = createPolicyService(tenant, accessToken);
-  return await policyServiceClient.updatePolicyGroup({
+  await policyServiceClient.updatePolicyGroup({
     policyGroupId: groupId,
     name,
     description: description ?? "",
@@ -49,7 +49,7 @@ export async function updatePolicyGroup({
 export async function attachPolicyToGroup(groupId: string, policyId: string) {
   const { accessToken, tenant } = await getTenantAndToken();
   const policyServiceClient = createPolicyService(tenant, accessToken);
-  return await policyServiceClient.attachPolicyToGroup({
+  await policyServiceClient.attachPolicyToGroup({
     policyGroupId: groupId,
     policyId,
   });
@@ -58,7 +58,7 @@ export async function attachPolicyToGroup(groupId: string, policyId: string) {
 export async function detachPolicyFromGroup(groupId: string, policyId: string) {
   const { accessToken, tenant } = await getTenantAndToken();
   const policyServiceClient = createPolicyService(tenant, accessToken);
-  return await policyServiceClient.detachPolicyFromGroup({
+  await policyServiceClient.detachPolicyFromGroup({
     policyGroupId: groupId,
     policyId,
   });
