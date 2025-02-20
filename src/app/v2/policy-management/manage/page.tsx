@@ -1,29 +1,21 @@
-import { DataTable } from "@/components/policy/data-table";
-import { Button } from "@/components/ui/button";
-import { PlusCircle } from "lucide-react";
-import Link from "next/link";
-import { columns } from "./columns";
 import { getPolicyGroups } from "./actions";
+import {
+  dehydrate,
+  HydrationBoundary,
+  QueryClient,
+} from "@tanstack/react-query";
+import PolicyManagementClient from "./client";
 
 export default async function Page() {
-  const policyGroups = await getPolicyGroups();
+  const queryClient = new QueryClient();
+  await queryClient.prefetchQuery({
+    queryKey: ["policy-groups"],
+    queryFn: () => getPolicyGroups(),
+  });
 
   return (
-    <div className="container mx-auto py-6">
-      <div className="mb-6 flex items-center justify-between">
-        <div>
-          <h1 className="text-3xl font-bold tracking-tight">Policy Groups</h1>
-          <p className="text-muted-foreground">Manage your policy groups.</p>
-        </div>
-        <Button asChild>
-          <Link href="/v2/policy-management/new">
-            <PlusCircle className="mr-2 h-4 w-4" />
-            Create Policy Group
-          </Link>
-        </Button>
-      </div>
-
-      <DataTable columns={columns} data={policyGroups} />
-    </div>
+    <HydrationBoundary state={dehydrate(queryClient)}>
+      <PolicyManagementClient />
+    </HydrationBoundary>
   );
 }
