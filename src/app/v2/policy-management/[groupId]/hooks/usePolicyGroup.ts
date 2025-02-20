@@ -6,7 +6,7 @@ import {
   getPolicyGroup,
   updatePolicyGroup,
 } from "../actions";
-import { getPolicies } from "../../../policy/list/actions";
+import { getPolicies } from "@/app/v2/policy/list/actions";
 
 export function usePolicyGroup(groupId: string) {
   const queryClient = useQueryClient();

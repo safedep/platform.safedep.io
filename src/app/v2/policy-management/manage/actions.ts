@@ -1,36 +1,23 @@
 "use server";
-import { sessionMustGetTenant } from "@/lib/session/session";
-import { getAccessToken } from "@auth0/nextjs-auth0";
-import { createPolicyService } from "@/lib/rpc/client";
 
-async function getTenantAndToken() {
-  const { accessToken } = await getAccessToken();
-  const tenant = await sessionMustGetTenant();
-  return { accessToken, tenant };
-}
+import { createPolicyService } from "@/lib/rpc/client";
+import { getTenantAndToken } from "@/lib/rpc/client";
 
 export async function getPolicyGroups() {
   const { accessToken, tenant } = await getTenantAndToken();
-  const policyServiceClient = createPolicyService(
-    tenant,
-    accessToken as string,
-  );
-  return (await policyServiceClient.listPolicyGroups({})).groups.map(
-    ({ policyGroupId, name, description, createdAt, updatedAt }) => ({
-      id: policyGroupId,
-      name,
-      description,
-      createdAt: createdAt?.toDate(),
-      updatedAt: updatedAt?.toDate(),
-    }),
-  );
+  const policyServiceClient = createPolicyService(tenant, accessToken);
+  const { groups } = await policyServiceClient.listPolicyGroups({});
+  return groups.map(({ name, policyGroupId, description }) => ({
+    id: policyGroupId,
+    name,
+    description,
+  }));
 }
 
-export async function deletePolicyGroup(id: string) {
+export async function deletePolicyGroup(groupId: string) {
   const { accessToken, tenant } = await getTenantAndToken();
-  const policyServiceClient = createPolicyService(
-    tenant,
-    accessToken as string,
-  );
-  await policyServiceClient.deletePolicyGroup({ policyGroupId: id });
+  const policyServiceClient = createPolicyService(tenant, accessToken);
+  await policyServiceClient.deletePolicyGroup({
+    policyGroupId: groupId,
+  });
 }

@@ -1,13 +1,7 @@
 "use server";
-import { sessionMustGetTenant } from "@/lib/session/session";
-import { getAccessToken } from "@auth0/nextjs-auth0";
-import { createPolicyService } from "@/lib/rpc/client";
 
-async function getTenantAndToken() {
-  const { accessToken } = await getAccessToken();
-  const tenant = await sessionMustGetTenant();
-  return { accessToken, tenant };
-}
+import { createPolicyService } from "@/lib/rpc/client";
+import { getTenantAndToken } from "@/lib/rpc/client";
 
 export async function createPolicyGroup({
   name,
@@ -17,11 +11,8 @@ export async function createPolicyGroup({
   description: string;
 }) {
   const { accessToken, tenant } = await getTenantAndToken();
-  const policyServiceClient = createPolicyService(
-    tenant,
-    accessToken as string,
-  );
-  await policyServiceClient.createPolicyGroup({
+  const policyServiceClient = createPolicyService(tenant, accessToken);
+  return await policyServiceClient.createPolicyGroup({
     name,
     description,
   });
