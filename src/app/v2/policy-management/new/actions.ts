@@ -12,7 +12,7 @@ export async function createPolicyGroup({
 }) {
   const { accessToken, tenant } = await getTenantAndToken();
   const policyServiceClient = createPolicyService(tenant, accessToken);
-  return await policyServiceClient.createPolicyGroup({
+  await policyServiceClient.createPolicyGroup({
     name,
     description,
   });

@@ -2,7 +2,6 @@
 
 import { useState } from "react";
 import { useForm, useFieldArray } from "react-hook-form";
-import { toast } from "sonner";
 import * as v from "valibot";
 import { valibotResolver } from "@hookform/resolvers/valibot";
 import { Button } from "@/components/ui/button";
@@ -157,11 +156,7 @@ export default function PolicyForm({
   async function handleSubmit(values: PolicyFormValues) {
     setIsSubmitting(true);
     try {
-      console.log("values", values);
       await onSubmit(values);
-    } catch (error) {
-      console.error("Form submission failed:", error);
-      toast.error("Failed to submit the form. Please try again.");
     } finally {
       setIsSubmitting(false);
     }
@@ -352,10 +347,7 @@ export default function PolicyForm({
               <RuleForm
                 control={form.control}
                 index={index}
-                onRemove={() => {
-                  removeRule(index);
-                  console.log("rules", form.getValues("rules"));
-                }}
+                onRemove={() => removeRule(index)}
               />
             </div>
           ))}

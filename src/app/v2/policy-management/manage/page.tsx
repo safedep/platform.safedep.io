@@ -1,17 +1,12 @@
-"use client";
 import { DataTable } from "@/components/policy/data-table";
 import { Button } from "@/components/ui/button";
 import { PlusCircle } from "lucide-react";
 import Link from "next/link";
-import { columns, PolicyGroup } from "./columns";
-import { useState, useEffect } from "react";
+import { columns } from "./columns";
 import { getPolicyGroups } from "./actions";
 
-export default function Page() {
-  const [policyGroups, setPolicyGroups] = useState<PolicyGroup[]>([]);
-  useEffect(() => {
-    getPolicyGroups().then(setPolicyGroups);
-  }, []);
+export default async function Page() {
+  const policyGroups = await getPolicyGroups();
 
   return (
     <div className="container mx-auto py-6">

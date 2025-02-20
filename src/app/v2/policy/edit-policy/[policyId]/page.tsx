@@ -8,7 +8,7 @@ import { getPolicy, updatePolicy } from "./actions";
 import { PolicyVersion } from "@buf/safedep_api.bufbuild_es/safedep/messages/policy/v1/policy_pb";
 import { PolicyTarget } from "@buf/safedep_api.bufbuild_es/safedep/messages/policy/v1/policy_pb";
 import { PolicyType } from "@buf/safedep_api.bufbuild_es/safedep/messages/policy/v1/policy_pb";
-import { toast } from "@/hooks/use-toast";
+import { toast } from "sonner";
 
 export default function EditPolicyPage() {
   const { policyId } = useParams<{ policyId: string }>();
@@ -29,18 +29,15 @@ export default function EditPolicyPage() {
     mutationFn: (values: PolicyFormValues) => updatePolicy(policyId, values),
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ["policy", policyId] });
-      toast({
-        title: "Policy updated",
-        description: "The policy has been updated.",
-        variant: "default",
-      });
+      toast.success("Policy updated");
     },
     onError: () => {
-      toast({
-        title: "Failed to update policy",
+      toast.error("Failed to update policy", {
         description: "Please try again.",
-        variant: "destructive",
       });
+    },
+    onSettled: () => {
+      queryClient.invalidateQueries({ queryKey: ["policy", policyId] });
     },
   });
 
