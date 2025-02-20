@@ -7,13 +7,21 @@ import { columns } from "./columns";
 import { DataTable } from "@/components/policy/data-table";
 import { useQuery } from "@tanstack/react-query";
 import { getPolicyGroups } from "./actions";
+import { useEffect } from "react";
+import { toast } from "sonner";
 
 export default function PolicyManagementClient() {
-  const { data: policyGroups } = useQuery({
+  const { data: policyGroups, error } = useQuery({
     queryKey: ["policy-groups"],
     queryFn: () => getPolicyGroups(),
     initialData: [],
   });
+
+  useEffect(() => {
+    if (error) {
+      toast.error("Failed to fetch policy groups");
+    }
+  }, [error]);
 
   return (
     <div className="container mx-auto py-6">
