@@ -10,39 +10,26 @@ import {
 } from "@buf/safedep_api.bufbuild_es/safedep/messages/policy/v1/policy_pb";
 import { act } from "react";
 
+// Create a mock object with a mock function for getPolicies vi.hoisted ensures
+// the mock is created before all tests
+const mocks = vi.hoisted(() => ({
+  getPolicies: vi.fn(),
+
+  // sonner library's toast object
+  toast: {
+    success: vi.fn(),
+    error: vi.fn(),
+  },
+}));
+
+// Mock the sonner library to replace the toast object with our mock object
+vi.mock("sonner", () => ({
+  toast: mocks.toast,
+}));
+
+// Mock the ./actions module to replace getPolicies with our mock function
 vi.mock("./actions", () => ({
-  getPolicies: vi.fn(
-    () =>
-      [
-        {
-          id: "1",
-          name: "Policy 1",
-          version: PolicyVersion.V1,
-          type: PolicyType.DENY,
-          labels: ["label1", "label2"],
-          rulesCount: 1,
-          target: PolicyTarget.VET,
-        },
-        {
-          id: "2",
-          name: "Policy 2",
-          version: PolicyVersion.V2,
-          type: PolicyType.ALLOW,
-          labels: ["label3"],
-          rulesCount: 3,
-          target: PolicyTarget.VET,
-        },
-        {
-          id: "3",
-          name: "Policy 3",
-          version: PolicyVersion.V2,
-          type: PolicyType.ALLOW,
-          labels: ["label3", "some-label"],
-          rulesCount: 3,
-          target: PolicyTarget.VET,
-        },
-      ] satisfies Policy[],
-  ),
+  getPolicies: mocks.getPolicies,
 }));
 
 // Utility to create a fresh QueryClient for each test
@@ -113,6 +100,7 @@ describe("Policy list page", () => {
   }
 
   it("can be mounted", async () => {
+    mocks.getPolicies.mockResolvedValue([]);
     await Page();
   });
 
@@ -143,8 +131,6 @@ describe("Policy list page", () => {
   });
 
   it("renders table rows with correct content", async () => {
-    await setupComponent();
-
     const expectedPolicies = [
       {
         id: "1",
@@ -174,6 +160,9 @@ describe("Policy list page", () => {
         target: PolicyTarget.VET,
       },
     ] satisfies Policy[];
+    mocks.getPolicies.mockResolvedValue(expectedPolicies);
+
+    await setupComponent();
 
     await waitFor(() => {
       // Get all rows (excluding header row)
@@ -202,6 +191,15 @@ describe("Policy list page", () => {
           ),
         ).toBeInTheDocument();
       }
+    });
+  });
+
+  it("renders error toast when policy fetch fails", async () => {
+    mocks.getPolicies.mockRejectedValue(new Error("Failed to fetch policies"));
+    await setupComponent();
+
+    await waitFor(() => {
+      expect(mocks.toast.error).toHaveBeenCalledOnce();
     });
   });
 });

@@ -6,13 +6,22 @@ import { Plus } from "lucide-react";
 import Link from "next/link";
 import { getPolicies } from "./actions";
 import { columns } from "./columns";
+import { toast } from "sonner";
+import { useEffect } from "react";
 
 export default function PolicyListClient() {
-  const { data: policies } = useQuery({
+  const { data: policies, error } = useQuery({
     queryKey: ["policies"],
     queryFn: () => getPolicies(),
     initialData: [],
   });
+
+  // show a toast if there is an error
+  useEffect(() => {
+    if (error) {
+      toast.error("Failed to fetch policies");
+    }
+  }, [error]);
 
   return (
     <div className="container mx-auto py-6">
