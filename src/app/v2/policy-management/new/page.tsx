@@ -3,21 +3,37 @@ import CreatePolicyGroupForm from "@/components/policy/create-group-form";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { createPolicyGroup } from "./actions";
 import { useRouter } from "next/navigation";
+import { useMutation, useQueryClient } from "@tanstack/react-query";
+import { toast } from "sonner";
 
 export default function Page() {
   const router = useRouter();
 
-  async function onSubmit(values: { name: string; description?: string }) {
-    try {
+  const queryClient = useQueryClient();
+  const { mutateAsync: createPolicyGroupHandler } = useMutation({
+    mutationKey: ["policy-groups"],
+    mutationFn: async ({
+      name,
+      description,
+    }: {
+      name: string;
+      description?: string;
+    }) =>
       await createPolicyGroup({
-        name: values.name,
-        description: values.description ?? "",
-      });
+        name,
+        description,
+      }),
+    onSuccess: () => {
+      toast.success("Policy group created");
       router.push("/v2/policy-management/manage");
-    } catch (error) {
-      console.error(error);
-    }
-  }
+    },
+    onError: () => {
+      toast.error("Failed to create policy group");
+    },
+    onSettled: () => {
+      queryClient.invalidateQueries({ queryKey: ["policy-groups"] });
+    },
+  });
 
   return (
     <div className="container mx-auto py-6">
@@ -34,7 +50,7 @@ export default function Page() {
         <CardContent>
           <CreatePolicyGroupForm
             defaultValues={{ name: "", description: "" }}
-            onSubmit={onSubmit}
+            onSubmit={createPolicyGroupHandler}
           />
         </CardContent>
       </Card>

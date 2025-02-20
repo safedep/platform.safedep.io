@@ -13,7 +13,7 @@ import {
 } from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
-import { useEffect, useState } from "react";
+import { useState } from "react";
 
 const formSchema = v.object({
   name: v.pipe(
@@ -49,10 +49,6 @@ export default function UpdatePolicyGroupForm({
     defaultValues,
   });
   const [isSubmitting, setIsSubmitting] = useState(false);
-
-  useEffect(() => {
-    form.reset(defaultValues);
-  }, [defaultValues, form]);
 
   async function onSubmitWrapper(values: PolicyGroupFormValues) {
     setIsSubmitting(true);
