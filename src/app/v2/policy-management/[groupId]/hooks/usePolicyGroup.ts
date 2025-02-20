@@ -7,7 +7,7 @@ import {
   updatePolicyGroup,
 } from "../actions";
 import { getPolicies } from "@/app/v2/policy/list/actions";
-import { toast } from "@/hooks/use-toast";
+import { toast } from "sonner";
 
 export function usePolicyGroup(groupId: string) {
   const queryClient = useQueryClient();
@@ -38,24 +38,18 @@ export function usePolicyGroup(groupId: string) {
   const policyGroupUpdateMutation = useMutation({
     mutationKey: ["policy-group", groupId],
     mutationFn: async (values: PolicyGroupFormValues) => {
-      return await updatePolicyGroup({
+      await updatePolicyGroup({
         groupId,
         name: values.name,
         description: values.description,
       });
     },
     onSuccess: () => {
-      toast({
-        title: "Policy group updated",
-        description: "The policy group has been updated.",
-        variant: "default",
-      });
+      toast.success("Policy group updated");
     },
     onError: () => {
-      toast({
-        title: "Failed to update policy group",
+      toast.error("Failed to update policy group", {
         description: "Please try again.",
-        variant: "destructive",
       });
     },
     onSettled: () => {
@@ -74,21 +68,18 @@ export function usePolicyGroup(groupId: string) {
       await Promise.all(promises);
     },
     onSuccess: () => {
-      toast({
-        title: "Policies attached",
+      toast.success("Policies attached", {
         description: "The policies have been attached to the policy group.",
-        variant: "default",
       });
     },
     onError: () => {
-      toast({
-        title: "Failed to attach policies",
+      toast.error("Failed to attach policies", {
         description: "Please try again.",
-        variant: "destructive",
       });
     },
     onSettled: () => {
       queryClient.invalidateQueries({ queryKey: ["policy-group", groupId] });
+      queryClient.invalidateQueries({ queryKey: ["policies"] });
     },
   });
 
@@ -99,21 +90,18 @@ export function usePolicyGroup(groupId: string) {
       return await detachPolicyFromGroup(groupId, policyId);
     },
     onSuccess: () => {
-      toast({
-        title: "Policy detached",
+      toast.success("Policy detached", {
         description: "The policy has been detached from the policy group.",
-        variant: "default",
       });
     },
     onError: () => {
-      toast({
-        title: "Failed to detach policy",
+      toast.error("Failed to detach policy", {
         description: "Please try again.",
-        variant: "destructive",
       });
     },
     onSettled: () => {
       queryClient.invalidateQueries({ queryKey: ["policy-group", groupId] });
+      queryClient.invalidateQueries({ queryKey: ["policies"] });
     },
   });
 

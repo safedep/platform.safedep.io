@@ -1,4 +1,3 @@
-import { toast } from "sonner";
 import { useForm } from "react-hook-form";
 import { valibotResolver } from "@hookform/resolvers/valibot";
 import * as v from "valibot";
@@ -61,13 +60,6 @@ export default function UpdatePolicyGroupForm({
     setIsSubmitting(true);
     try {
       await onSubmit(values);
-      toast(
-        <pre className="mt-2 w-[340px] rounded-md bg-slate-950 p-4">
-          <code className="text-white">{JSON.stringify(values, null, 2)}</code>
-        </pre>,
-      );
-    } catch {
-      toast.error("Failed to submit the form. Please try again.");
     } finally {
       setIsSubmitting(false);
     }
