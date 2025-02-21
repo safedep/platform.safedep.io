@@ -8,7 +8,6 @@ import {
   DropdownMenuLabel,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
-import { useToast } from "@/hooks/use-toast";
 import { Project_Source } from "@buf/safedep_api.bufbuild_es/safedep/messages/controltower/v1/project_pb";
 import {
   SiBitbucket,
@@ -18,6 +17,7 @@ import {
 import type { ColumnDef } from "@tanstack/react-table";
 import { ArrowUpRight, Box, MoreHorizontal, ScrollText } from "lucide-react";
 import Link from "next/link";
+import { toast } from "sonner";
 
 export interface Project {
   id: string;
@@ -67,8 +67,6 @@ export const columns: ColumnDef<Project>[] = [
     header: "",
     cell: ({ row }) => {
       const key = row.original;
-      // eslint-disable-next-line react-hooks/rules-of-hooks
-      const { toast } = useToast();
       return (
         <DropdownMenu>
           <DropdownMenuTrigger asChild>
@@ -88,9 +86,7 @@ export const columns: ColumnDef<Project>[] = [
               className="cursor-pointer"
               onClick={() => {
                 navigator.clipboard.writeText(key.id);
-                toast({
-                  description: "Project ID copied to clipboard",
-                });
+                toast.success("Project ID copied to clipboard");
               }}
             >
               Copy Project ID

@@ -5,7 +5,7 @@ import {
   Bot,
   Frame,
   GalleryVerticalEnd,
-  Map,
+  Map as LucideMap,
   PieChart,
   Settings2,
   SquareTerminal,
@@ -65,15 +65,20 @@ const data = {
     {
       title: "Policy",
       url: "#",
+      urlPrefix: "/v2/policy",
       icon: Bot,
       items: [
         {
-          title: "Violations",
-          url: "/v2/policy/violations",
+          title: "Groups",
+          url: "/v2/policy-management/manage",
         },
         {
-          title: "Manage",
-          url: "#",
+          title: "Policies",
+          url: "/v2/policy/list",
+        },
+        {
+          title: "Violations",
+          url: "/v2/policy/violations",
         },
       ],
     },
@@ -139,7 +144,7 @@ const data = {
     {
       name: "Travel",
       url: "#",
-      icon: Map,
+      icon: LucideMap,
     },
   ],
 };
