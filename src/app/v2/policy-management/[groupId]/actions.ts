@@ -1,6 +1,7 @@
 "use server";
 import { createPolicyService } from "@/lib/rpc/client";
 import { getTenantAndToken } from "@/lib/session/session";
+import { timestampDate } from "@bufbuild/protobuf/wkt";
 
 export async function getPolicyGroup(groupId: string) {
   const { accessToken, tenant } = await getTenantAndToken();
@@ -13,8 +14,8 @@ export async function getPolicyGroup(groupId: string) {
       id: group?.policyGroupId,
       name: group?.name,
       description: group?.description,
-      createdAt: group?.createdAt?.toDate(),
-      updatedAt: group?.updatedAt?.toDate(),
+      createdAt: group?.createdAt ? timestampDate(group.createdAt) : undefined,
+      updatedAt: group?.updatedAt ? timestampDate(group.updatedAt) : undefined,
     },
     policies: policies.map(
       ({ labels, name, policyId, rules, target, type }) => ({

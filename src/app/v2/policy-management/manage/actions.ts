@@ -2,6 +2,7 @@
 
 import { createPolicyService } from "@/lib/rpc/client";
 import { getTenantAndToken } from "@/lib/session/session";
+import { timestampDate } from "@bufbuild/protobuf/wkt";
 
 export async function getPolicyGroups() {
   const { accessToken, tenant } = await getTenantAndToken();
@@ -12,8 +13,8 @@ export async function getPolicyGroups() {
       id: policyGroupId,
       name,
       description,
-      createdAt: createdAt?.toDate(),
-      updatedAt: updatedAt?.toDate(),
+      createdAt: createdAt ? timestampDate(createdAt) : undefined,
+      updatedAt: updatedAt ? timestampDate(updatedAt) : undefined,
     }),
   );
 }
