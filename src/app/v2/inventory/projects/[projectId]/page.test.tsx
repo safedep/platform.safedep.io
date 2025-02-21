@@ -4,13 +4,14 @@ import { describe, expect, it, vi } from "vitest";
 import Page from "./page";
 import { act } from "react";
 import {
-  ListBOMComponentsResponse,
-  ListProjectVersionBOMResponse,
-  ListProjectVersionsResponse,
+  ListProjectVersionsResponseSchema,
+  ListProjectVersionBOMResponseSchema,
+  ListBOMComponentsResponseSchema,
 } from "@buf/safedep_api.bufbuild_es/safedep/services/controltower/v1/project_pb";
 import { BOM_Status } from "@buf/safedep_api.bufbuild_es/safedep/messages/controltower/v1/bom_pb";
 import { Classification } from "@buf/safedep_api.bufbuild_es/safedep/messages/bom/v1/cdx_pb";
 import { Ecosystem } from "@buf/safedep_api.bufbuild_es/safedep/messages/package/v1/ecosystem_pb";
+import { create, toJson } from "@bufbuild/protobuf";
 
 vi.mock("server-only", () => {
   return {};
@@ -22,7 +23,7 @@ vi.mock("next/navigation", () => ({
 
 vi.mock("./actions", () => ({
   async listProjectVersions() {
-    return new ListProjectVersionsResponse({
+    const r = create(ListProjectVersionsResponseSchema, {
       projectVersions: [
         {
           version: {
@@ -39,11 +40,12 @@ vi.mock("./actions", () => ({
           },
         },
       ],
-    }).toJson();
+    });
+    return toJson(ListProjectVersionsResponseSchema, r);
   },
   async listProjectVersionBOM() {
     // this response represents the latest version's BOM
-    return new ListProjectVersionBOMResponse({
+    const r = create(ListProjectVersionBOMResponseSchema, {
       boms: [
         {
           bom: { bomId: "BOM-1", status: BOM_Status.LATEST },
@@ -51,10 +53,11 @@ vi.mock("./actions", () => ({
         { bom: { bomId: "BOM-2", status: BOM_Status.UNSPECIFIED } },
         { bom: { bomId: "BOM-3", status: BOM_Status.HISTORICAL } },
       ],
-    }).toJson();
+    });
+    return toJson(ListProjectVersionBOMResponseSchema, r);
   },
   async listBOMComponents() {
-    return new ListBOMComponentsResponse({
+    const r = create(ListBOMComponentsResponseSchema, {
       components: [
         {
           component: {
@@ -74,7 +77,8 @@ vi.mock("./actions", () => ({
           },
         },
       ],
-    }).toJson();
+    });
+    return toJson(ListBOMComponentsResponseSchema, r);
   },
 }));
 

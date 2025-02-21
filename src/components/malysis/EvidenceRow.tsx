@@ -49,7 +49,7 @@ export default function EvidenceRow({ evidence }: EvidenceRowProps) {
             </div>
           </div>
 
-          {evidence instanceof Report_FileEvidence && (
+          {"fileKey" in evidence && (
             <div className="space-y-2">
               <h3 className="text-sm font-medium text-muted-foreground">
                 File

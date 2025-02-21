@@ -4,11 +4,13 @@ import MalwareAnalysisReportCard from "@/components/malysis/MalwareAnalysisRepor
 import {
   AnalysisStatus,
   GetAnalysisReportResponse,
+  GetAnalysisReportResponseSchema,
 } from "@buf/safedep_api.bufbuild_es/safedep/services/malysis/v1/malysis_pb";
 import { useParams } from "next/navigation";
 import { useEffect, useState } from "react";
 import MalwareAnalysisCardLoading from "@/components/malysis/MalwareAnalysisReportLoading";
 import MalwareAnalysisError from "@/components/malysis/MalwareAnalysisError";
+import { fromJson } from "@bufbuild/protobuf";
 
 export default function Page() {
   const { analysisId } = useParams<{ analysisId?: string }>();
@@ -27,7 +29,7 @@ export default function Page() {
         throw new Error(errorData.message || "Failed to fetch malware report.");
       }
       const data = await response.json();
-      return GetAnalysisReportResponse.fromJson(data);
+      return fromJson(GetAnalysisReportResponseSchema, data);
     }
 
     fetchReport()

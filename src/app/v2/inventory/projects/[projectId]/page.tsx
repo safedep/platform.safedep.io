@@ -8,9 +8,9 @@ import {
   type ComponentWithAttributes,
   type BOMWithAttributes,
   type ProjectVersionWithAttributes,
-  ListProjectVersionsResponse,
-  ListProjectVersionBOMResponse,
-  ListBOMComponentsResponse,
+  ListProjectVersionsResponseSchema,
+  ListProjectVersionBOMResponseSchema,
+  ListBOMComponentsResponseSchema,
 } from "@buf/safedep_api.bufbuild_es/safedep/services/controltower/v1/project_pb";
 import { useEffect, useState } from "react";
 import ComponentsTable from "@/components/projects/components-table";
@@ -23,6 +23,7 @@ import {
 } from "./actions";
 import { Skeleton } from "@/components/ui/skeleton";
 import ErrorPage from "@/components/projects/error-page";
+import { fromJson } from "@bufbuild/protobuf";
 
 export default function ProjectDetails() {
   const { projectId } = useParams<{ projectId: string }>();
@@ -39,7 +40,7 @@ export default function ProjectDetails() {
   useEffect(() => {
     listProjectVersions(projectId)
       .then((x) => {
-        const parsed = ListProjectVersionsResponse.fromJson(x);
+        const parsed = fromJson(ListProjectVersionsResponseSchema, x);
         setVersions(parsed.projectVersions);
       })
       .catch((e) => setError(e));
@@ -51,7 +52,7 @@ export default function ProjectDetails() {
       setBoms(undefined);
       listProjectVersionBOM(selectedVersion.version?.projectVersionId)
         .then((x) => {
-          const parsed = ListProjectVersionBOMResponse.fromJson(x);
+          const parsed = fromJson(ListProjectVersionBOMResponseSchema, x);
           setBoms(parsed.boms);
         })
         .catch((e) => setError(e));
@@ -67,7 +68,7 @@ export default function ProjectDetails() {
       setComponents(undefined);
       listBOMComponents(selectedVersion.version?.projectVersionId)
         .then((x) => {
-          const parsed = ListBOMComponentsResponse.fromJson(x);
+          const parsed = fromJson(ListBOMComponentsResponseSchema, x);
           setComponents(parsed.components);
         })
         .catch((e) => setError(e));

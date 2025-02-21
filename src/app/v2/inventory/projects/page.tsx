@@ -4,6 +4,7 @@ import { SearchCode } from "lucide-react";
 import { DataTable } from "@/components/projects/data-table";
 import { columns } from "@/app/v2/inventory/projects/columns";
 import { Project_Source } from "@buf/safedep_api.bufbuild_es/safedep/messages/controltower/v1/project_pb";
+import { timestampDate } from "@bufbuild/protobuf/wkt";
 
 export default async function Page() {
   const projects = await getProjects();
@@ -22,7 +23,9 @@ export default async function Page() {
             source: project?.source ?? Project_Source.UNSPECIFIED,
             name: project?.name ?? "",
             id: project?.projectId ?? "",
-            createdAt: project?.createdAt?.toDate() ?? new Date(),
+            createdAt: project?.createdAt
+              ? timestampDate(project.createdAt)
+              : new Date(),
             version: attributes?.versions,
           }))}
         />

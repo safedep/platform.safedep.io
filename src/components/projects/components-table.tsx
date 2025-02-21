@@ -9,6 +9,7 @@ import {
 } from "../ui/table";
 import { Ecosystem } from "@buf/safedep_api.bufbuild_es/safedep/messages/package/v1/ecosystem_pb";
 import { Classification } from "@buf/safedep_api.bufbuild_es/safedep/messages/bom/v1/cdx_pb";
+import { timestampDate } from "@bufbuild/protobuf/wkt";
 
 function ecosystemName(ecosystem: Ecosystem) {
   switch (ecosystem) {
@@ -105,10 +106,14 @@ export default function ComponentsTable({
               {ecosystemName(component?.ecosystem ?? Ecosystem.UNSPECIFIED)}
             </TableCell>
             <TableCell>
-              {component?.createdAt?.toDate().toLocaleDateString()}
+              {component?.createdAt
+                ? timestampDate(component.createdAt).toLocaleDateString()
+                : new Date().toLocaleDateString()}
             </TableCell>
             <TableCell>
-              {component?.updatedAt?.toDate().toLocaleDateString()}
+              {component?.updatedAt
+                ? timestampDate(component.updatedAt).toLocaleDateString()
+                : new Date().toLocaleDateString()}
             </TableCell>
           </TableRow>
         ))}

@@ -1,5 +1,7 @@
 import { apiErrorHandler } from "@/lib/api/error";
 import { createMalwareAnalysisServiceClient } from "@/lib/rpc/client";
+import { GetAnalysisReportResponseSchema } from "@buf/safedep_api.bufbuild_es/safedep/services/malysis/v1/malysis_pb";
+import { toJson } from "@bufbuild/protobuf";
 import type { NextApiRequest } from "next";
 import { NextResponse } from "next/server";
 
@@ -27,7 +29,7 @@ async function handleGET(
     analysisId: analysisId,
   });
 
-  return NextResponse.json(report.toJson());
+  return NextResponse.json(toJson(GetAnalysisReportResponseSchema, report));
 }
 
 export const GET = apiErrorHandler(handleGET);
