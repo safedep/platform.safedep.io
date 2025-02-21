@@ -12,6 +12,7 @@ import { sessionMustGetTenant } from "@/lib/session/session";
 import { getAccessToken } from "@auth0/nextjs-auth0";
 import { NextResponse, NextRequest } from "next/server";
 import { z } from "zod";
+import { timestampDate } from "@bufbuild/protobuf/wkt";
 
 async function handleListApiKeys() {
   const { accessToken } = await getAccessToken();
@@ -26,7 +27,7 @@ async function handleListApiKeys() {
       id: key.keyId,
       name: key.name,
       description: key.description,
-      expiry: key.expiresAt?.toDate(),
+      expiry: key.expiresAt ? timestampDate(key.expiresAt) : undefined,
     })),
     total: keys.keys.length,
   };
@@ -57,7 +58,7 @@ async function handleCreateApiKey(req: NextRequest) {
   const responseBody: responseType = {
     id: response.keyId,
     key: response.key,
-    expiry: response.expiresAt?.toDate(),
+    expiry: response.expiresAt ? timestampDate(response.expiresAt) : undefined,
   };
 
   return NextResponse.json(responseBody, { status: 201 });

@@ -8,6 +8,7 @@ import {
   TableCell,
 } from "../ui/table";
 import type { BOMWithAttributes } from "@buf/safedep_api.bufbuild_es/safedep/services/controltower/v1/project_pb";
+import { timestampDate } from "@bufbuild/protobuf/wkt";
 
 function getBOMStatusName(status?: BOM_Status) {
   switch (status) {
@@ -40,11 +41,15 @@ export default function BOMSTable({ boms }: { boms: BOMWithAttributes[] }) {
               {bom?.bomId}
             </TableCell>
             <TableCell>
-              {bom?.createdAt?.toDate().toLocaleDateString()}
+              {bom?.createdAt
+                ? timestampDate(bom.createdAt).toLocaleDateString()
+                : new Date().toLocaleDateString()}
             </TableCell>
             <TableCell>{getBOMStatusName(bom?.status)}</TableCell>
             <TableCell>
-              {bom?.updatedAt?.toDate().toLocaleDateString()}
+              {bom?.updatedAt
+                ? timestampDate(bom.updatedAt).toLocaleDateString()
+                : new Date().toLocaleDateString()}
             </TableCell>
           </TableRow>
         ))}

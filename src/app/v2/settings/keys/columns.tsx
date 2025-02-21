@@ -50,7 +50,7 @@ export type ApiKey = {
   id: string;
   name: string;
   description: string;
-  expiresAt: string;
+  expiresAt: Date;
 };
 
 export const columns: ColumnDef<ApiKey>[] = [
@@ -71,6 +71,9 @@ export const columns: ColumnDef<ApiKey>[] = [
     accessorKey: "expiresAt",
     header: "Expires At",
     enableSorting: true,
+    cell: ({ row }) => (
+      <span>{row.original.expiresAt.toLocaleDateString()}</span>
+    ),
   },
   {
     id: "actions",

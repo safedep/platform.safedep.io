@@ -1,7 +1,7 @@
 import { getUserAccess } from "@/lib/rpc/client";
 import { logger } from "@/utils/logger";
 import { getAccessToken, getSession } from "@auth0/nextjs-auth0";
-import { GetUserInfoResponse } from "@buf/safedep_api.bufbuild_es/safedep/services/controltower/v1/user_pb";
+import { GetUserInfoResponseSchema } from "@buf/safedep_api.bufbuild_es/safedep/services/controltower/v1/user_pb";
 import { UserIcon } from "lucide-react";
 import { redirect } from "next/navigation";
 
@@ -22,13 +22,14 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
+import { fromJson } from "@bufbuild/protobuf";
 
 const defaultPostAuthOnboardingPath = "/onboard";
 const defaultPreAuthPath = "/auth";
 
 export default async function Home() {
   const session = await getSession();
-  const userInfo = new GetUserInfoResponse();
+  const userInfo = fromJson(GetUserInfoResponseSchema, {});
   const currentTenant = {
     tenant: "",
   };

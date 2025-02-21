@@ -1,14 +1,14 @@
 import { createConnectTransport } from "@connectrpc/connect-node";
 import { createClient, type Interceptor } from "@connectrpc/connect";
-import { OnboardingService } from "@buf/safedep_api.connectrpc_es/safedep/services/controltower/v1/onboarding_connect";
-import { ApiKeyService } from "@buf/safedep_api.connectrpc_es/safedep/services/controltower/v1/api_key_connect";
-import { UserService } from "@buf/safedep_api.connectrpc_es/safedep/services/controltower/v1/user_connect";
-import { InsightService } from "@buf/safedep_api.connectrpc_es/safedep/services/insights/v2/insights_connect";
-import { MalwareAnalysisService } from "@buf/safedep_api.connectrpc_es/safedep/services/malysis/v1/malysis_connect";
-import { TenantService } from "@buf/safedep_api.connectrpc_es/safedep/services/controltower/v1/tenant_connect";
-import { QueryService } from "@buf/safedep_api.connectrpc_es/safedep/services/controltower/v1/query_connect";
-import { ProjectService } from "@buf/safedep_api.connectrpc_es/safedep/services/controltower/v1/project_connect";
-import { PolicyService } from "@buf/safedep_api.connectrpc_es/safedep/services/controltower/v1/policy_connect";
+import { OnboardingService } from "@buf/safedep_api.bufbuild_es/safedep/services/controltower/v1/onboarding_pb";
+import { ApiKeyService } from "@buf/safedep_api.bufbuild_es/safedep/services/controltower/v1/api_key_pb";
+import { UserService } from "@buf/safedep_api.bufbuild_es/safedep/services/controltower/v1/user_pb";
+import { InsightService } from "@buf/safedep_api.bufbuild_es/safedep/services/insights/v2/insights_pb";
+import { MalwareAnalysisService } from "@buf/safedep_api.bufbuild_es/safedep/services/malysis/v1/malysis_pb";
+import { TenantService } from "@buf/safedep_api.bufbuild_es/safedep/services/controltower/v1/tenant_pb";
+import { QueryService } from "@buf/safedep_api.bufbuild_es/safedep/services/controltower/v1/query_pb";
+import { ProjectService } from "@buf/safedep_api.bufbuild_es/safedep/services/controltower/v1/project_pb";
+import { PolicyService } from "@buf/safedep_api.bufbuild_es/safedep/services/controltower/v1/policy_pb";
 
 const apiBaseUrl = (process.env.API_BASE_URL ||
   "https://api.safedep.io") as string;
@@ -26,11 +26,7 @@ function authenticationInterceptor(token: string, tenant: string): Interceptor {
 /**
  * Create a ConnectRPC transport with authentication headers
  */
-export const createTransport = (
-  apiUrl: string,
-  tenant: string,
-  token: string,
-) => {
+export function createTransport(apiUrl: string, tenant: string, token: string) {
   const transport = createConnectTransport({
     baseUrl: apiUrl,
     httpVersion: "1.1",
@@ -38,37 +34,37 @@ export const createTransport = (
   });
 
   return transport;
-};
+}
 
-export const createInsightServiceClient = (tenant: string, token: string) => {
+export function createInsightServiceClient(tenant: string, token: string) {
   const transport = createTransport(apiBaseUrl, tenant, token);
   return createClient(InsightService, transport);
-};
+}
 
-export const createOnboardingServiceClient = (token: string) => {
+export function createOnboardingServiceClient(token: string) {
   const transport = createTransport(cloudApiBaseUrl, "", token);
   return createClient(OnboardingService, transport);
-};
+}
 
-export const createApiKeyServiceClient = (tenant: string, token: string) => {
+export function createApiKeyServiceClient(tenant: string, token: string) {
   const transport = createTransport(cloudApiBaseUrl, tenant, token);
   return createClient(ApiKeyService, transport);
-};
+}
 
-export const createTenantServiceClient = (tenant: string, token: string) => {
+export function createTenantServiceClient(tenant: string, token: string) {
   const transport = createTransport(cloudApiBaseUrl, tenant, token);
   return createClient(TenantService, transport);
-};
+}
 
-export const createQueryServiceClient = (tenant: string, token: string) => {
+export function createQueryServiceClient(tenant: string, token: string) {
   const transport = createTransport(apiBaseUrl, tenant, token);
   return createClient(QueryService, transport);
-};
+}
 
-export const createUserServiceClient = (token: string) => {
+export function createUserServiceClient(token: string) {
   const transport = createTransport(cloudApiBaseUrl, "", token);
   return createClient(UserService, transport);
-};
+}
 
 export function createProjectServiceClient(tenant: string, token: string) {
   const transport = createTransport(cloudApiBaseUrl, tenant, token);
@@ -80,23 +76,23 @@ export function createPolicyService(tenant: string, token: string) {
   return createClient(PolicyService, transport);
 }
 
-export const createMalwareAnalysisServiceClient = (
+export function createMalwareAnalysisServiceClient(
   tenant: string,
   token: string,
-) => {
+) {
   const transport = createTransport(apiBaseUrl, tenant, token);
   return createClient(MalwareAnalysisService, transport);
-};
+}
 
-export const getUserAccess = async (token: string) => {
+export async function getUserAccess(token: string) {
   const userServiceClient = createUserServiceClient(token);
   return await userServiceClient.getUserInfo({});
-};
+}
 
 /**
  * Find the first tenant associated with the user
  */
-export const findFirstUserAccess = async (token: string) => {
+export async function findFirstUserAccess(token: string) {
   const userServiceClient = createUserServiceClient(token);
   const userInfo = await userServiceClient.getUserInfo({});
 
@@ -105,4 +101,4 @@ export const findFirstUserAccess = async (token: string) => {
   }
 
   return userInfo.access[0];
-};
+}

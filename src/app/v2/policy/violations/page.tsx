@@ -1,7 +1,7 @@
 import { listPolicyViolations } from "./actions";
 import { DataTable } from "./data-table";
 import { columns } from "./columns";
-
+import { timestampDate } from "@bufbuild/protobuf/wkt";
 export default async function Page() {
   const { violation } = await listPolicyViolations();
 
@@ -11,7 +11,9 @@ export default async function Page() {
       projectVersion: projectVersion,
       ruleName: violation?.rule?.name,
       affectedComponent: `${component?.name}@${component?.version}`,
-      detectedAt: violation?.detectedAt?.toDate(),
+      detectedAt: violation?.detectedAt
+        ? timestampDate(violation.detectedAt)
+        : new Date(),
       check: violation?.rule?.check,
     }),
   );

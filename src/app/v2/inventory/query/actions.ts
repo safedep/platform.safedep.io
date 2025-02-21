@@ -3,6 +3,7 @@
 import { createQueryServiceClient } from "@/lib/rpc/client";
 import { sessionMustGetTenant } from "@/lib/session/session";
 import { getAccessToken } from "@auth0/nextjs-auth0";
+import { timestampDate } from "@bufbuild/protobuf/wkt";
 
 export interface SqlSchema {
   name: string;
@@ -73,7 +74,7 @@ export async function serverExecuteQuery(
   const rows = new Array<SqlQueryResponseRow>();
   response.rows.forEach((row) => {
     const pairs = new Array<SqlQueryResponsePair>();
-    const keys = Object.keys(row.fields);
+    const keys = Object.keys(row);
 
     const columns = new Array<string>();
     keys.forEach((key) => {
@@ -85,7 +86,7 @@ export async function serverExecuteQuery(
     columns.sort().forEach((column) => {
       pairs.push({
         column,
-        value: row.fields[column].toJson() as string,
+        value: row[column]?.toString() ?? "",
       });
     });
 
@@ -93,7 +94,9 @@ export async function serverExecuteQuery(
   });
 
   return {
-    generatedAt: response.generatedAt?.toDate() as Date,
+    generatedAt: response.generatedAt
+      ? timestampDate(response.generatedAt)
+      : new Date(),
     rows,
   };
 }

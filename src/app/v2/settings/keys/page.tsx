@@ -3,6 +3,7 @@ import Link from "next/link";
 import { serverExecuteGetApiKeys } from "./actions";
 import { columns } from "./columns";
 import { DataTable } from "./data-table";
+import { timestampDate } from "@bufbuild/protobuf/wkt";
 
 async function Page() {
   const apiKeys = await serverExecuteGetApiKeys();
@@ -10,7 +11,7 @@ async function Page() {
     id: key.keyId,
     name: key.name,
     description: key.description,
-    expiresAt: key.expiresAt?.toDate().toLocaleDateString() ?? "",
+    expiresAt: key.expiresAt ? timestampDate(key.expiresAt) : new Date(),
   }));
 
   return (

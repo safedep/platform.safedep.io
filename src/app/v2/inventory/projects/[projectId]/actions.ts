@@ -2,6 +2,12 @@
 import { createProjectServiceClient } from "@/lib/rpc/client";
 import { sessionMustGetTenant } from "@/lib/session/session";
 import { getAccessToken } from "@auth0/nextjs-auth0";
+import {
+  ListProjectVersionsResponseSchema,
+  ListProjectVersionBOMResponseSchema,
+  ListBOMComponentsResponseSchema,
+} from "@buf/safedep_api.bufbuild_es/safedep/services/controltower/v1/project_pb";
+import { toJson } from "@bufbuild/protobuf";
 
 async function getClient() {
   const { accessToken } = await getAccessToken();
@@ -14,14 +20,18 @@ async function getClient() {
 
 export async function listProjectVersions(projectId: string) {
   const service = await getClient();
-  return (await service.listProjectVersions({ projectId })).toJson();
+  return toJson(
+    ListProjectVersionsResponseSchema,
+    await service.listProjectVersions({ projectId }),
+  );
 }
 
 export async function listProjectVersionBOM(versionId: string) {
   const service = await getClient();
-  return (
-    await service.listProjectVersionBOM({ projectVersionId: versionId })
-  ).toJson();
+  return toJson(
+    ListProjectVersionBOMResponseSchema,
+    await service.listProjectVersionBOM({ projectVersionId: versionId }),
+  );
 }
 
 export async function listBOMComponents(
@@ -29,7 +39,8 @@ export async function listBOMComponents(
   bomId?: string,
 ) {
   const service = await getClient();
-  return (
-    await service.listBOMComponents({ bomId, projectVersionId })
-  ).toJson();
+  return toJson(
+    ListBOMComponentsResponseSchema,
+    await service.listBOMComponents({ bomId, projectVersionId }),
+  );
 }
