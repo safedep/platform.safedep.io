@@ -1,6 +1,7 @@
 "use server";
 
-import { createPolicyService, getTenantAndToken } from "@/lib/rpc/client";
+import { createPolicyService } from "@/lib/rpc/client";
+import { getTenantAndToken } from "@/lib/session/session";
 import { CreatePolicyRequest } from "@buf/safedep_api.bufbuild_es/safedep/services/controltower/v1/policy_pb";
 
 export async function createPolicy(policy: CreatePolicyRequest) {

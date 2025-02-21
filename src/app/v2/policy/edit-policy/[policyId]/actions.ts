@@ -1,7 +1,7 @@
 "use server";
 
 import { createPolicyService } from "@/lib/rpc/client";
-import { getTenantAndToken } from "@/lib/rpc/client";
+import { getTenantAndToken } from "@/lib/session/session";
 import { PolicyFormValues } from "@/components/policy/policy-form";
 
 export async function getPolicy(policyId: string) {

@@ -1,7 +1,7 @@
 "use server";
 
 import { createPolicyService } from "@/lib/rpc/client";
-import { getTenantAndToken } from "@/lib/rpc/client";
+import { getTenantAndToken } from "@/lib/session/session";
 
 export async function createPolicyGroup({
   name,
