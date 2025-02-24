@@ -276,7 +276,7 @@ export default function PolicyForm({
               <div className="space-y-0.5">
                 <FormLabel>Allow</FormLabel>
                 <FormDescription>
-                  Enable or disable the policy rule. TODO NEED REVIEW
+                  Enable or disable the policy rule.
                 </FormDescription>
               </div>
               <FormControl>
