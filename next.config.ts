@@ -1,8 +1,9 @@
 import { withSentryConfig } from "@sentry/nextjs";
 import type { NextConfig } from "next";
+import { env } from "@/env";
 
 const nextConfig: NextConfig = {
-  /* config options here */
+  output: env.STANDALONE_IN_PROD ? "standalone" : undefined,
 };
 
 export default withSentryConfig(nextConfig, {
