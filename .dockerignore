@@ -1,0 +1,13 @@
+.next/
+out/
+.git/
+.gitignore/
+*.db
+.env*
+node_modules/
+README.md
+.vscode/
+data/
+Dockerfile
+.dockerignore
+compose.yml
