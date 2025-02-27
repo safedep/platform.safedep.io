@@ -39,6 +39,7 @@ ENV NEXT_TELEMETRY_DISABLED=1 \
 
 # Build application with cache optimization
 RUN --mount=type=cache,id=pnpm,target=/pnpm/store \
+    --mount=type=cache,id=next,target=/app/.next/cache \
     corepack enable pnpm && \
     pnpm run build
 
