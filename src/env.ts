@@ -62,7 +62,7 @@ export const env = createEnv({
    * Specify only client-side runtime variables here (eg. NEXT_PUBLIC_ variables)
    */
   experimental__runtimeEnv: {
-    NEXT_PUBLIC_ENV: process.env.NODE_ENV,
+    NEXT_PUBLIC_ENV: process.env.NEXT_PUBLIC_ENV,
   },
 
   /**
