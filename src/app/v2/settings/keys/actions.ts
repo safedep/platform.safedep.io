@@ -5,7 +5,7 @@ import { getTenantAndToken } from "@/lib/session/session";
 
 export async function serverExecuteDeleteApiKey(keyId: string) {
   const { tenant, accessToken } = await getTenantAndToken();
-  const keyService = createApiKeyServiceClient(tenant ?? "", accessToken);
+  const keyService = createApiKeyServiceClient(tenant, accessToken);
   await keyService.deleteApiKey({ keyId });
 }
 
