@@ -2,34 +2,30 @@
 
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import {
-  Shield,
-  AlertTriangle,
-  XOctagon,
-  Package,
-  TrendingUp,
-  TrendingDown,
-  Scale,
-} from "lucide-react";
-import {
-  XAxis,
-  YAxis,
-  CartesianGrid,
-  Tooltip,
-  ResponsiveContainer,
-  AreaChart,
-  Area,
-  PieChart,
-  Pie,
-  Cell,
-} from "recharts";
-import { useState } from "react";
-import {
   Select,
   SelectContent,
   SelectItem,
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
+import {
+  AlertTriangle,
+  Scale,
+  Shield,
+  TrendingDown,
+  TrendingUp,
+  XOctagon,
+} from "lucide-react";
+import { useState } from "react";
+import {
+  Area,
+  AreaChart,
+  CartesianGrid,
+  ResponsiveContainer,
+  Tooltip,
+  XAxis,
+  YAxis,
+} from "recharts";
 
 // Mock data - replace with real API calls
 const securityMetrics = {
@@ -180,6 +176,21 @@ export default function Page() {
       <div className="grid gap-6 grid-cols-12">
         {/* Key Metrics Row */}
         <div className="col-span-12 grid gap-6 grid-cols-4">
+          <Card className="border-l-4 border-l-blue-500">
+            <CardHeader className="flex flex-row items-center justify-between pb-2">
+              <CardTitle className="text-sm font-medium">Projects</CardTitle>
+              <Scale className="h-4 w-4 text-blue-500" />
+            </CardHeader>
+            <CardContent>
+              <div className="text-2xl font-bold">
+                {securityMetrics.projects}
+              </div>
+              <p className="text-xs text-muted-foreground">
+                Number of projects observed
+              </p>
+            </CardContent>
+          </Card>
+
           <Card className="border-l-4 border-l-red-500">
             <CardHeader className="flex flex-row items-center justify-between pb-2">
               <CardTitle className="text-sm font-medium">
@@ -231,21 +242,6 @@ export default function Page() {
               <p className="text-xs text-muted-foreground">
                 Detected malicious packages out of{" "}
                 {securityMetrics.scannedPackages} scanned packages
-              </p>
-            </CardContent>
-          </Card>
-
-          <Card className="border-l-4 border-l-blue-500">
-            <CardHeader className="flex flex-row items-center justify-between pb-2">
-              <CardTitle className="text-sm font-medium">Legal Risk</CardTitle>
-              <Scale className="h-4 w-4 text-blue-500" />
-            </CardHeader>
-            <CardContent>
-              <div className="text-2xl font-bold">
-                {securityMetrics.licensePolicyViolations}
-              </div>
-              <p className="text-xs text-muted-foreground">
-                out of {securityMetrics.uniqueLicenses} unique licenses observed
               </p>
             </CardContent>
           </Card>
