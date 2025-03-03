@@ -24,7 +24,7 @@ vi.mock("./actions", () => ({
 }));
 
 // Mock toast notifications
-vi.mock("@/hooks/use-toast", () => ({
+vi.mock("sonner", () => ({
   toast: mocks.toast,
 }));
 

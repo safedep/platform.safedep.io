@@ -33,22 +33,12 @@ vi.mock("./actions", () => ({
   serverExecuteGetApiKeys: mocks.serverExecuteGetApiKeys,
 }));
 
-// Utility to create a fresh QueryClient
-function createTestQueryClient() {
-  return new QueryClient({
-    defaultOptions: { queries: { retry: false } },
-  });
-}
-
 describe("API Keys Page", () => {
   // Utility function to setup the component for testing
   async function setupComponent() {
-    const queryClient = createTestQueryClient();
     const page = await Page();
     await act(async () => {
-      render(
-        <QueryClientProvider client={queryClient}>{page}</QueryClientProvider>,
-      );
+      render(page);
     });
   }
 
