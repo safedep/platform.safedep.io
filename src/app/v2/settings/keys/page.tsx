@@ -8,7 +8,7 @@ import { Badge } from "@/components/ui/badge";
 
 async function Page() {
   const apiKeys = await serverExecuteGetApiKeys();
-  const data = apiKeys.apiKeys.keys.map((key) => ({
+  const data = apiKeys?.apiKeys.keys.map((key) => ({
     id: key.keyId,
     name: key.name,
     description: key.description,
