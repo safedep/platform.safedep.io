@@ -49,7 +49,7 @@ describe("API Key Creation Page", () => {
     await setupComponent();
     const user = userEvent.setup();
 
-    // ✅ Mock API response
+    // Mock API response
     mocks.createApiKey.mockResolvedValueOnce({
       key: "test-api-key-123",
       tenant: "tenant-xyz",
