@@ -4,7 +4,7 @@ import { serverExecuteGetApiKeys } from "./actions";
 import { columns } from "./columns";
 import { DataTable } from "./data-table";
 import { timestampDate } from "@bufbuild/protobuf/wkt";
-import { Badge } from "@/app/platform/inventory/components/Badge";
+import { Badge } from "@/components/ui/badge";
 
 async function Page() {
   const apiKeys = await serverExecuteGetApiKeys();
@@ -20,7 +20,7 @@ async function Page() {
       <header className="flex h-16 shrink-0 items-center gap-2 transition-[width,height] ease-linear group-has-[[data-collapsible=icon]]/sidebar-wrapper:h-12">
         <div className="ml-4">
           <Badge variant="outline">
-            <span className="font-bold">Tenant:&nbsp;</span> {apiKeys?.tenant}
+            <span>Tenant:&nbsp;</span> {apiKeys?.tenant}
           </Badge>
         </div>
         <div className="flex items-center gap-2 px-4 ml-auto">
