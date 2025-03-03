@@ -9,6 +9,7 @@ import {
   PieChart,
   Settings2,
   SquareTerminal,
+  LayoutDashboard,
 } from "lucide-react";
 import * as React from "react";
 
@@ -41,6 +42,19 @@ const data = {
     },
   ],
   navMain: [
+    {
+      title: "Dashboard",
+      url: "/v2/dashboard",
+      urlPrefix: "/v2/dashboard",
+      icon: LayoutDashboard,
+      isActive: false,
+      items: [
+        {
+          title: "Main",
+          url: "/v2/dashboard",
+        },
+      ],
+    },
     {
       title: "Inventory",
       url: "#",
