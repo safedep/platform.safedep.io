@@ -1,5 +1,4 @@
 import { render, screen, waitFor, within } from "@testing-library/react";
-import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { expect, vi, describe, it } from "vitest";
 import Page from "./page";
 import { act } from "react";
