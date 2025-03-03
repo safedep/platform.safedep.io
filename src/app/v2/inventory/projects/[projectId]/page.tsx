@@ -29,6 +29,7 @@ export default function ProjectDetails() {
   const { projectId } = useParams<{ projectId: string }>();
 
   const [versions, setVersions] = useState<ProjectVersionWithAttributes[]>();
+  const [projectName, setProjectName] = useState("");
   const [boms, setBoms] = useState<BOMWithAttributes[]>();
   const [components, setComponents] = useState<ComponentWithAttributes[]>();
 
@@ -42,6 +43,7 @@ export default function ProjectDetails() {
       .then((x) => {
         const parsed = fromJson(ListProjectVersionsResponseSchema, x);
         setVersions(parsed.projectVersions);
+        setProjectName(parsed.projectName);
       })
       .catch((e) => setError(e));
   }, [projectId]);
@@ -91,7 +93,7 @@ export default function ProjectDetails() {
             <Shield className="h-6 w-6 text-primary" />
           </div>
           <h1 className="text-2xl font-semibold tracking-tight">
-            {projectId} Project Details
+            {projectName} Project Details
           </h1>
         </div>
         {versions?.length ? (
