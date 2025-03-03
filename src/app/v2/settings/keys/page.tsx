@@ -4,10 +4,11 @@ import { serverExecuteGetApiKeys } from "./actions";
 import { columns } from "./columns";
 import { DataTable } from "./data-table";
 import { timestampDate } from "@bufbuild/protobuf/wkt";
+import { Badge } from "@/components/ui/badge";
 
 async function Page() {
   const apiKeys = await serverExecuteGetApiKeys();
-  const data = apiKeys.keys.map((key) => ({
+  const data = apiKeys?.apiKeys.keys.map((key) => ({
     id: key.keyId,
     name: key.name,
     description: key.description,
@@ -17,6 +18,11 @@ async function Page() {
   return (
     <div className="container mx-auto">
       <header className="flex h-16 shrink-0 items-center gap-2 transition-[width,height] ease-linear group-has-[[data-collapsible=icon]]/sidebar-wrapper:h-12">
+        <div className="ml-4">
+          <Badge variant="outline">
+            <span>Tenant:&nbsp;</span> {apiKeys?.tenant}
+          </Badge>
+        </div>
         <div className="flex items-center gap-2 px-4 ml-auto">
           <Button>
             <Link href="/v2/settings/keys/create">Create API Key</Link>

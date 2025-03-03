@@ -29,6 +29,7 @@ import { useRouter } from "next/navigation";
 export default function Page() {
   const [keyValue, setKeyValue] = React.useState("");
   const [name, setName] = React.useState("");
+  const [tenant, setTenant] = React.useState("");
   const [description, setDescription] = React.useState("");
   const [expiryDays, setExpiryDays] = React.useState("30");
 
@@ -46,6 +47,7 @@ export default function Page() {
       })
         .then((data) => {
           setKeyValue(data.key);
+          setTenant(data.tenant);
         })
         .catch((err) => {
           toast({
@@ -62,6 +64,10 @@ export default function Page() {
     navigator.clipboard.writeText(keyValue);
   }, [keyValue]);
 
+  const handleCopyTenant = React.useCallback(() => {
+    navigator.clipboard.writeText(tenant);
+  }, [tenant]);
+
   // Show the key with a button to go back
   if (keyValue) {
     return (
@@ -75,6 +81,15 @@ export default function Page() {
           </CardHeader>
           <CardContent>
             <div className="flex flex-col space-y-1.5">
+              <Label htmlFor="key"> Current Tenant</Label>
+              <div className="flex items-center gap-2">
+                <code className="relative rounded bg-muted px-[0.8rem] py-[0.8rem] font-mono text-sm font-semibold min-w-[30rem]">
+                  {tenant}
+                </code>
+                <Button onClick={handleCopyTenant}>Copy</Button>
+              </div>
+            </div>
+            <div className="flex flex-col space-y-1.5 mt-8">
               <Label htmlFor="key">API Key</Label>
               <div className="flex items-center gap-2">
                 <code className="relative rounded bg-muted px-[0.8rem] py-[0.8rem] font-mono text-sm font-semibold min-w-[30rem]">
