@@ -21,5 +21,10 @@ export async function serverExecuteGetApiKeys() {
   const tenant = await sessionMustGetTenant();
   const keyService = createApiKeyServiceClient(tenant, accessToken as string);
 
-  return keyService.listApiKeys({});
+  const apiKeys = await keyService.listApiKeys({});
+
+  return {
+    tenant,
+    apiKeys,
+  };
 }

@@ -13,6 +13,7 @@ interface ApiKeyRequest {
 interface ApiKeyResponse {
   keyId: string;
   key: string;
+  tenant: string;
 }
 
 export async function createApiKey(
@@ -31,5 +32,6 @@ export async function createApiKey(
   return {
     keyId: response.keyId,
     key: response.key,
+    tenant,
   };
 }
