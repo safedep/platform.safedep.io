@@ -15,9 +15,12 @@ WORKDIR /app
 # Copy package management files
 COPY package.json pnpm-lock.yaml .npmrc* ./
 
+# Since we are using corepack, we need to modify the pnpm cache dir's path
+RUN corepack enable pnpm && \
+    pnpm config set store-dir /pnpm/store
+
 # Install dependencies with cache optimization
 RUN --mount=type=cache,id=pnpm,target=/pnpm/store \
-    corepack enable pnpm && \
     pnpm i --frozen-lockfile
 
 # --------------------------------------------
@@ -37,10 +40,13 @@ ENV NEXT_TELEMETRY_DISABLED=1 \
     # we may not have all the variables readily available during docker build
     SKIP_ENV_VALIDATION=true
 
+# Since we are using corepack, we need to modify the pnpm cache dir's path
+RUN corepack enable pnpm && \
+    pnpm config set store-dir /pnpm/store
+
 # Build application with cache optimization
 RUN --mount=type=cache,id=pnpm,target=/pnpm/store \
     --mount=type=cache,id=next,target=/app/.next/cache \
-    corepack enable pnpm && \
     pnpm run build
 
 # --------------------------------------------
