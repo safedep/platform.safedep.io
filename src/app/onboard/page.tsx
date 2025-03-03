@@ -2,7 +2,7 @@
 
 import { Loading } from "@/components/Loading";
 import { logger } from "@/utils/logger";
-import { useUser } from "@auth0/nextjs-auth0/client";
+import { useUser } from "@auth0/nextjs-auth0";
 import { TimerIcon, UserIcon } from "lucide-react";
 import { useRouter } from "next/navigation";
 import React from "react";
@@ -16,7 +16,7 @@ type FormData = {
   organizationDomain: string;
 };
 
-const Onboard: React.FC = () => {
+function Onboard() {
   const router = useRouter();
   const { user, isLoading } = useUser();
   const { register, handleSubmit } = useForm<FormData>();
@@ -154,6 +154,6 @@ const Onboard: React.FC = () => {
       </div>
     </div>
   );
-};
+}
 
 export default Onboard;

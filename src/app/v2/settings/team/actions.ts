@@ -1,9 +1,7 @@
 "use server";
-
 import { accessLevelToLabel } from "@/lib/rpc/access";
 import { createTenantServiceClient } from "@/lib/rpc/client";
-import { sessionMustGetTenant } from "@/lib/session/session";
-import { getAccessToken } from "@auth0/nextjs-auth0";
+import { getTenantAndToken } from "@/lib/session/session";
 
 export type Access = {
   id: string;
@@ -13,8 +11,7 @@ export type Access = {
 };
 
 export const serverListTeamAccess = async (): Promise<Access[]> => {
-  const { accessToken } = await getAccessToken();
-  const tenant = await sessionMustGetTenant();
+  const { accessToken, tenant } = await getTenantAndToken();
   const client = createTenantServiceClient(tenant, accessToken as string);
   const response = await client.listUsersAccess({});
 

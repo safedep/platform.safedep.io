@@ -1,17 +1,20 @@
 import React from "react";
 import { render, screen, fireEvent, waitFor } from "@testing-library/react";
 import "@testing-library/jest-dom";
-import { useRouter } from "next/navigation";
-import { useUser } from "@auth0/nextjs-auth0/client";
 import Onboard from "../page";
-import { describe, expect, vi, beforeEach, type Mock, test } from "vitest";
+import { describe, expect, vi, type Mock, test, beforeEach } from "vitest";
 
-vi.mock("next/navigation", () => ({
+const mocks = vi.hoisted(() => ({
   useRouter: vi.fn(),
+  useUser: vi.fn(),
 }));
 
-vi.mock("@auth0/nextjs-auth0/client", () => ({
-  useUser: vi.fn(),
+vi.mock("next/navigation", () => ({
+  useRouter: mocks.useRouter,
+}));
+
+vi.mock("@auth0/nextjs-auth0", () => ({
+  useUser: mocks.useUser,
 }));
 
 global.fetch = vi.fn();
@@ -34,8 +37,8 @@ describe("Onboard Component", () => {
 
   beforeEach(() => {
     vi.clearAllMocks();
-    (useRouter as Mock).mockReturnValue(mockRouter);
-    (useUser as Mock).mockReturnValue({
+    mocks.useRouter.mockReturnValue(mockRouter);
+    mocks.useUser.mockReturnValue({
       user: mockUser,
       isLoading: false,
     });
@@ -61,7 +64,7 @@ describe("Onboard Component", () => {
   });
 
   test("redirects to home page when no user is logged in", () => {
-    (useUser as Mock).mockReturnValue({
+    mocks.useUser.mockReturnValue({
       user: null,
       isLoading: false,
     });

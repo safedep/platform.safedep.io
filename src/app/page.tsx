@@ -1,10 +1,5 @@
-import { getUserAccess } from "@/lib/rpc/client";
-import { logger } from "@/utils/logger";
-import { getAccessToken, getSession } from "@auth0/nextjs-auth0";
-import { GetUserInfoResponseSchema } from "@buf/safedep_api.bufbuild_es/safedep/services/controltower/v1/user_pb";
 import { UserIcon } from "lucide-react";
 import { redirect } from "next/navigation";
-
 import { Button } from "@/components/ui/button";
 import {
   Card,
@@ -22,61 +17,17 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
-import { fromJson } from "@bufbuild/protobuf";
-
-const defaultPostAuthOnboardingPath = "/onboard";
-const defaultPreAuthPath = "/auth";
+import { getSessionOrRedirectTo, getUserInfo } from "./actions";
+import { sessionSetTenant } from "@/lib/session/session";
 
 export default async function Home() {
-  const session = await getSession();
-  const userInfo = fromJson(GetUserInfoResponseSchema, {});
-  const currentTenant = {
-    tenant: "",
-  };
+  const session = await getSessionOrRedirectTo("/auth");
+  const userInfo = await getUserInfo();
 
-  if (!session?.user) {
-    redirect(defaultPreAuthPath);
-  } else {
-    /**
-     * Check if user is alreaady onboarded on SafeDep Cloud
-     * and redirect accordingly.
-     */
-    let path = "";
-    try {
-      const { accessToken } = await getAccessToken();
-      const res = await getUserAccess(accessToken as string);
-
-      if (!res?.access) {
-        throw new Error("No access found");
-      }
-
-      if (res.access.length === 0) {
-        throw new Error("No tenant found");
-      }
-
-      userInfo.access = res.access;
-    } catch (error) {
-      logger.debug("User not onboarded: ", error);
-      path = defaultPostAuthOnboardingPath;
-    } finally {
-      if (path !== "") {
-        redirect(path);
-      }
-    }
-  }
-
-  async function handleSetTenant(tenant: string) {
+  async function setTenantAndRedirect(tenant: string) {
     "use server";
-
-    logger.debug("Selected tenant: ", tenant);
-    currentTenant.tenant = tenant;
-
-    redirect("/api/tenant/redirect/" + tenant);
-  }
-
-  async function handleLogout() {
-    "use server";
-    redirect("/api/auth/logout");
+    await sessionSetTenant(tenant);
+    return redirect("/v2/dashboard");
   }
 
   return (
@@ -97,7 +48,7 @@ export default async function Home() {
             <div className="grid w-full items-center gap-4">
               <div className="flex flex-col space-y-1.5">
                 <Label htmlFor="framework">Tenant</Label>
-                <Select name="tenant" onValueChange={handleSetTenant}>
+                <Select name="tenant" onValueChange={setTenantAndRedirect}>
                   <SelectTrigger>
                     <SelectValue placeholder="Select tenant to continue ..." />
                   </SelectTrigger>
@@ -117,8 +68,8 @@ export default async function Home() {
           </form>
         </CardContent>
         <CardFooter className="flex justify-between">
-          <Button variant="outline" onClick={handleLogout}>
-            Logout
+          <Button variant="outline" asChild>
+            <a href="/auth/logout?returnTo=/">Logout</a>
           </Button>
         </CardFooter>
       </Card>

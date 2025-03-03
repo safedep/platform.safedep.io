@@ -72,7 +72,9 @@ export const columns: ColumnDef<ApiKey>[] = [
     header: "Expires At",
     enableSorting: true,
     cell: ({ row }) => (
-      <span>{row.original.expiresAt.toLocaleDateString()}</span>
+      <span suppressHydrationWarning>
+        {row.original.expiresAt.toLocaleDateString()}
+      </span>
     ),
   },
   {

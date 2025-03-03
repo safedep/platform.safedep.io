@@ -1,21 +1,19 @@
 import { apiErrorHandler } from "@/lib/api/error";
+import { auth0 } from "@/lib/auth0";
 import { createOnboardingServiceClient } from "@/lib/rpc/client";
 import { createValidationError } from "@/lib/schema/error";
 import { OnboardingRequest, OnboardingResponse } from "@/lib/schema/onboarding";
 import { validateSchema } from "@/lib/schema/validate";
 import { logger } from "@/utils/logger";
-import { getAccessToken, getSession } from "@auth0/nextjs-auth0";
 import { NextResponse } from "next/server";
 import { z } from "zod";
 
 async function handleOnboarding(req: Request) {
-  const { accessToken } = await getAccessToken();
-  const session = await getSession();
+  const accessToken = (await auth0.getAccessToken()).token;
+  const session = await auth0.getSession();
 
   const body = await req.json();
-  const onboardingService = createOnboardingServiceClient(
-    accessToken as string,
-  );
+  const onboardingService = createOnboardingServiceClient(accessToken);
 
   const { validData, errors } = validateSchema(OnboardingRequest, body);
   if (!validData || errors) {
