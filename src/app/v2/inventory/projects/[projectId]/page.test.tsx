@@ -24,6 +24,7 @@ vi.mock("next/navigation", () => ({
 vi.mock("./actions", () => ({
   async listProjectVersions() {
     const r = create(ListProjectVersionsResponseSchema, {
+      projectName: "My Project",
       projectVersions: [
         {
           version: {
@@ -94,7 +95,7 @@ describe("Project page", () => {
       return render(<Page />);
     });
     expect(screen.getByRole("heading")).toHaveTextContent(
-      /ABC123 Project Details/,
+      /My Project Project Details/,
     );
   });
 
