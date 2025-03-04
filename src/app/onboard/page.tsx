@@ -32,7 +32,7 @@ const Onboard: React.FC = () => {
   const { mutateAsync: onboardUser, isPending } = useMutation({
     mutationKey: ["onboard"],
     mutationFn: async (data: FormData) => {
-      const resp = await createOnboarding({
+      await createOnboarding({
         ...data,
         // email: user?.email,
       });
@@ -43,7 +43,9 @@ const Onboard: React.FC = () => {
       router.push("/");
     },
     onError: () => {
-      toast.error("Onboarding failed. Please try again.");
+      setErrorMessage(
+        "An organization with the same domain already exists. Please try a different domain.",
+      );
     },
   });
 
@@ -57,6 +59,12 @@ const Onboard: React.FC = () => {
 
   if (isLoading) {
     return <Loading message="Loading user details..." />;
+  }
+
+  if (isPending) {
+    return (
+      <Loading message="Creating your organization..." badge={TimerIcon} />
+    );
   }
 
   if (!isLoading && !user) {
