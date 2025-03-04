@@ -47,6 +47,9 @@ RUN corepack enable pnpm && \
 # Build application with cache optimization
 RUN --mount=type=cache,id=pnpm,target=/pnpm/store \
     --mount=type=cache,id=next,target=/app/.next/cache \
+    # we need the sentry auth token only during build time to upload sourcemaps
+    # to sentry
+    --mount=type=secret,id=sentry_auth_token,env=SENTRY_AUTH_TOKEN \
     pnpm run build
 
 # --------------------------------------------
