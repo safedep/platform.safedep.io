@@ -50,12 +50,16 @@ const data = {
       isActive: false,
       items: [
         {
-          title: "Live",
+          title: "Minimal",
           url: "/v2/dashboard",
         },
         {
           title: "Executive",
           url: "/v2/dashboard/executive",
+        },
+        {
+          title: "Supply Chain",
+          url: "/v2/dashboard/supply-chain",
         },
       ],
     },
