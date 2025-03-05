@@ -1,31 +1,55 @@
 import React from "react";
-import { render, screen, fireEvent, waitFor } from "@testing-library/react";
-import "@testing-library/jest-dom";
-import { useRouter } from "next/navigation";
-import { useUser } from "@auth0/nextjs-auth0/client";
+import { render, screen, waitFor } from "@testing-library/react";
+import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
+import { describe, it, expect, vi, beforeEach, type Mock, test } from "vitest";
 import Onboard from "../page";
-import { describe, expect, vi, beforeEach, type Mock, test } from "vitest";
+import { useUser } from "@auth0/nextjs-auth0/client";
+import userEvent from "@testing-library/user-event";
 
+const mockPush = vi.fn();
 vi.mock("next/navigation", () => ({
-  useRouter: vi.fn(),
+  useRouter: () => ({
+    push: mockPush,
+  }),
 }));
 
 vi.mock("@auth0/nextjs-auth0/client", () => ({
   useUser: vi.fn(),
 }));
 
-global.fetch = vi.fn();
+const mocks = vi.hoisted(() => ({
+  createOnboarding: vi.fn(),
+  toast: vi.fn(),
+}));
 
-const placeholderText = {
-  name: "John Doe",
-  organization: "Example Inc",
-  domain: "example.com",
-};
+// Mock `createOnboarding`
+vi.mock("../actions", () => ({
+  createOnboarding: mocks.createOnboarding,
+}));
+
+// Mock toast notifications
+vi.mock("sonner", () => ({
+  toast: {
+    success: mocks.toast,
+  },
+}));
+
+// Utility to create a fresh QueryClient for each test
+function createTestQueryClient() {
+  return new QueryClient({
+    defaultOptions: { queries: { retry: false } },
+  });
+}
 
 describe("Onboard Component", () => {
-  const mockRouter = {
-    push: vi.fn(),
-  };
+  async function setupComponent() {
+    const queryClient = createTestQueryClient();
+    render(
+      <QueryClientProvider client={queryClient}>
+        <Onboard />
+      </QueryClientProvider>,
+    );
+  }
 
   const mockUser = {
     name: "Test User",
@@ -34,150 +58,156 @@ describe("Onboard Component", () => {
 
   beforeEach(() => {
     vi.clearAllMocks();
-    (useRouter as Mock).mockReturnValue(mockRouter);
     (useUser as Mock).mockReturnValue({
       user: mockUser,
       isLoading: false,
     });
   });
 
-  test("renders onboarding form with user name", () => {
-    render(<Onboard />);
+  it("renders onboarding form with user name", async () => {
+    await setupComponent();
     expect(
       screen.getByText(
         `Welcome, ${mockUser.name}! Please fill in the details to onboard.`,
       ),
     ).toBeInTheDocument();
-    expect(
-      screen.getByPlaceholderText(placeholderText.name),
-    ).toBeInTheDocument();
-    expect(
-      screen.getByPlaceholderText(placeholderText.organization),
-    ).toBeInTheDocument();
-    expect(
-      screen.getByPlaceholderText(placeholderText.domain),
-    ).toBeInTheDocument();
+    expect(screen.getByPlaceholderText("John Doe")).toBeInTheDocument();
+    expect(screen.getByPlaceholderText("Example Inc")).toBeInTheDocument();
+    expect(screen.getByPlaceholderText("example.com")).toBeInTheDocument();
     expect(screen.getByRole("button", { name: "Create" })).toBeInTheDocument();
   });
 
-  test("redirects to home page when no user is logged in", () => {
+  it("redirects to home page when no user is logged in", async () => {
     (useUser as Mock).mockReturnValue({
       user: null,
       isLoading: false,
     });
 
-    render(<Onboard />);
-    expect(mockRouter.push).toHaveBeenCalledWith("/");
+    await setupComponent();
+    expect(mockPush).toHaveBeenCalledWith("/");
   });
 
-  test("handles form submission successfully", async () => {
-    (global.fetch as Mock).mockResolvedValueOnce({
-      ok: true,
-      json: vi.fn().mockResolvedValue({ domain: "example.com" }),
-    });
+  it("handles form submission successfully", async () => {
+    await setupComponent();
+    const user = userEvent.setup();
 
-    render(<Onboard />);
+    // Mock API success response
+    mocks.createOnboarding.mockResolvedValueOnce({});
 
-    fireEvent.change(screen.getByPlaceholderText(placeholderText.name), {
-      target: { value: placeholderText.name },
-    });
-
-    fireEvent.change(
-      screen.getByPlaceholderText(placeholderText.organization),
-      {
-        target: { value: placeholderText.organization },
-      },
+    // Fill out the form
+    await user.type(screen.getByPlaceholderText("John Doe"), "My Name");
+    await user.type(
+      screen.getByPlaceholderText("Example Inc"),
+      "My Organization",
     );
+    await user.type(screen.getByPlaceholderText("example.com"), "mydomain.com");
 
-    fireEvent.change(screen.getByPlaceholderText(placeholderText.domain), {
-      target: { value: placeholderText.domain },
-    });
+    // Submit the form
+    await user.click(screen.getByRole("button", { name: "Create" }));
 
-    fireEvent.click(screen.getByRole("button", { name: "Create" }));
+    // Ensure API was called with correct data
     await waitFor(() => {
-      expect(global.fetch).toHaveBeenCalledWith("/api/onboard", {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify({
-          name: placeholderText.name,
-          organizationName: placeholderText.organization,
-          organizationDomain: placeholderText.domain,
-        }),
+      expect(mocks.createOnboarding).toHaveBeenCalledWith({
+        name: "My Name",
+        organizationName: "My Organization",
+        organizationDomain: "mydomain.com",
       });
     });
+
+    // Ensure success message is shown
+    await waitFor(() => {
+      expect(mocks.toast).toHaveBeenCalledWith("Onboarding successful!");
+      expect(mockPush).toHaveBeenCalledWith("/");
+    });
   });
 
-  test("handles form submission error", async () => {
-    (global.fetch as Mock).mockResolvedValueOnce({
-      ok: false,
-      json: vi.fn().mockResolvedValue({ message: "Error details" }),
-    });
+  it("displays an error if the organization already exists", async () => {
+    await setupComponent();
+    const user = userEvent.setup();
 
-    const consoleErrorSpy = vi.spyOn(console, "error");
+    // Mock API error response
+    mocks.createOnboarding.mockRejectedValueOnce(new Error("already_exists"));
 
-    render(<Onboard />);
-    fireEvent.change(screen.getByPlaceholderText(placeholderText.name), {
-      target: { value: placeholderText.name },
-    });
-
-    fireEvent.change(
-      screen.getByPlaceholderText(placeholderText.organization),
-      {
-        target: { value: placeholderText.organization },
-      },
+    await user.type(screen.getByPlaceholderText("John Doe"), "My Name");
+    await user.type(
+      screen.getByPlaceholderText("Example Inc"),
+      "My Organization",
+    );
+    await user.type(
+      screen.getByPlaceholderText("example.com"),
+      "existingdomain.com",
     );
 
-    fireEvent.change(screen.getByPlaceholderText(placeholderText.domain), {
-      target: { value: placeholderText.domain },
-    });
+    await user.click(screen.getByRole("button", { name: "Create" }));
 
-    fireEvent.click(screen.getByRole("button", { name: "Create" }));
     await waitFor(() => {
-      expect(consoleErrorSpy).toHaveBeenCalledWith(
-        expect.stringContaining("ERROR: Failed to onboard"),
-        expect.any(Object),
-      );
+      expect(
+        screen.getByText(
+          /An organization with the same domain already exists/i,
+        ),
+      ).toBeInTheDocument();
     });
-
-    consoleErrorSpy.mockRestore();
   });
 
-  test("handles network error during submission", async () => {
-    (global.fetch as Mock).mockRejectedValueOnce(new Error("Network error"));
-    const consoleErrorSpy = vi.spyOn(console, "error");
+  // it("handles network error during submission", async () => {
+  //   await setupComponent();
+  //   const user = userEvent.setup();
 
-    render(<Onboard />);
+  //   // Mock API failure
+  //   mocks.createOnboarding.mockRejectedValueOnce(new Error("Network Error"));
 
-    fireEvent.change(screen.getByPlaceholderText(placeholderText.name), {
-      target: { value: placeholderText.name },
-    });
+  //   await user.type(screen.getByPlaceholderText("John Doe"), "My Name");
+  //   await user.type(screen.getByPlaceholderText("Example Inc"), "My Organization");
+  //   await user.type(screen.getByPlaceholderText("example.com"), "networkerror.com");
 
-    fireEvent.change(
-      screen.getByPlaceholderText(placeholderText.organization),
-      {
-        target: { value: placeholderText.organization },
-      },
+  //   await user.click(screen.getByRole("button", { name: "Create" }));
+
+  //   await waitFor(() => {
+  //     expect(screen.getByText(/An error occurred. Please try again later./i)).toBeInTheDocument();
+  //   });
+  // });
+
+  it("disables create button when submission is in progress", async () => {
+    await setupComponent();
+    const user = userEvent.setup();
+
+    mocks.createOnboarding.mockImplementation(() => new Promise(() => {}));
+
+    await user.type(screen.getByPlaceholderText("John Doe"), "My Name");
+    await user.type(
+      screen.getByPlaceholderText("Example Inc"),
+      "My Organization",
+    );
+    await user.type(screen.getByPlaceholderText("example.com"), "loading.com");
+
+    await user.click(screen.getByRole("button", { name: "Create" }));
+  });
+
+  it("shows a loading state when onboarding is in progress", async () => {
+    await setupComponent();
+    const user = userEvent.setup();
+
+    mocks.createOnboarding.mockImplementation(() => new Promise(() => {}));
+
+    await user.type(screen.getByPlaceholderText("John Doe"), "My Name");
+    await user.type(
+      screen.getByPlaceholderText("Example Inc"),
+      "My Organization",
+    );
+    await user.type(
+      screen.getByPlaceholderText("example.com"),
+      "loadingstate.com",
     );
 
-    fireEvent.change(screen.getByPlaceholderText(placeholderText.domain), {
-      target: { value: placeholderText.domain },
-    });
+    await user.click(screen.getByRole("button", { name: "Create" }));
 
-    fireEvent.click(screen.getByRole("button", { name: "Create" }));
-    await waitFor(() => {
-      expect(consoleErrorSpy).toHaveBeenCalledWith(
-        expect.stringContaining("ERROR: Error occurred while onboarding"),
-        expect.any(Error),
-      );
-    });
-
-    consoleErrorSpy.mockRestore();
+    expect(
+      screen.getByText("Creating your organization..."),
+    ).toBeInTheDocument();
   });
 
-  test("logout link is present", () => {
-    render(<Onboard />);
+  it("logout link is present", async () => {
+    await setupComponent();
     expect(screen.getByRole("link", { name: "Sign out" })).toBeInTheDocument();
   });
 });

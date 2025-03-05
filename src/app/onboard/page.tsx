@@ -10,7 +10,7 @@ import { SubmitHandler, useForm } from "react-hook-form";
 import Badge from "../../components/Badge";
 import { LogoutLink } from "@/components/LogoutLink";
 import { Button } from "@/components/ui/button";
-import { createOnboarding } from "./action";
+import { createOnboarding } from "./actions";
 import { useMutation } from "@tanstack/react-query";
 import { toast } from "sonner";
 import { Label } from "@/components/ui/label";
