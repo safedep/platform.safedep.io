@@ -104,13 +104,17 @@ export default function OnboardPage() {
         toast.error("Error", {
           description: "You have already been onboarded",
         });
+        router.replace("/");
       }
+      return tenantOrError;
     },
-    onSuccess: () => {
-      toast.success("Success", {
-        description: "Your organization has been created.",
-      });
-      router.replace("/");
+    onSuccess: (tenant) => {
+      if (tenant.tenant) {
+        toast.success("Success", {
+          description: "Your organization has been created.",
+        });
+        router.replace("/");
+      }
     },
     onError: () => {
       toast.error("Error", {
