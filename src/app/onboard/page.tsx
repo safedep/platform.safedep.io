@@ -28,24 +28,28 @@ const Onboard: React.FC = () => {
   const { user, isLoading } = useUser();
   const { register, handleSubmit } = useForm<FormData>();
   const [errorMessage, setErrorMessage] = React.useState<string | null>(null);
-
   const { mutateAsync: onboardUser, isPending } = useMutation({
     mutationKey: ["onboard"],
     mutationFn: async (data: FormData) => {
-      await createOnboarding({
-        ...data,
-        // email: user?.email,
-      });
+      try {
+        await createOnboarding({
+          ...data,
+          email: user?.email ?? "",
+        });
+      } catch (error: any) {
+        if (error?.message?.includes("already_exists")) {
+          setErrorMessage(
+            "An organization with the same domain already exists. Please try a different domain.",
+          );
+        } else {
+          toast.error("An error occurred. Please try again later.");
+        }
+        throw error;
+      }
     },
-
     onSuccess: () => {
       toast.success("Onboarding successful!");
       router.push("/");
-    },
-    onError: () => {
-      setErrorMessage(
-        "An organization with the same domain already exists. Please try a different domain.",
-      );
     },
   });
 

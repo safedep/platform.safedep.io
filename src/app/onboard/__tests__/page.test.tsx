@@ -19,7 +19,10 @@ vi.mock("@auth0/nextjs-auth0/client", () => ({
 
 const mocks = vi.hoisted(() => ({
   createOnboarding: vi.fn(),
-  toast: vi.fn(),
+  toast: {
+    success: vi.fn(),
+    error: vi.fn(),
+  },
 }));
 
 // Mock `createOnboarding`
@@ -29,9 +32,7 @@ vi.mock("../actions", () => ({
 
 // Mock toast notifications
 vi.mock("sonner", () => ({
-  toast: {
-    success: mocks.toast,
-  },
+  toast: mocks.toast,
 }));
 
 // Utility to create a fresh QueryClient for each test
@@ -111,12 +112,15 @@ describe("Onboard Component", () => {
         name: "My Name",
         organizationName: "My Organization",
         organizationDomain: "mydomain.com",
+        email: "test@example.com",
       });
     });
 
     // Ensure success message is shown
     await waitFor(() => {
-      expect(mocks.toast).toHaveBeenCalledWith("Onboarding successful!");
+      expect(mocks.toast.success).toHaveBeenCalledWith(
+        "Onboarding successful!",
+      );
       expect(mockPush).toHaveBeenCalledWith("/");
     });
   });
@@ -149,23 +153,31 @@ describe("Onboard Component", () => {
     });
   });
 
-  // it("handles network error during submission", async () => {
-  //   await setupComponent();
-  //   const user = userEvent.setup();
+  it("handles network error during submission", async () => {
+    await setupComponent();
+    const user = userEvent.setup();
 
-  //   // Mock API failure
-  //   mocks.createOnboarding.mockRejectedValueOnce(new Error("Network Error"));
+    // Mock API failure
+    mocks.createOnboarding.mockRejectedValueOnce(new Error("Network Error"));
 
-  //   await user.type(screen.getByPlaceholderText("John Doe"), "My Name");
-  //   await user.type(screen.getByPlaceholderText("Example Inc"), "My Organization");
-  //   await user.type(screen.getByPlaceholderText("example.com"), "networkerror.com");
+    await user.type(screen.getByPlaceholderText("John Doe"), "My Name");
+    await user.type(
+      screen.getByPlaceholderText("Example Inc"),
+      "My Organization",
+    );
+    await user.type(
+      screen.getByPlaceholderText("example.com"),
+      "networkerror.com",
+    );
 
-  //   await user.click(screen.getByRole("button", { name: "Create" }));
+    await user.click(screen.getByRole("button", { name: "Create" }));
 
-  //   await waitFor(() => {
-  //     expect(screen.getByText(/An error occurred. Please try again later./i)).toBeInTheDocument();
-  //   });
-  // });
+    await waitFor(() => {
+      expect(mocks.toast.error).toHaveBeenCalledWith(
+        "An error occurred. Please try again later.",
+      );
+    });
+  });
 
   it("disables create button when submission is in progress", async () => {
     await setupComponent();
