@@ -2,7 +2,7 @@ import React from "react";
 import { render, screen, waitFor } from "@testing-library/react";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { describe, it, expect, vi, beforeEach, type Mock } from "vitest";
-import Onboard from "../page";
+import Onboard from "./page";
 import { useUser } from "@auth0/nextjs-auth0/client";
 import userEvent from "@testing-library/user-event";
 
@@ -26,7 +26,7 @@ const mocks = vi.hoisted(() => ({
 }));
 
 // Mock `createOnboarding`
-vi.mock("../actions", () => ({
+vi.mock("./actions", () => ({
   createOnboarding: mocks.createOnboarding,
 }));
 
