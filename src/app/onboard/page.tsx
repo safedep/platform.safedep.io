@@ -36,8 +36,11 @@ const Onboard: React.FC = () => {
           ...data,
           email: user?.email ?? "",
         });
-      } catch (error: any) {
-        if (error?.message?.includes("already_exists")) {
+      } catch (error: unknown) {
+        if (
+          error instanceof Error &&
+          error?.message?.includes("already_exists")
+        ) {
           setErrorMessage(
             "An organization with the same domain already exists. Please try a different domain.",
           );
