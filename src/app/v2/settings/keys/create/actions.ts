@@ -1,8 +1,7 @@
 "use server";
 
 import { createApiKeyServiceClient } from "@/lib/rpc/client";
-import { sessionMustGetTenant } from "@/lib/session/session";
-import { getAccessToken } from "@auth0/nextjs-auth0";
+import { getTenantAndToken } from "@/lib/session/session";
 
 export async function createApiKey({
   name,
@@ -13,9 +12,8 @@ export async function createApiKey({
   description?: string;
   expiryDays?: number;
 }) {
-  const { accessToken } = await getAccessToken();
-  const tenant = await sessionMustGetTenant();
-  const keyService = createApiKeyServiceClient(tenant, accessToken as string);
+  const { tenant, accessToken } = await getTenantAndToken();
+  const keyService = createApiKeyServiceClient(tenant, accessToken);
 
   const { keyId, key } = await keyService.createApiKey({
     name,

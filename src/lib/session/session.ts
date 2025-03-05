@@ -1,24 +1,28 @@
 import "server-only";
 import { cookies } from "next/headers";
-import { getAccessToken } from "@auth0/nextjs-auth0";
 import { redirect } from "next/navigation";
+import { auth0 } from "@/lib/auth0";
 
 export async function sessionSetTenant(domain: string) {
   const cookieStore = await cookies();
   cookieStore.set("tenant", domain);
 }
 
-export async function sessionGetTenant(): Promise<string | undefined> {
+export async function sessionGetTenant() {
   const cookieStore = await cookies();
   return cookieStore.get("tenant")?.value;
 }
 
-export async function sessionMustGetTenant(): Promise<string> {
+export async function sessionClearTenant() {
+  const cookieStore = await cookies();
+  cookieStore.delete("tenant");
+}
+
+export async function sessionMustGetTenant() {
   const tenant = await sessionGetTenant();
   if (!tenant) {
-    throw new Error("Tenant not found in session");
+    throw new Error("Tenant not found");
   }
-
   return tenant;
 }
 
@@ -31,13 +35,13 @@ export async function getTenantAndToken() {
   try {
     tenant = await sessionMustGetTenant();
   } catch {
-    redirect("/");
+    return redirect("/");
   }
 
   try {
-    const { accessToken } = await getAccessToken();
+    const accessToken = (await auth0.getSession())?.tokenSet.accessToken;
     if (!accessToken) {
-      redirect("/auth");
+      return redirect("/auth");
     }
     return { accessToken, tenant };
   } catch {

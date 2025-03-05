@@ -1,28 +1,18 @@
 "use server";
 
 import { createApiKeyServiceClient } from "@/lib/rpc/client";
-import { sessionMustGetTenant } from "@/lib/session/session";
-import { getAccessToken } from "@auth0/nextjs-auth0";
+import { getTenantAndToken } from "@/lib/session/session";
 
 export async function serverExecuteDeleteApiKey(keyId: string) {
-  const { accessToken } = await getAccessToken();
-  const tenant = await sessionMustGetTenant();
-  const keyService = createApiKeyServiceClient(
-    tenant ?? "",
-    accessToken as string,
-  );
-
-  keyService.deleteApiKey({ keyId });
-  return {};
+  const { tenant, accessToken } = await getTenantAndToken();
+  const keyService = createApiKeyServiceClient(tenant, accessToken);
+  await keyService.deleteApiKey({ keyId });
 }
 
 export async function serverExecuteGetApiKeys() {
-  const { accessToken } = await getAccessToken();
-  const tenant = await sessionMustGetTenant();
-  const keyService = createApiKeyServiceClient(tenant, accessToken as string);
-
+  const { accessToken, tenant } = await getTenantAndToken();
+  const keyService = createApiKeyServiceClient(tenant, accessToken);
   const apiKeys = await keyService.listApiKeys({});
-
   return {
     tenant,
     apiKeys,
