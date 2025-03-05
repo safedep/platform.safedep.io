@@ -170,7 +170,9 @@ describe("Onboard Component", () => {
       "networkerror.com",
     );
 
-    await user.click(screen.getByRole("button", { name: "Create" }));
+    await user.click(
+      screen.getByRole("button", { name: "Create Organization" }),
+    );
 
     await waitFor(() => {
       expect(mocks.toast.error).toHaveBeenCalledWith(
@@ -192,7 +194,9 @@ describe("Onboard Component", () => {
     );
     await user.type(screen.getByPlaceholderText("example.com"), "loading.com");
 
-    await user.click(screen.getByRole("button", { name: "Create" }));
+    await user.click(
+      screen.getByRole("button", { name: "Create Organization" }),
+    );
   });
 
   it("shows a loading state when onboarding is in progress", async () => {
@@ -211,7 +215,9 @@ describe("Onboard Component", () => {
       "loadingstate.com",
     );
 
-    await user.click(screen.getByRole("button", { name: "Create" }));
+    await user.click(
+      screen.getByRole("button", { name: "Create Organization" }),
+    );
 
     expect(
       screen.getByText("Creating your organization..."),
