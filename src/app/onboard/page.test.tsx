@@ -1,10 +1,18 @@
 import React from "react";
 import { render, screen, waitFor } from "@testing-library/react";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
-import { describe, it, expect, vi, beforeEach, type Mock } from "vitest";
+import { describe, it, expect, vi, beforeEach } from "vitest";
 import Onboard from "./page";
-import { useUser } from "@auth0/nextjs-auth0/client";
 import userEvent from "@testing-library/user-event";
+
+const mocks = vi.hoisted(() => ({
+  createOnboarding: vi.fn(),
+  toast: {
+    success: vi.fn(),
+    error: vi.fn(),
+  },
+  useUser: vi.fn(),
+}));
 
 const mockPush = vi.fn();
 vi.mock("next/navigation", () => ({
@@ -13,16 +21,8 @@ vi.mock("next/navigation", () => ({
   }),
 }));
 
-vi.mock("@auth0/nextjs-auth0/client", () => ({
-  useUser: vi.fn(),
-}));
-
-const mocks = vi.hoisted(() => ({
-  createOnboarding: vi.fn(),
-  toast: {
-    success: vi.fn(),
-    error: vi.fn(),
-  },
+vi.mock("@auth0/nextjs-auth0", () => ({
+  useUser: mocks.useUser,
 }));
 
 // Mock `createOnboarding`
@@ -59,7 +59,7 @@ describe("Onboard Component", () => {
 
   beforeEach(() => {
     vi.clearAllMocks();
-    (useUser as Mock).mockReturnValue({
+    mocks.useUser.mockReturnValue({
       user: mockUser,
       isLoading: false,
     });
