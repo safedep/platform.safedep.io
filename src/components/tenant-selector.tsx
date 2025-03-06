@@ -58,7 +58,6 @@ export default function TenantSelector({
                 } finally {
                   setIsLoading(false);
                 }
-                await handleSetTenant(tenant); // Call the server function
               }}
             >
               <SelectTrigger>
