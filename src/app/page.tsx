@@ -4,25 +4,8 @@ import { getAccessToken, getSession } from "@auth0/nextjs-auth0";
 import { GetUserInfoResponseSchema } from "@buf/safedep_api.bufbuild_es/safedep/services/controltower/v1/user_pb";
 import { UserIcon } from "lucide-react";
 import { redirect } from "next/navigation";
-
-import { Button } from "@/components/ui/button";
-import {
-  Card,
-  CardContent,
-  CardDescription,
-  CardFooter,
-  CardHeader,
-  CardTitle,
-} from "@/components/ui/card";
-import { Label } from "@/components/ui/label";
-import {
-  Select,
-  SelectContent,
-  SelectItem,
-  SelectTrigger,
-  SelectValue,
-} from "@/components/ui/select";
 import { fromJson } from "@bufbuild/protobuf";
+import TenantSelector from "@/components/tenant-selector";
 
 const defaultPostAuthOnboardingPath = "/onboard";
 const defaultPreAuthPath = "/auth";
@@ -38,7 +21,7 @@ export default async function Home() {
     redirect(defaultPreAuthPath);
   } else {
     /**
-     * Check if user is alreaady onboarded on SafeDep Cloud
+     * Check if user is already onboarded on SafeDep Cloud
      * and redirect accordingly.
      */
     let path = "";
@@ -85,43 +68,11 @@ export default async function Home() {
         <UserIcon size={18} />
         <span className="text-sm">Welcome {session?.user?.email}</span>
       </div>
-      <Card className="w-full max-w-md">
-        <CardHeader>
-          <CardTitle>Select Tenant</CardTitle>
-          <CardDescription>
-            Select the tenant for use with the application
-          </CardDescription>
-        </CardHeader>
-        <CardContent>
-          <form>
-            <div className="grid w-full items-center gap-4">
-              <div className="flex flex-col space-y-1.5">
-                <Label htmlFor="framework">Tenant</Label>
-                <Select name="tenant" onValueChange={handleSetTenant}>
-                  <SelectTrigger>
-                    <SelectValue placeholder="Select tenant to continue ..." />
-                  </SelectTrigger>
-                  <SelectContent position="popper">
-                    {userInfo?.access.map((access) => (
-                      <SelectItem
-                        key={access?.tenant?.domain}
-                        value={access?.tenant?.domain ?? ""}
-                      >
-                        {access.tenant?.domain}
-                      </SelectItem>
-                    ))}
-                  </SelectContent>
-                </Select>
-              </div>
-            </div>
-          </form>
-        </CardContent>
-        <CardFooter className="flex justify-between">
-          <Button variant="outline" onClick={handleLogout}>
-            Logout
-          </Button>
-        </CardFooter>
-      </Card>
+      <TenantSelector
+        userInfo={userInfo}
+        handleLogout={handleLogout}
+        handleSetTenant={handleSetTenant}
+      />
     </div>
   );
 }
