@@ -2,7 +2,7 @@ import React from "react";
 import { render, screen, waitFor } from "@testing-library/react";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { describe, it, expect, vi, beforeEach } from "vitest";
-import Onboard from "./page";
+import Page from "./page";
 import userEvent from "@testing-library/user-event";
 
 const mocks = vi.hoisted(() => ({
@@ -12,12 +12,23 @@ const mocks = vi.hoisted(() => ({
     error: vi.fn(),
   },
   useUser: vi.fn(),
+
+  mockPush: vi.fn(),
+
+  getSession: vi.fn(),
 }));
 
-const mockPush = vi.fn();
+vi.mock("server-only", () => ({}));
+
+vi.mock("@/lib/auth0", () => ({
+  auth0: {
+    getSession: mocks.getSession,
+  },
+}));
+
 vi.mock("next/navigation", () => ({
   useRouter: () => ({
-    push: mockPush,
+    push: mocks.mockPush,
   }),
 }));
 
@@ -45,10 +56,10 @@ function createTestQueryClient() {
 describe("Onboard Component", () => {
   async function setupComponent() {
     const queryClient = createTestQueryClient();
+    const onboard = await Page();
+
     render(
-      <QueryClientProvider client={queryClient}>
-        <Onboard />
-      </QueryClientProvider>,
+      <QueryClientProvider client={queryClient}>{onboard}</QueryClientProvider>,
     );
   }
 
@@ -59,9 +70,8 @@ describe("Onboard Component", () => {
 
   beforeEach(() => {
     vi.clearAllMocks();
-    mocks.useUser.mockReturnValue({
+    mocks.getSession.mockReturnValue({
       user: mockUser,
-      isLoading: false,
     });
   });
 
