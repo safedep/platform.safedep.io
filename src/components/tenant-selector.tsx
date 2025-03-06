@@ -52,7 +52,12 @@ export default function TenantSelector({
             <Select
               name="tenant"
               onValueChange={async (tenant) => {
-                setIsLoading(true); // Disable logout when selecting tenant
+                setIsLoading(true);
+                try {
+                  await handleSetTenant(tenant);
+                } finally {
+                  setIsLoading(false);
+                }
                 await handleSetTenant(tenant); // Call the server function
               }}
             >
