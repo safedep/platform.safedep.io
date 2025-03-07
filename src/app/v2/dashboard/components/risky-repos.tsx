@@ -15,35 +15,35 @@ const data = [
     criticalCount: 2,
     highCount: 5,
     mediumCount: 8,
-    riskScore: 85,
+    // riskScore: 85,
   },
   {
     name: "payment-service",
     criticalCount: 1,
     highCount: 4,
     mediumCount: 6,
-    riskScore: 78,
+    // riskScore: 78,
   },
   {
     name: "auth-service",
     criticalCount: 1,
     highCount: 3,
     mediumCount: 7,
-    riskScore: 75,
+    // riskScore: 75,
   },
   {
     name: "frontend-web",
     criticalCount: 0,
     highCount: 4,
     mediumCount: 9,
-    riskScore: 72,
+    // riskScore: 72,
   },
   {
     name: "notification-service",
     criticalCount: 0,
     highCount: 3,
     mediumCount: 8,
-    riskScore: 68,
+    // riskScore: 68,
   },
 ];
 
@@ -61,7 +61,7 @@ export function TopRiskyRepos() {
               <TableHead className="text-right">Critical</TableHead>
               <TableHead className="text-right">High</TableHead>
               <TableHead className="text-right">Medium</TableHead>
-              <TableHead className="text-right">Risk Score</TableHead>
+              {/* <TableHead className="text-right">Risk Score</TableHead> */}
             </TableRow>
           </TableHeader>
           <TableBody>
@@ -83,9 +83,9 @@ export function TopRiskyRepos() {
                     {repo.mediumCount}
                   </Badge>
                 </TableCell>
-                <TableCell className="text-right font-medium">
+                {/* <TableCell className="text-right font-medium">
                   {repo.riskScore}
-                </TableCell>
+                </TableCell> */}
               </TableRow>
             ))}
           </TableBody>

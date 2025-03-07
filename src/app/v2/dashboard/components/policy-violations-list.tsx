@@ -14,16 +14,6 @@ import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert";
 import { AlertTriangle } from "lucide-react";
 // import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 
-// Mock data - Replace with actual API calls
-// const complianceMetrics = {
-//   overallScore: 72,
-//   totalPackages: 1234,
-//   compliantPackages: 890,
-//   criticalViolations: 12,
-//   highViolations: 23,
-//   slsaProvenancePercentage: 85,
-// };
-
 const policyViolations = [
   {
     id: 1,
@@ -51,35 +41,9 @@ const policyViolations = [
   },
 ];
 
-// const lifecycleStatus = [
-//   {
-//     id: 1,
-//     name: "Package Age Check",
-//     status: "passed",
-//     description: "All packages are less than 1 year old",
-//   },
-//   {
-//     id: 2,
-//     name: "Version Pinning",
-//     status: "failed",
-//     description: "3 packages using ^ version ranges",
-//   },
-//   {
-//     id: 3,
-//     name: "SLSA Compliance",
-//     status: "warning",
-//     description: "85% of packages meet SLSA Level 2",
-//   },
-// ];
-
 export function PolicyCompliance() {
   return (
     <div className="space-y-6">
-      {/* Overall Compliance Score */}
-      {/* <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-3">
-
-      </div> */}
-
       <Card>
         <CardHeader>
           <CardTitle>Active Policy Violations</CardTitle>
