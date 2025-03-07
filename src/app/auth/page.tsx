@@ -8,7 +8,7 @@ import Image from "next/image";
 import LoginIllustrationImage from "./Illustration.svg";
 import LogoImage from "./Logo.svg";
 
-const AuthPage = () => {
+export default function AuthPage() {
   return (
     <div className="min-h-screen flex flex-col lg:flex-row bg-gray-100">
       <div className="w-full lg:w-1/2 relative overflow-hidden min-h-[300px] lg:min-h-screen">
@@ -68,6 +68,4 @@ const AuthPage = () => {
       </div>
     </div>
   );
-};
-
-export default AuthPage;
+}

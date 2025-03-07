@@ -1,4 +1,4 @@
-import { UserProvider } from "@auth0/nextjs-auth0/client";
+import { Auth0Provider } from "@auth0/nextjs-auth0";
 import "@radix-ui/themes/styles.css";
 import type { Metadata } from "next";
 import localFont from "next/font/local";
@@ -36,7 +36,7 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="en">
-      <UserProvider>
+      <Auth0Provider>
         <body
           className={`${geistSans.variable} ${geistMono.variable} flex min-h-screen flex-col antialiased`}
         >
@@ -48,7 +48,7 @@ export default function RootLayout({
             <ReactQueryDevtools />
           </TanstackQueryProvider>
         </body>
-      </UserProvider>
+      </Auth0Provider>
     </html>
   );
 }

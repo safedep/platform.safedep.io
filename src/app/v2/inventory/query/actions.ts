@@ -1,8 +1,6 @@
 "use server";
-
 import { createQueryServiceClient } from "@/lib/rpc/client";
-import { sessionMustGetTenant } from "@/lib/session/session";
-import { getAccessToken } from "@auth0/nextjs-auth0";
+import { getTenantAndToken } from "@/lib/session/session";
 import { timestampDate } from "@bufbuild/protobuf/wkt";
 
 export interface SqlSchema {
@@ -33,9 +31,8 @@ export interface SqlQueryResponse {
   rows: SqlQueryResponseRow[];
 }
 
-export async function serverExecuteQueryGetSchema(): Promise<SqlSchema[]> {
-  const { accessToken } = await getAccessToken();
-  const tenant = await sessionMustGetTenant();
+export async function serverExecuteQueryGetSchema() {
+  const { tenant, accessToken } = await getTenantAndToken();
   const client = createQueryServiceClient(tenant, accessToken as string);
 
   const schemas = new Array<SqlSchema>();
@@ -66,8 +63,7 @@ export async function serverExecuteQueryGetSchema(): Promise<SqlSchema[]> {
 export async function serverExecuteQuery(
   query: string,
 ): Promise<SqlQueryResponse> {
-  const { accessToken } = await getAccessToken();
-  const tenant = await sessionMustGetTenant();
+  const { tenant, accessToken } = await getTenantAndToken();
   const client = createQueryServiceClient(tenant, accessToken as string);
   const response = await client.queryBySql({ query, pageSize: 100 });
 

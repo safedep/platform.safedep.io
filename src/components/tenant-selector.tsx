@@ -19,21 +19,16 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
-
-interface UserInfo {
-  access: { tenant?: { domain: string } }[];
-}
+import { GetUserInfoResponse } from "@buf/safedep_api.bufbuild_es/safedep/services/controltower/v1/user_pb";
 
 interface TenantSelectorProps {
-  userInfo: UserInfo;
-  handleSetTenant: (tenant: string) => void;
-  handleLogout: () => void;
+  userInfo: GetUserInfoResponse;
+  handleSetTenant: (tenant: string) => Promise<void>;
 }
 
 export default function TenantSelector({
   userInfo,
   handleSetTenant,
-  handleLogout,
 }: TenantSelectorProps) {
   const [isLoading, setIsLoading] = useState(false);
 
@@ -78,8 +73,8 @@ export default function TenantSelector({
         </div>
       </CardContent>
       <CardFooter className="flex justify-between">
-        <Button variant="outline" onClick={handleLogout} disabled={isLoading}>
-          Logout
+        <Button variant="outline" asChild disabled={isLoading}>
+          <a href="/auth/logout">Logout</a>
         </Button>
       </CardFooter>
     </Card>

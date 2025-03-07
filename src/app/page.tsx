@@ -1,65 +1,23 @@
-import { getUserAccess } from "@/lib/rpc/client";
-import { logger } from "@/utils/logger";
-import { getAccessToken, getSession } from "@auth0/nextjs-auth0";
-import { GetUserInfoResponseSchema } from "@buf/safedep_api.bufbuild_es/safedep/services/controltower/v1/user_pb";
 import { UserIcon } from "lucide-react";
 import { redirect } from "next/navigation";
-import { fromJson } from "@bufbuild/protobuf";
+import { getSessionOrRedirectTo, getUserInfo } from "./actions";
+import { sessionSetTenant } from "@/lib/session/session";
 import TenantSelector from "@/components/tenant-selector";
 
-const defaultPostAuthOnboardingPath = "/onboard";
-const defaultPreAuthPath = "/auth";
-
 export default async function Home() {
-  const session = await getSession();
-  const userInfo = fromJson(GetUserInfoResponseSchema, {});
-  const currentTenant = {
-    tenant: "",
-  };
+  const session = await getSessionOrRedirectTo("/auth");
+  const userInfo = await getUserInfo();
 
-  if (!session?.user) {
-    redirect(defaultPreAuthPath);
-  } else {
-    /**
-     * Check if user is already onboarded on SafeDep Cloud
-     * and redirect accordingly.
-     */
-    let path = "";
-    try {
-      const { accessToken } = await getAccessToken();
-      const res = await getUserAccess(accessToken as string);
-
-      if (!res?.access) {
-        throw new Error("No access found");
-      }
-
-      if (res.access.length === 0) {
-        throw new Error("No tenant found");
-      }
-
-      userInfo.access = res.access;
-    } catch (error) {
-      logger.debug("User not onboarded: ", error);
-      path = defaultPostAuthOnboardingPath;
-    } finally {
-      if (path !== "") {
-        redirect(path);
-      }
-    }
+  // if the user has no tenant, go to the onboarding page and make them create
+  // one
+  if (userInfo.access.length === 0) {
+    return redirect("/onboard");
   }
 
-  async function handleSetTenant(tenant: string) {
+  async function setTenantAndRedirect(tenant: string) {
     "use server";
-
-    logger.debug("Selected tenant: ", tenant);
-    currentTenant.tenant = tenant;
-
-    redirect("/api/tenant/redirect/" + tenant);
-  }
-
-  async function handleLogout() {
-    "use server";
-    redirect("/api/auth/logout");
+    await sessionSetTenant(tenant);
+    return redirect("/v2/dashboard");
   }
 
   return (
@@ -70,8 +28,7 @@ export default async function Home() {
       </div>
       <TenantSelector
         userInfo={userInfo}
-        handleLogout={handleLogout}
-        handleSetTenant={handleSetTenant}
+        handleSetTenant={setTenantAndRedirect}
       />
     </div>
   );

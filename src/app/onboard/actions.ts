@@ -1,7 +1,7 @@
 "use server";
 
+import { auth0 } from "@/lib/auth0";
 import { createOnboardingServiceClient } from "@/lib/rpc/client";
-import { getAccessToken } from "@auth0/nextjs-auth0";
 import { Code, ConnectError } from "@connectrpc/connect";
 import { redirect } from "next/navigation";
 
@@ -17,7 +17,7 @@ export async function createOnboarding({
   organizationDomain?: string;
 }) {
   // we can't use getTenantAndToken since this is where we *create* the tenant
-  const { accessToken } = await getAccessToken();
+  const accessToken = (await auth0.getAccessToken()).token;
   if (!accessToken) {
     return redirect("/auth");
   }
