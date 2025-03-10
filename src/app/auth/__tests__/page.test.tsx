@@ -14,10 +14,13 @@ describe("AuthPage", () => {
 
     const loginLink = screen.getByRole("link", { name: /login/i });
     expect(loginLink).toBeInTheDocument();
-    expect(loginLink).toHaveAttribute("href", "/api/auth/login");
+    expect(loginLink).toHaveAttribute("href", "/auth/login");
 
     const signupLink = screen.getByRole("link", { name: /create account/i });
     expect(signupLink).toBeInTheDocument();
-    expect(signupLink).toHaveAttribute("href", "/api/auth/signup");
+    expect(signupLink).toHaveAttribute(
+      "href",
+      "/auth/login?screen_hint=signup",
+    );
   });
 });

@@ -12,10 +12,7 @@ import {
   SquareTerminal,
 } from "lucide-react";
 import * as React from "react";
-
 import { NavMain } from "@/components/nav-main";
-// eslint-disable-next-line @typescript-eslint/no-unused-vars
-import { NavProjects } from "@/components/nav-projects";
 import { NavUser } from "@/components/nav-user";
 import { TeamSwitcher } from "@/components/team-switcher";
 import {
@@ -25,7 +22,7 @@ import {
   SidebarHeader,
   SidebarRail,
 } from "@/components/ui/sidebar";
-import { useUser } from "@auth0/nextjs-auth0/client";
+import { useUser } from "@auth0/nextjs-auth0";
 import { usePathname } from "next/navigation";
 
 const data = {
@@ -157,7 +154,7 @@ const data = {
 };
 
 export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
-  const { user, isLoading } = useUser();
+  const { user } = useUser();
   const path = usePathname();
 
   React.useEffect(() => {
@@ -168,10 +165,6 @@ export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
     }
   }, [path]);
 
-  if (isLoading) {
-    return null;
-  }
-
   return (
     <Sidebar collapsible="icon" {...props}>
       <SidebarHeader>
@@ -181,15 +174,7 @@ export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
         <NavMain items={data.navMain} />
         {/* <NavProjects projects={data.projects} /> */}
       </SidebarContent>
-      <SidebarFooter>
-        <NavUser
-          user={{
-            name: user?.name ?? "",
-            email: user?.email ?? "",
-            avatar: user?.picture ?? "",
-          }}
-        />
-      </SidebarFooter>
+      <SidebarFooter>{user ? <NavUser user={user} /> : ""}</SidebarFooter>
       <SidebarRail />
     </Sidebar>
   );

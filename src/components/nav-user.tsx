@@ -20,16 +20,9 @@ import {
 } from "@/components/ui/sidebar";
 import Link from "next/link";
 import { LogoutLink } from "./LogoutLink";
+import { User } from "@auth0/nextjs-auth0/types";
 
-export function NavUser({
-  user,
-}: {
-  user: {
-    name: string;
-    email: string;
-    avatar: string;
-  };
-}) {
+export function NavUser({ user }: { user: User }) {
   const { isMobile } = useSidebar();
 
   return (
