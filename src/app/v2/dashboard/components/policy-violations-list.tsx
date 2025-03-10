@@ -11,7 +11,7 @@ import { Badge } from "@/components/ui/badge";
 
 import { ScrollArea } from "@/components/ui/scroll-area";
 import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert";
-import { AlertTriangle, ExternalLink, ExternalLinkIcon } from "lucide-react";
+import { AlertTriangle, ExternalLinkIcon } from "lucide-react";
 import Link from "next/link";
 // import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 
