@@ -48,7 +48,7 @@ export function PolicyCompliance() {
         <CardHeader>
           <CardTitle>Recent Policy Violations</CardTitle>
           <CardDescription>
-            Packages that don't meet policy requirements
+            Packages that don&#39;t meet policy requirements
           </CardDescription>
         </CardHeader>
         <CardContent>
