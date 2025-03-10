@@ -131,7 +131,7 @@ export default function Page() {
           </div>
         </div>
       </div>
-      <div className="col-span-12 grid gap-6 grid-cols-4">
+      <div className="col-span-12 grid gap-4 grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5">
         <Card className="border-l-4 border-l-blue-500">
           <CardHeader className="flex flex-row items-center justify-between pb-2">
             <CardTitle className="text-sm font-medium">Projects</CardTitle>
@@ -141,6 +141,21 @@ export default function Page() {
             <div className="text-2xl font-bold">{securityMetrics.projects}</div>
             <p className="text-xs text-muted-foreground">
               Number of projects observed
+            </p>
+          </CardContent>
+        </Card>
+
+        <Card className="border-l-4 border-l-green-500">
+          <CardHeader className="flex flex-row items-center justify-between pb-2">
+            <CardTitle className="text-sm font-medium">Components</CardTitle>
+            <XOctagon className="h-4 w-4 text-purple-500" />
+          </CardHeader>
+          <CardContent>
+            <div className="text-2xl font-bold">
+              {securityMetrics.components}
+            </div>
+            <p className="text-xs text-muted-foreground">
+              Number of libraries available in system
             </p>
           </CardContent>
         </Card>
@@ -201,22 +216,22 @@ export default function Page() {
       </div>
 
       {/* Main Grid */}
-      <div className="grid gap-6 grid-cols-12">
+      <div className="grid gap-6 grid-cols-1 md:grid-cols-2">
         {/* Key Metrics Row */}
-        <div className="col-span-12 grid gap-6 grid-cols-2">
+        <div className="col-span-1 md:col-span-2 grid gap-6 grid-cols-1 md:grid-cols-2">
           <VulnerabilityTrends />
           <PolicyTrend />
         </div>
-        <div className="col-span-12 grid gap-6 grid-cols-2">
+        <div className="col-span-1 md:col-span-2 grid gap-6 grid-cols-1 md:grid-cols-2">
           <TopRiskyRepos />
           <PolicyChart />
         </div>
       </div>
-      <div className="grid gap-6 grid-cols-12">
-        <div className="col-span-6">
+      <div className="grid gap-6 grid-cols-1 md:grid-cols-2">
+        <div className="col-span-1">
           <MaliciousCodeScan />
         </div>
-        <div className="col-span-6">
+        <div className="col-span-1">
           <PolicyCompliance />
         </div>
       </div>

@@ -11,7 +11,8 @@ import { Badge } from "@/components/ui/badge";
 
 import { ScrollArea } from "@/components/ui/scroll-area";
 import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert";
-import { AlertTriangle } from "lucide-react";
+import { AlertTriangle, ExternalLink, ExternalLinkIcon } from "lucide-react";
+import Link from "next/link";
 // import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 
 const policyViolations = [
@@ -85,6 +86,15 @@ export function PolicyCompliance() {
               ))}
             </div>
           </ScrollArea>
+          <div className="flex justify-end mt-4">
+            <Link
+              href="/all-violations"
+              className="hover:underline flex items-center gap-1"
+            >
+              View all
+              <ExternalLinkIcon className="h-4 w-4 mb-2" />
+            </Link>
+          </div>
         </CardContent>
       </Card>
     </div>
