@@ -46,7 +46,7 @@ export function PolicyCompliance() {
     <div className="space-y-6">
       <Card>
         <CardHeader>
-          <CardTitle>Active Policy Violations</CardTitle>
+          <CardTitle>Recent Policy Violations</CardTitle>
           <CardDescription>
             Packages that don't meet policy requirements
           </CardDescription>

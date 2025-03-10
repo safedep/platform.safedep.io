@@ -50,7 +50,7 @@ export function PolicyTrend() {
   return (
     <Card className="col-span-1">
       <CardHeader>
-        <CardTitle>Policy Trend</CardTitle>
+        <CardTitle>Policy Violation Trend</CardTitle>
       </CardHeader>
       <CardContent>
         <div className="h-[300px]">

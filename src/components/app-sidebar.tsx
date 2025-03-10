@@ -5,6 +5,7 @@ import {
   Bot,
   Frame,
   GalleryVerticalEnd,
+  LayoutDashboardIcon,
   Map as LucideMap,
   PieChart,
   Settings2,
@@ -41,6 +42,12 @@ const data = {
     },
   ],
   navMain: [
+    {
+      title: "Dashboard",
+      url: "/v2/dashboard",
+      icon: LayoutDashboardIcon,
+      isActive: false,
+    },
     {
       title: "Inventory",
       url: "#",

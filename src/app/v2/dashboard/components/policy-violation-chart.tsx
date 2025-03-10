@@ -46,7 +46,7 @@ export function PolicyChart() {
   return (
     <Card className="col-span-1">
       <CardHeader>
-        <CardTitle>Policy Violation</CardTitle>
+        <CardTitle>Policy Violation Categories</CardTitle>
       </CardHeader>
       <CardContent>
         <div className="h-[300px]">

@@ -159,8 +159,7 @@ export default function Page() {
             </div>
             <p className="text-xs text-muted-foreground">
               Critical: {securityMetrics.vulnerabilities.critical} | High:{" "}
-              {securityMetrics.vulnerabilities.high} | Reachable:{" "}
-              {securityMetrics.vulnerabilities.reachable}
+              {securityMetrics.vulnerabilities.high}
             </p>
           </CardContent>
         </Card>
