@@ -5,27 +5,14 @@ import MainCard from "../../components/MainCard";
 import { CheckCircle, Shield } from "lucide-react";
 import AuthButtons from "./components/AuthButtons";
 import Image from "next/image";
-import LoginIllustrationImage from "./Illustration.svg";
 import LogoImage from "./Logo.svg";
 
 export default function AuthPage() {
   return (
-    <div className="min-h-screen flex flex-col lg:flex-row bg-gray-100">
-      <div className="w-full lg:w-1/2 relative overflow-hidden min-h-[300px] lg:min-h-screen">
-        <div
-          className="absolute inset-0"
-          style={{
-            backgroundImage: `url(${LoginIllustrationImage.src})`,
-            backgroundSize: "cover",
-            backgroundPosition: "center",
-          }}
-        >
-          <div className="absolute inset-0 bg-black/5" />
-        </div>
-      </div>
-      <div className="w-full lg:w-1/2 bg-[#f8f8f8] flex content-center items-center border-l-rounded justify-center p-4 sm:p-6 lg:p-8">
+    <div className="min-h-screen flex flex-col lg:flex-row bg-gray-100 justify-center">
+      <div className="w-full bg-[#f8f8f8] flex content-center items-center border-l-rounded justify-center p-4 sm:p-6 lg:p-8">
         <MainCard>
-          <div className="w-full max-w-md space-y-4 lg:space-y-6">
+          <div className="w-full max-w-md space-y-4 lg:space-y-6 mx-auto border border-gray-300 rounded-xl p-10 shadow-lg shadow-blue-600/50">
             <div className="flex justify-center mb-6">
               <Image
                 src={LogoImage}
