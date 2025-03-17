@@ -16,7 +16,13 @@ import { LogoutLink } from "./LogoutLink";
 import { User } from "@auth0/nextjs-auth0/types";
 import { Card, CardHeader, CardTitle, CardContent } from "@/components/ui/card";
 
-export function UserInfoCard({ user, apiKeys }: { user: User; apiKeys: any }) {
+export function UserInfoCard({
+  user,
+  apiKeys,
+}: {
+  user: User;
+  apiKeys: { tenant: string };
+}) {
   return (
     <Card className="w-full max-w-md border border-gray-300 rounded-xl shadow-lg shadow-blue-600/50">
       <CardHeader>

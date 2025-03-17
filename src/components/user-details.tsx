@@ -5,6 +5,7 @@ import * as React from "react";
 import { UserInfoCard } from "@/components/nav-user";
 import { TeamSwitcher } from "@/components/team-switcher";
 import { useUser } from "@auth0/nextjs-auth0";
+import { ListApiKeysResponse } from "@buf/safedep_api.bufbuild_es/safedep/services/controltower/v1/api_key_pb";
 
 const data = {
   user: {
@@ -21,7 +22,11 @@ const data = {
   ],
 };
 
-export function AppHeader({ apiKeys }: { apiKeys: any }) {
+export function AppHeader({
+  apiKeys,
+}: {
+  apiKeys: { tenant: string; apiKeys: ListApiKeysResponse };
+}) {
   const { user } = useUser();
 
   return (
