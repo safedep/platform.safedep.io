@@ -27,6 +27,7 @@ import { serverExecuteDeleteApiKey } from "./actions";
 import {
   Tooltip,
   TooltipContent,
+  TooltipProvider,
   TooltipTrigger,
 } from "@/components/ui/tooltip";
 
@@ -65,15 +66,17 @@ export const columns: ColumnDef<ApiKey>[] = [
     cell: ({ row }) => (
       <div className="flex items-center gap-2">
         <span>{row.original.id.slice(0, 8) + "..."}</span>
-        <Tooltip>
-          <TooltipTrigger asChild>
-            <CopyIcon
-              className="h-4 w-4 cursor-pointer"
-              onClick={() => navigator.clipboard.writeText(row.original.id)}
-            />
-          </TooltipTrigger>
-          <TooltipContent>Copy full ID</TooltipContent>
-        </Tooltip>
+        <TooltipProvider>
+          <Tooltip>
+            <TooltipTrigger asChild>
+              <CopyIcon
+                className="h-4 w-4 cursor-pointer"
+                onClick={() => navigator.clipboard.writeText(row.original.id)}
+              />
+            </TooltipTrigger>
+            <TooltipContent>Copy full ID</TooltipContent>
+          </Tooltip>
+        </TooltipProvider>
       </div>
     ),
   },
