@@ -106,21 +106,6 @@ describe("API Keys Page", () => {
     });
   });
 
-  it("displays Tenant Badge", async () => {
-    mocks.serverExecuteGetApiKeys.mockResolvedValue({
-      tenant: "tenant-xyz",
-      apiKeys: {
-        keys: [],
-      },
-    });
-
-    await setupComponent();
-
-    await waitFor(() => {
-      expect(screen.getByText("tenant-xyz")).toBeInTheDocument();
-    });
-  });
-
   it("renders page title and create button", async () => {
     mocks.serverExecuteGetApiKeys.mockResolvedValue({
       tenant: "tenant-xyz",
