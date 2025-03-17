@@ -1,6 +1,6 @@
 "use client";
 
-import { LogOut } from "lucide-react";
+import { CopyIcon, LogOut } from "lucide-react";
 
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import {
@@ -15,7 +15,11 @@ import {
 import { LogoutLink } from "./LogoutLink";
 import { User } from "@auth0/nextjs-auth0/types";
 import { Card, CardHeader, CardTitle, CardContent } from "@/components/ui/card";
-
+import {
+  Tooltip,
+  TooltipContent,
+  TooltipTrigger,
+} from "@/components/ui/tooltip";
 export function UserInfoCard({
   user,
   apiKeys,
@@ -46,7 +50,20 @@ export function UserInfoCard({
           </div>
           <div className="flex justify-between gap-2 text-end">
             <strong>Tenant:</strong>
-            <span className="overflow-auto">{apiKeys?.tenant}</span>
+            <div className="flex items-center gap-2 items-center">
+              <span className="overflow-auto">{apiKeys?.tenant}</span>
+              <Tooltip>
+                <TooltipTrigger asChild>
+                  <CopyIcon
+                    className="cursor-pointer"
+                    onClick={() =>
+                      navigator.clipboard.writeText(apiKeys?.tenant || "")
+                    }
+                  />
+                </TooltipTrigger>
+                <TooltipContent>Copy tenant ID</TooltipContent>
+              </Tooltip>
+            </div>
           </div>
         </div>
       </CardContent>

@@ -22,8 +22,13 @@ import {
 } from "@/components/ui/dropdown-menu";
 import { toast } from "@/hooks/use-toast";
 import { ColumnDef } from "@tanstack/react-table";
-import { MoreHorizontal } from "lucide-react";
+import { CopyIcon, MoreHorizontal } from "lucide-react";
 import { serverExecuteDeleteApiKey } from "./actions";
+import {
+  Tooltip,
+  TooltipContent,
+  TooltipTrigger,
+} from "@/components/ui/tooltip";
 
 async function deleteApiKey(keyId: string) {
   serverExecuteDeleteApiKey(keyId)
@@ -57,7 +62,20 @@ export const columns: ColumnDef<ApiKey>[] = [
   {
     accessorKey: "id",
     header: "ID",
-    cell: ({ row }) => row.original.id.slice(0, 8) + "...",
+    cell: ({ row }) => (
+      <div className="flex items-center gap-2">
+        <span>{row.original.id.slice(0, 8) + "..."}</span>
+        <Tooltip>
+          <TooltipTrigger asChild>
+            <CopyIcon
+              className="h-4 w-4 cursor-pointer"
+              onClick={() => navigator.clipboard.writeText(row.original.id)}
+            />
+          </TooltipTrigger>
+          <TooltipContent>Copy full ID</TooltipContent>
+        </Tooltip>
+      </div>
+    ),
   },
   {
     accessorKey: "name",
