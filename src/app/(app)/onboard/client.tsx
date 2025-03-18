@@ -25,7 +25,7 @@ import { valibotResolver } from "@hookform/resolvers/valibot";
 import { TimerIcon, UserIcon } from "lucide-react";
 import { useForm } from "react-hook-form";
 import { useMutation } from "@tanstack/react-query";
-import Badge from "../../components/Badge";
+import Badge from "@/components/Badge";
 import { createOnboarding } from "./actions";
 import { create } from "@bufbuild/protobuf";
 import { OnboardUserRequestSchema } from "@buf/safedep_api.bufbuild_es/safedep/services/controltower/v1/onboarding_pb";

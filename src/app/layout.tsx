@@ -6,10 +6,6 @@ import "./globals.css";
 import { Toaster } from "@/components/ui/sonner";
 import TanstackQueryProvider from "@/components/providers/tanstack-query";
 import { ReactQueryDevtools } from "@tanstack/react-query-devtools";
-import UserActions from "@/components/header";
-import Image from "next/image";
-import LogoImage from "./auth/Logo.svg";
-import Footer from "@/components/Footer";
 
 const geistSans = Geist({
   subsets: ["latin"],
@@ -24,6 +20,20 @@ export const metadata: Metadata = {
   },
 };
 
+/**
+ * serves as a very minimal layout for the app. This layout is used for *ONLY*
+ * consolidating the providers and the toaster. The actual layouts are in the
+ * route groups.
+ *
+ * Rationale:
+ * - auth does not need brand header and footer,
+ * - however, it needs the providers and the toaster,
+ * - also, the other pages need the brand header and footer.
+ *
+ * So the simple solution is to have a minimal layout that only contains the
+ * providers and the toaster, and then have the actual layouts in the route
+ * groups which contain the required components.
+ */
 export default function RootLayout({
   children,
 }: Readonly<{
@@ -33,26 +43,8 @@ export default function RootLayout({
     <html lang="en">
       <Auth0Provider>
         <TanstackQueryProvider>
-          <body
-            className={`${geistSans.className} flex min-h-svh flex-col antialiased`}
-          >
-            <div className="flex flex-col">
-              <header className="flex h-16 shrink-0 items-center justify-between transition-[width,height] ease-linear group-has-[[data-collapsible=icon]]/sidebar-wrapper:h-12 m-8 px-0 sm:px-32">
-                <div className="flex items-center gap-2">
-                  <Image
-                    src={LogoImage}
-                    alt="SafeDep Logo"
-                    width={80}
-                    height={80}
-                  />
-                </div>
-                <div className="flex items-center">
-                  <UserActions />
-                </div>
-              </header>
-              <main className="flex-grow">{children}</main>
-              <Footer />
-            </div>
+          <body className={`${geistSans.className} antialiased`}>
+            {children}
 
             <Toaster />
             <ReactQueryDevtools />

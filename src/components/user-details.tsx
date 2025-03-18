@@ -10,8 +10,9 @@ import {
   TooltipProvider,
   TooltipTrigger,
 } from "@/components/ui/tooltip";
-import { ApiKeys } from "@/app/keys/actions";
+import { ApiKeys } from "@/app/(app)/keys/actions";
 import { User } from "@auth0/nextjs-auth0/types";
+import { toast } from "sonner";
 
 const data = {
   user: {
@@ -70,9 +71,12 @@ export default function UserDetails({
                       <TooltipTrigger asChild>
                         <CopyIcon
                           className="cursor-pointer"
-                          onClick={() =>
-                            navigator.clipboard.writeText(tenant || "")
-                          }
+                          onClick={() => {
+                            navigator.clipboard.writeText(tenant);
+                            toast.success(
+                              "The Tenant ID has been copied to your clipboard",
+                            );
+                          }}
                         />
                       </TooltipTrigger>
                       <TooltipContent>Copy tenant ID</TooltipContent>

@@ -20,7 +20,7 @@ import {
   DropdownMenuSeparator,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
-import { toast } from "@/hooks/use-toast";
+import { toast } from "sonner";
 import { ColumnDef } from "@tanstack/react-table";
 import { CopyIcon, MoreHorizontal } from "lucide-react";
 
@@ -30,25 +30,17 @@ import {
   TooltipProvider,
   TooltipTrigger,
 } from "@/components/ui/tooltip";
-import { deleteApiKey } from "@/app/keys/actions";
+import { deleteApiKey } from "./actions";
 
 async function deleteApiKeyDetails(keyId: string) {
-  deleteApiKey(keyId)
-    .then(() => {
-      toast({
-        title: "API key deleted",
-        description: "The API key has been deleted.",
-        variant: "default",
-      });
-      document.location.reload();
-    })
-    .catch((err) => {
-      toast({
-        title: "Error deleting API key",
-        description: err.message,
-        variant: "destructive",
-      });
+  try {
+    await deleteApiKey(keyId);
+    toast.success("The API key has been deleted.");
+  } catch (err) {
+    toast.error("Error deleting API key", {
+      description: err instanceof Error ? err.message : "Unknown error",
     });
+  }
 }
 
 // This type is used to define the shape of our data.
@@ -72,7 +64,12 @@ export const columns: ColumnDef<ApiKey>[] = [
             <TooltipTrigger asChild>
               <CopyIcon
                 className="h-4 w-4 cursor-pointer"
-                onClick={() => navigator.clipboard.writeText(row.original.id)}
+                onClick={() => {
+                  navigator.clipboard.writeText(row.original.id);
+                  toast.success(
+                    "The API key ID has been copied to your clipboard",
+                  );
+                }}
               />
             </TooltipTrigger>
             <TooltipContent>Copy full ID</TooltipContent>
@@ -115,7 +112,12 @@ export const columns: ColumnDef<ApiKey>[] = [
           <DropdownMenuContent align="end">
             <DropdownMenuLabel>Actions</DropdownMenuLabel>
             <DropdownMenuItem
-              onClick={() => navigator.clipboard.writeText(key.id)}
+              onClick={() => {
+                navigator.clipboard.writeText(key.id);
+                toast.success(
+                  "The API key ID has been copied to your clipboard",
+                );
+              }}
             >
               Copy Key ID
             </DropdownMenuItem>

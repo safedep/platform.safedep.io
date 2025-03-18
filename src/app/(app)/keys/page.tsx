@@ -8,10 +8,13 @@ import { auth0 } from "@/lib/auth0";
 
 export default async function Page() {
   const apiKeys = await getApiKeys();
+  // we can force `user` to be non-null because we know that the user is going
+  // to be present in the session because `getApiKeys` redirects to the login
+  // page if the user is not authenticated.
   const user = (await auth0.getSession())?.user!;
 
   return (
-    <div className="container mx-auto">
+    <section>
       <div className="flex flex-col items-center mt-4">
         <h1 className="text-4xl font-bold bg-gradient-to-r from-gray-400 to-gray-600 bg-clip-text text-transparent">
           Manage Keys
@@ -36,6 +39,6 @@ export default async function Page() {
           <DataTable columns={columns} data={apiKeys.apiKeys} />
         </div>
       </div>
-    </div>
+    </section>
   );
 }

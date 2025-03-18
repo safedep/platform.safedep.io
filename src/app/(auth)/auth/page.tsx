@@ -1,21 +1,20 @@
 import React from "react";
-import Badge from "../../components/Badge";
-import TermsAndPrivacy from "../../components/TermsAndPrivacy";
-import MainCard from "../../components/MainCard";
+import Badge from "@/components/Badge";
+import TermsAndPrivacy from "@/components/TermsAndPrivacy";
+import MainCard from "@/components/MainCard";
 import { CheckCircle, Shield } from "lucide-react";
 import AuthButtons from "./components/AuthButtons";
 import Image from "next/image";
-import LogoImage from "./Logo.svg";
 
 export default function AuthPage() {
   return (
-    <div className="min-h-screen flex flex-col lg:flex-row bg-gray-100 justify-center">
+    <div className="flex min-h-svh flex-col lg:flex-row bg-gray-100 justify-center">
       <div className="w-full bg-[#f8f8f8] flex content-center items-center border-l-rounded justify-center p-4 sm:p-6 lg:p-8">
         <MainCard>
           <div className="w-full max-w-md space-y-4 lg:space-y-6 mx-auto border border-gray-300 rounded-xl p-10 shadow-lg shadow-blue-600/50">
             <div className="flex justify-center mb-6">
               <Image
-                src={LogoImage}
+                src="/Logo.svg"
                 alt="SafeDep Logo"
                 width={128}
                 height={128}

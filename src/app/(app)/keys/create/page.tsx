@@ -170,7 +170,7 @@ export default function Page() {
             >
               Cancel
             </Button>
-            <Button type={"submit"}>Create</Button>
+            <Button type="submit">Create</Button>
           </CardFooter>
         </Card>
       </form>

@@ -1,6 +1,6 @@
 import { UserIcon } from "lucide-react";
 import { redirect } from "next/navigation";
-import { getSessionOrRedirectTo, getUserInfo } from "./actions";
+import { getSessionOrRedirectTo, getUserInfo } from "../actions";
 import { sessionSetTenant } from "@/lib/session/session";
 import TenantSelector from "@/components/tenant-selector";
 
@@ -21,7 +21,7 @@ export default async function Home() {
   }
 
   return (
-    <div className="flex flex-col items-center justify-center bg-gray-100 px-4 sm:px-6 lg:px-8">
+    <div className="bg-gray-100 flex flex-col items-center justify-center h-full px-4 sm:px-6 lg:px-8">
       <div className="flex items-center space-x-2 py-2">
         <UserIcon size={18} />
         <span className="text-sm">Welcome {session?.user?.email}</span>
