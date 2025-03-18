@@ -21,7 +21,7 @@ const data = {
   ],
 };
 
-export function AppHeader({}: {}) {
+export function AppHeader() {
   const { user } = useUser();
 
   return (
