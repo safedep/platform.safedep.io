@@ -15,7 +15,10 @@ vi.mock("next/navigation", () => ({
 // Hoist mock variables before using them
 const mocks = vi.hoisted(() => ({
   createApiKey: vi.fn(),
-  toast: vi.fn(),
+  toast: {
+    success: vi.fn(),
+    error: vi.fn(),
+  },
 }));
 
 // Mock `createApiKey`

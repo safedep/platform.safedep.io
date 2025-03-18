@@ -54,6 +54,7 @@ describe("API Keys Page", () => {
   let queryClient: QueryClient;
 
   beforeEach(() => {
+    vi.resetAllMocks();
     queryClient = new QueryClient({
       defaultOptions: {
         queries: {
@@ -61,7 +62,15 @@ describe("API Keys Page", () => {
         },
       },
     });
-    mocks.getApiKeys.mockClear();
+
+    // Mock auth0 getSession to return a user object to prevent redirect to
+    // /auth
+    mocks.auth0.getSession.mockResolvedValue({
+      user: {
+        name: "Test User",
+        email: "test@example.com",
+      },
+    });
   });
 
   // Utility function to setup the component for testing

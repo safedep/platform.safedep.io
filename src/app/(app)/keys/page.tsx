@@ -5,13 +5,17 @@ import { DataTable } from "@/components/data-table";
 import { columns } from "./columns";
 import UserDetails from "@/components/user-details";
 import { auth0 } from "@/lib/auth0";
+import { redirect } from "next/navigation";
 
 export default async function Page() {
   const apiKeys = await getApiKeys();
   // we can force `user` to be non-null because we know that the user is going
   // to be present in the session because `getApiKeys` redirects to the login
   // page if the user is not authenticated.
-  const user = (await auth0.getSession())?.user!;
+  const user = (await auth0.getSession())?.user;
+  if (!user) {
+    redirect("/auth");
+  }
 
   return (
     <section>
