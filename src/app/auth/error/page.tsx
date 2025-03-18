@@ -20,7 +20,7 @@ function AuthErrorComponent() {
             <p className="text-red-700">{decodeURIComponent(errorMessage)}</p>
           </div>
           <Link
-            href="/api/auth/login"
+            href="/auth/login"
             className="inline-block bg-blue-600 hover:bg-blue-700 text-white font-medium py-2 px-4 rounded-md transition-colors"
           >
             Return to Sign In
