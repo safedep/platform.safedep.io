@@ -18,20 +18,19 @@ export default async function Page() {
           You can create, view, and delete API keys here.
         </p>
       </div>
-      
 
       <div className="flex w-[90%] p-0 sm:p-7 lg:flex-row flex-col m-auto sm:items-center">
         <div className="flex items-center">
           <AppHeader />
         </div>
         <div className="flex flex-1 flex-col gap-4 p-0 sm:p-4 pt-0">
-        <header className="flex h-16 shrink-0 items-center gap-2 transition-[width,height] ease-linear group-has-[[data-collapsible=icon]]/sidebar-wrapper:h-12">
-        <div className="flex items-center gap-2 px-4 ml-auto">
-          <Button asChild>
-            <Link href="/keys/create">Create API Key</Link>
-          </Button>
-        </div>
-      </header>
+          <header className="flex h-16 shrink-0 items-center gap-2 transition-[width,height] ease-linear group-has-[[data-collapsible=icon]]/sidebar-wrapper:h-12">
+            <div className="flex items-center gap-2 px-4 ml-auto">
+              <Button asChild>
+                <Link href="/keys/create">Create API Key</Link>
+              </Button>
+            </div>
+          </header>
           <DataTable columns={columns} data={apiKeys} />
         </div>
       </div>

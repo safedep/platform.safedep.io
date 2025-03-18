@@ -136,7 +136,9 @@ export const columns: ColumnDef<ApiKey>[] = [
                 </AlertDialogHeader>
                 <AlertDialogFooter>
                   <AlertDialogCancel>Cancel</AlertDialogCancel>
-                  <AlertDialogAction onClick={() => deleteApiKeyDetails(key.id)}>
+                  <AlertDialogAction
+                    onClick={() => deleteApiKeyDetails(key.id)}
+                  >
                     Confirm
                   </AlertDialogAction>
                 </AlertDialogFooter>
