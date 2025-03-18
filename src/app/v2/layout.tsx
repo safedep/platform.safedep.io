@@ -2,11 +2,9 @@ import { AppHeader } from "@/components/user-details";
 import Image from "next/image";
 import LogoImage from "../auth/Logo.svg";
 import UserActions from "@/components/header";
-import { serverExecuteGetApiKeys } from "./settings/keys/actions";
 import Footer from "@/components/Footer";
 
 const Layout = async ({ children }: { children: React.ReactNode }) => {
-  const apiKeys = await serverExecuteGetApiKeys();
   return (
     <>
       <div className="flex flex-col min-h-screen">
@@ -28,7 +26,7 @@ const Layout = async ({ children }: { children: React.ReactNode }) => {
         </div>
         <div className="flex w-[90%] p-0 sm:p-7 lg:flex-row flex-col m-auto sm:items-center">
           <div className="flex items-center">
-            <AppHeader apiKeys={apiKeys} />
+            <AppHeader />
           </div>
           <div className="flex flex-1 flex-col gap-2 p-4 pt-0">{children}</div>
         </div>

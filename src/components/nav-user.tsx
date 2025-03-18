@@ -20,13 +20,17 @@ import {
   TooltipContent,
   TooltipTrigger,
 } from "@/components/ui/tooltip";
-export function UserInfoCard({
-  user,
-  apiKeys,
-}: {
-  user: User;
-  apiKeys: { tenant: string };
-}) {
+import { serverExecuteGetApiKeys } from "@/app/v2/settings/keys/actions";
+import { useQuery } from "@tanstack/react-query";
+
+export function UserInfoCard({ user }: { user: User }) {
+  const { data, isLoading } = useQuery({
+    queryKey: ["tenant"],
+    queryFn: serverExecuteGetApiKeys,
+    refetchOnWindowFocus: false,
+    retry: 1, // only retry once on failure
+  });
+  const tenant = data?.tenant;
   return (
     <Card className="w-full max-w-md border border-gray-300 rounded-xl shadow-lg shadow-blue-600/50">
       <CardHeader>
@@ -48,23 +52,26 @@ export function UserInfoCard({
             <strong>Email:</strong>
             <span className="overflow-auto">{user.email}</span>
           </div>
-          <div className="flex justify-between gap-2 text-end">
-            <strong>Tenant:</strong>
-            <div className="flex items-center gap-2 items-center">
-              <span className="overflow-auto">{apiKeys?.tenant}</span>
-              <Tooltip>
-                <TooltipTrigger asChild>
-                  <CopyIcon
-                    className="cursor-pointer"
-                    onClick={() =>
-                      navigator.clipboard.writeText(apiKeys?.tenant || "")
-                    }
-                  />
-                </TooltipTrigger>
-                <TooltipContent>Copy tenant ID</TooltipContent>
-              </Tooltip>
+          {isLoading && <div>Loading...</div>}
+          {!isLoading && (
+            <div className="flex justify-between gap-2 text-end">
+              <strong>Tenant:</strong>
+              <div className="flex items-center gap-2 items-center">
+                <span className="overflow-auto">{tenant}</span>
+                <Tooltip>
+                  <TooltipTrigger asChild>
+                    <CopyIcon
+                      className="cursor-pointer"
+                      onClick={() =>
+                        navigator.clipboard.writeText(tenant || "")
+                      }
+                    />
+                  </TooltipTrigger>
+                  <TooltipContent>Copy tenant ID</TooltipContent>
+                </Tooltip>
+              </div>
             </div>
-          </div>
+          )}
         </div>
       </CardContent>
     </Card>
