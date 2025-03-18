@@ -1,6 +1,6 @@
 "use client";
 
-import { CopyIcon, LogOut } from "lucide-react";
+import { LogOut } from "lucide-react";
 
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import {
@@ -14,71 +14,8 @@ import {
 } from "@/components/ui/dropdown-menu";
 import { LogoutLink } from "./LogoutLink";
 import { User } from "@auth0/nextjs-auth0/types";
-import { Card, CardHeader, CardTitle, CardContent } from "@/components/ui/card";
-import {
-  Tooltip,
-  TooltipContent,
-  TooltipTrigger,
-} from "@/components/ui/tooltip";
-import { serverExecuteGetApiKeys } from "@/app/v2/settings/keys/actions";
-import { useQuery } from "@tanstack/react-query";
 
-export function UserInfoCard({ user }: { user: User }) {
-  const { data, isLoading } = useQuery({
-    queryKey: ["tenant"],
-    queryFn: serverExecuteGetApiKeys,
-    refetchOnWindowFocus: false,
-    retry: 1, // only retry once on failure
-  });
-  const tenant = data?.tenant;
-  return (
-    <Card className="w-full max-w-md border border-gray-300 rounded-xl shadow-lg shadow-blue-600/50">
-      <CardHeader>
-        <CardTitle className="flex items-center justify-between">
-          <div>User Information</div>
-          <Avatar className="h-8 w-8 rounded-lg">
-            <AvatarImage src={user.picture} alt={user.name} />
-            <AvatarFallback className="rounded-lg">CN</AvatarFallback>
-          </Avatar>
-        </CardTitle>
-      </CardHeader>
-      <CardContent>
-        <div className="flex w-full flex-col gap-1">
-          <div className="flex justify-between gap-2 text-end ">
-            <strong>Name:</strong>
-            <span className="overflow-auto">{user.name}</span>
-          </div>
-          <div className="flex justify-between gap-2 text-end">
-            <strong>Email:</strong>
-            <span className="overflow-auto">{user.email}</span>
-          </div>
-          {isLoading && <div>Loading...</div>}
-          {!isLoading && (
-            <div className="flex justify-between gap-2 text-end">
-              <strong>Tenant:</strong>
-              <div className="flex items-center gap-2 items-center">
-                <span className="overflow-auto">{tenant}</span>
-                <Tooltip>
-                  <TooltipTrigger asChild>
-                    <CopyIcon
-                      className="cursor-pointer"
-                      onClick={() =>
-                        navigator.clipboard.writeText(tenant || "")
-                      }
-                    />
-                  </TooltipTrigger>
-                  <TooltipContent>Copy tenant ID</TooltipContent>
-                </Tooltip>
-              </div>
-            </div>
-          )}
-        </div>
-      </CardContent>
-    </Card>
-  );
-}
-
-export function NavUser({ user }: { user: User }) {
+export default function NavUser({ user }: { user: User }) {
   return (
     <DropdownMenu>
       <DropdownMenuTrigger asChild>
