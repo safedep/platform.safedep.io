@@ -123,7 +123,7 @@ export default function OnboardClient({ user }: { user: User }) {
   });
 
   async function onSubmit(data: OnboardFormSchema) {
-    onboardMutation.mutateAsync(data);
+    await onboardMutation.mutateAsync(data);
   }
 
   if (onboardMutation.isPending) {
