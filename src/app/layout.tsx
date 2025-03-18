@@ -7,6 +7,10 @@ import { Theme } from "@radix-ui/themes";
 import { Toaster } from "@/components/ui/sonner";
 import TanstackQueryProvider from "@/components/providers/tanstack-query";
 import { ReactQueryDevtools } from "@tanstack/react-query-devtools";
+import UserActions from "@/components/header";
+import Image from "next/image";
+import LogoImage from "./auth/Logo.svg";
+import Footer from "@/components/Footer";
 
 const geistSans = localFont({
   src: "./fonts/GeistVF.woff",
@@ -42,7 +46,23 @@ export default function RootLayout({
         >
           <TanstackQueryProvider>
             <Theme>
+            <div className="flex flex-col min-h-screen">
+              <header className="flex h-16 shrink-0 items-center justify-between transition-[width,height] ease-linear group-has-[[data-collapsible=icon]]/sidebar-wrapper:h-12 m-8 px-0 sm:px-32">
+                <div className="flex items-center gap-2">
+                  <Image
+                    src={LogoImage}
+                    alt="SafeDep Logo"
+                    width={80}
+                    height={80}
+                  />
+                </div>
+                <div className="flex items-center">
+                  <UserActions />
+                </div>
+              </header>
               <main className="flex-grow">{children}</main>
+              <Footer />
+              </div>
               <Toaster />
             </Theme>
             <ReactQueryDevtools />

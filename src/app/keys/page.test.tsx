@@ -1,7 +1,8 @@
 import { render, screen, waitFor, within } from "@testing-library/react";
-import { expect, vi, describe, it } from "vitest";
+import { expect, vi, describe, it, beforeEach } from "vitest";
 import Page from "./page";
 import { act } from "react";
+import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 
 // Define the API key interface
 interface ApiKey {
@@ -13,8 +14,8 @@ interface ApiKey {
 
 // Create mock object for serverExecuteGetApiKeys
 const mocks = vi.hoisted(() => ({
-  serverExecuteGetApiKeys: vi.fn(),
-
+  getApiKeys: vi.fn(),
+  useUser: vi.fn(),
   // Mock toast from sonner
   toast: {
     success: vi.fn(),
@@ -29,24 +30,47 @@ vi.mock("sonner", () => ({
 
 // Mock the actions module
 vi.mock("./actions", () => ({
-  serverExecuteGetApiKeys: mocks.serverExecuteGetApiKeys,
+  getApiKeys: mocks.getApiKeys,
+}));
+
+// Mock useUser hook
+vi.mock("@/lib/hooks/use-user", () => ({
+  useUser: () => ({
+    user: {
+      name: "Test User",
+      email: "test@example.com",
+    },
+  }),
 }));
 
 describe("API Keys Page", () => {
+  let queryClient: QueryClient;
+
+  beforeEach(() => {
+    queryClient = new QueryClient({
+      defaultOptions: {
+        queries: {
+          retry: false,
+        },
+      },
+    });
+    mocks.getApiKeys.mockClear();
+  });
+
   // Utility function to setup the component for testing
   async function setupComponent() {
     const page = await Page();
     await act(async () => {
-      render(page);
+      render(
+        <QueryClientProvider client={queryClient}>{page}</QueryClientProvider>,
+      );
     });
   }
 
   it("renders table headers correctly", async () => {
-    mocks.serverExecuteGetApiKeys.mockResolvedValue({
+    mocks.getApiKeys.mockResolvedValue({
       tenant: "tenant-xyz",
-      apiKeys: {
-        keys: [],
-      },
+      apiKeys: [],
     });
 
     await setupComponent();
@@ -68,26 +92,24 @@ describe("API Keys Page", () => {
   });
 
   it("renders table rows with correct content", async () => {
-    const expectedApiKeys: ApiKey[] = [
+    const expectedApiKeys = [
       {
-        keyId: "1",
+        id: "1",
         name: "API Key 1",
         description: "First API key",
         expiresAt: new Date("2024-01-01"),
       },
       {
-        keyId: "2",
+        id: "2",
         name: "API Key 2",
         description: "Second API key",
         expiresAt: new Date("2024-02-01"),
       },
     ];
 
-    mocks.serverExecuteGetApiKeys.mockResolvedValue({
+    mocks.getApiKeys.mockResolvedValue({
       tenant: "tenant-xyz",
-      apiKeys: {
-        keys: expectedApiKeys,
-      },
+      apiKeys: expectedApiKeys,
     });
 
     await setupComponent();
@@ -107,11 +129,9 @@ describe("API Keys Page", () => {
   });
 
   it("renders page title and create button", async () => {
-    mocks.serverExecuteGetApiKeys.mockResolvedValue({
+    mocks.getApiKeys.mockResolvedValue({
       tenant: "tenant-xyz",
-      apiKeys: {
-        keys: [],
-      },
+      apiKeys: [],
     });
 
     await setupComponent();
@@ -122,9 +142,7 @@ describe("API Keys Page", () => {
         name: /create api key/i,
       });
       expect(createButton).toBeInTheDocument();
-      expect(createButton.getAttribute("href")).toBe(
-        "/v2/settings/keys/create",
-      );
+      expect(createButton.getAttribute("href")).toBe("/keys/create");
     });
   });
 });

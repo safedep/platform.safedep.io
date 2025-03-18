@@ -23,16 +23,17 @@ import {
 import { toast } from "@/hooks/use-toast";
 import { ColumnDef } from "@tanstack/react-table";
 import { CopyIcon, MoreHorizontal } from "lucide-react";
-import { serverExecuteDeleteApiKey } from "./actions";
+
 import {
   Tooltip,
   TooltipContent,
   TooltipProvider,
   TooltipTrigger,
 } from "@/components/ui/tooltip";
+import { deleteApiKey } from "@/app/keys/actions";
 
-async function deleteApiKey(keyId: string) {
-  serverExecuteDeleteApiKey(keyId)
+async function deleteApiKeyDetails(keyId: string) {
+  deleteApiKey(keyId)
     .then(() => {
       toast({
         title: "API key deleted",
@@ -135,7 +136,7 @@ export const columns: ColumnDef<ApiKey>[] = [
                 </AlertDialogHeader>
                 <AlertDialogFooter>
                   <AlertDialogCancel>Cancel</AlertDialogCancel>
-                  <AlertDialogAction onClick={() => deleteApiKey(key.id)}>
+                  <AlertDialogAction onClick={() => deleteApiKeyDetails(key.id)}>
                     Confirm
                   </AlertDialogAction>
                 </AlertDialogFooter>

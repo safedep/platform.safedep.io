@@ -104,7 +104,7 @@ export default function Page() {
           </CardContent>
           <CardFooter className="flex justify-between">
             <Button variant="outline" type="button">
-              <Link href={"/v2/settings/keys"}>Back</Link>
+              <Link href={"/keys"}>Back</Link>
             </Button>
           </CardFooter>
         </Card>
@@ -166,7 +166,7 @@ export default function Page() {
             <Button
               variant="outline"
               type="button"
-              onClick={() => router.push("/v2/settings/keys")}
+              onClick={() => router.push("/keys")}
             >
               Cancel
             </Button>

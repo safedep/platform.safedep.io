@@ -9,10 +9,12 @@ import { Card, CardHeader, CardTitle, CardContent } from "@/components/ui/card";
 import {
   Tooltip,
   TooltipContent,
+  TooltipProvider,
   TooltipTrigger,
 } from "@/components/ui/tooltip";
-import { serverExecuteGetApiKeys } from "@/app/v2/settings/keys/actions";
+
 import { useQuery } from "@tanstack/react-query";
+import { getApiKeys } from "@/app/keys/actions";
 
 const data = {
   user: {
@@ -33,7 +35,7 @@ export function AppHeader() {
   const { user } = useUser();
   const { data: keysData, isLoading } = useQuery({
     queryKey: ["tenant"],
-    queryFn: serverExecuteGetApiKeys,
+    queryFn: getApiKeys,
     refetchOnWindowFocus: false,
     retry: 1, // only retry once on failure
   });
@@ -69,17 +71,19 @@ export function AppHeader() {
                   <strong>Tenant:</strong>
                   <div className="flex items-center gap-2 items-center">
                     <span className="overflow-auto">{tenant}</span>
-                    <Tooltip>
-                      <TooltipTrigger asChild>
-                        <CopyIcon
-                          className="cursor-pointer"
-                          onClick={() =>
-                            navigator.clipboard.writeText(tenant || "")
-                          }
-                        />
-                      </TooltipTrigger>
-                      <TooltipContent>Copy tenant ID</TooltipContent>
-                    </Tooltip>
+                    <TooltipProvider>
+                      <Tooltip>
+                        <TooltipTrigger asChild>
+                          <CopyIcon
+                            className="cursor-pointer"
+                            onClick={() =>
+                              navigator.clipboard.writeText(tenant || "")
+                            }
+                          />
+                        </TooltipTrigger>
+                        <TooltipContent>Copy tenant ID</TooltipContent>
+                      </Tooltip>
+                    </TooltipProvider>
                   </div>
                 </div>
               )}
