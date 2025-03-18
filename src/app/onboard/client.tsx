@@ -1,6 +1,6 @@
 "use client";
 
-import { Loading } from "@/components/Loading";
+import Loading from "@/components/Loading";
 import { LogoutLink } from "@/components/LogoutLink";
 import { Button } from "@/components/ui/button";
 import {
@@ -123,7 +123,7 @@ export default function OnboardClient({ user }: { user: User }) {
   });
 
   async function onSubmit(data: OnboardFormSchema) {
-    onboardMutation.mutate(data);
+    onboardMutation.mutateAsync(data);
   }
 
   if (onboardMutation.isPending) {
@@ -133,7 +133,7 @@ export default function OnboardClient({ user }: { user: User }) {
   }
 
   return (
-    <div className="flex items-center justify-center min-h-screen bg-gray-100 p-4">
+    <div className="flex items-center justify-center bg-gray-100 p-4">
       <Card className="max-w-lg w-full">
         <CardHeader className="space-y-1">
           <div className="flex justify-center items-center">

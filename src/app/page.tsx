@@ -17,7 +17,7 @@ export default async function Home() {
   async function setTenantAndRedirect(tenant: string) {
     "use server";
     await sessionSetTenant(tenant);
-    return redirect("/keys"); // `/keys`
+    redirect("/keys");
   }
 
   return (

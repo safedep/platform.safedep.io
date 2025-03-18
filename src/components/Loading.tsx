@@ -8,7 +8,7 @@ type LoadingProps = {
   textColor?: string;
 };
 
-export const Loading: React.FC<LoadingProps> = (props: LoadingProps) => {
+export default function Loading(props: LoadingProps) {
   return (
     <div className="flex items-center justify-center min-h-screen bg-gray-100">
       <Badge
@@ -19,4 +19,4 @@ export const Loading: React.FC<LoadingProps> = (props: LoadingProps) => {
       />
     </div>
   );
-};
+}
