@@ -1,12 +1,14 @@
 import { Button } from "@/components/ui/button";
 import Link from "next/link";
 import { getApiKeys } from "./actions";
-import { DataTable } from "../../components/data-table";
+import { DataTable } from "@/components/data-table";
 import { columns } from "./columns";
-import { AppHeader } from "@/components/user-details";
+import UserDetails from "@/components/user-details";
+import { auth0 } from "@/lib/auth0";
 
 export default async function Page() {
-  const { apiKeys } = await getApiKeys();
+  const apiKeys = await getApiKeys();
+  const user = (await auth0.getSession())?.user!;
 
   return (
     <div className="container mx-auto">
@@ -21,7 +23,7 @@ export default async function Page() {
 
       <div className="flex w-[90%] p-0 sm:p-7 lg:flex-row flex-col m-auto sm:items-center">
         <div className="flex items-center">
-          <AppHeader />
+          <UserDetails user={user} apiKeys={apiKeys} />
         </div>
         <div className="flex flex-1 flex-col gap-4 p-0 sm:p-4 pt-0">
           <header className="flex h-16 shrink-0 items-center gap-2 transition-[width,height] ease-linear group-has-[[data-collapsible=icon]]/sidebar-wrapper:h-12">
@@ -31,7 +33,7 @@ export default async function Page() {
               </Button>
             </div>
           </header>
-          <DataTable columns={columns} data={apiKeys} />
+          <DataTable columns={columns} data={apiKeys.apiKeys} />
         </div>
       </div>
     </div>

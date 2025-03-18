@@ -24,3 +24,5 @@ export async function getApiKeys() {
     })),
   };
 }
+
+export type ApiKeys = Awaited<ReturnType<typeof getApiKeys>>;

@@ -1,10 +1,8 @@
 "use client";
-
 import { CopyIcon, GalleryVerticalEnd } from "lucide-react";
 import * as React from "react";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { TeamSwitcher } from "@/components/team-switcher";
-import { useUser } from "@auth0/nextjs-auth0";
 import { Card, CardHeader, CardTitle, CardContent } from "@/components/ui/card";
 import {
   Tooltip,
@@ -12,9 +10,8 @@ import {
   TooltipProvider,
   TooltipTrigger,
 } from "@/components/ui/tooltip";
-
-import { useQuery } from "@tanstack/react-query";
-import { getApiKeys } from "@/app/keys/actions";
+import { ApiKeys } from "@/app/keys/actions";
+import { User } from "@auth0/nextjs-auth0/types";
 
 const data = {
   user: {
@@ -31,15 +28,14 @@ const data = {
   ],
 };
 
-export function AppHeader() {
-  const { user } = useUser();
-  const { data: keysData, isLoading } = useQuery({
-    queryKey: ["tenant"],
-    queryFn: getApiKeys,
-    refetchOnWindowFocus: false,
-    retry: 1, // only retry once on failure
-  });
-  const tenant = keysData?.tenant;
+export default function UserDetails({
+  user,
+  apiKeys,
+}: {
+  user: User;
+  apiKeys: ApiKeys;
+}) {
+  const tenant = apiKeys?.tenant;
 
   return (
     <div className="flex flex-col gap-4 justify-end w-[90%]">
@@ -65,28 +61,25 @@ export function AppHeader() {
                 <strong>Email:</strong>
                 <span className="overflow-auto">{user.email}</span>
               </div>
-              {isLoading && <div>Loading...</div>}
-              {!isLoading && (
-                <div className="flex justify-between gap-2 text-end">
-                  <strong>Tenant:</strong>
-                  <div className="flex items-center gap-2 items-center">
-                    <span className="overflow-auto">{tenant}</span>
-                    <TooltipProvider>
-                      <Tooltip>
-                        <TooltipTrigger asChild>
-                          <CopyIcon
-                            className="cursor-pointer"
-                            onClick={() =>
-                              navigator.clipboard.writeText(tenant || "")
-                            }
-                          />
-                        </TooltipTrigger>
-                        <TooltipContent>Copy tenant ID</TooltipContent>
-                      </Tooltip>
-                    </TooltipProvider>
-                  </div>
+              <div className="flex justify-between gap-2 text-end">
+                <strong>Tenant:</strong>
+                <div className="flex items-center gap-2">
+                  <span className="overflow-auto">{tenant}</span>
+                  <TooltipProvider>
+                    <Tooltip>
+                      <TooltipTrigger asChild>
+                        <CopyIcon
+                          className="cursor-pointer"
+                          onClick={() =>
+                            navigator.clipboard.writeText(tenant || "")
+                          }
+                        />
+                      </TooltipTrigger>
+                      <TooltipContent>Copy tenant ID</TooltipContent>
+                    </Tooltip>
+                  </TooltipProvider>
                 </div>
-              )}
+              </div>
             </div>
           </CardContent>
         </Card>
