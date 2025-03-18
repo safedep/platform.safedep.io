@@ -34,9 +34,9 @@ export default function RootLayout({
       <Auth0Provider>
         <TanstackQueryProvider>
           <body
-            className={`${geistSans.className} flex min-h-screen flex-col antialiased`}
+            className={`${geistSans.className} flex min-h-svh flex-col antialiased`}
           >
-            <div className="flex flex-col min-h-screen">
+            <div className="flex flex-col">
               <header className="flex h-16 shrink-0 items-center justify-between transition-[width,height] ease-linear group-has-[[data-collapsible=icon]]/sidebar-wrapper:h-12 m-8 px-0 sm:px-32">
                 <div className="flex items-center gap-2">
                   <Image

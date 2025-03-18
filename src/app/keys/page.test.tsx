@@ -13,6 +13,21 @@ const mocks = vi.hoisted(() => ({
     success: vi.fn(),
     error: vi.fn(),
   },
+  auth0: {
+    getSession: vi.fn(),
+  },
+}));
+
+vi.mock("server-only", () => ({}));
+
+vi.mock("@/lib/auth0", () => ({
+  auth0: mocks.auth0,
+}));
+
+vi.mock("@/env", () => ({
+  env: {
+    AUTH0_CLIENT_ID: "test",
+  },
 }));
 
 // Mock sonner toast

@@ -21,7 +21,7 @@ export default async function Home() {
   }
 
   return (
-    <div className="flex flex-col items-center justify-center min-h-screen bg-gray-100 px-4 sm:px-6 lg:px-8">
+    <div className="flex flex-col items-center justify-center bg-gray-100 px-4 sm:px-6 lg:px-8">
       <div className="flex items-center space-x-2 py-2">
         <UserIcon size={18} />
         <span className="text-sm">Welcome {session?.user?.email}</span>
