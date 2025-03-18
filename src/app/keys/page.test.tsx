@@ -4,14 +4,6 @@ import Page from "./page";
 import { act } from "react";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 
-// Define the API key interface
-interface ApiKey {
-  keyId: string;
-  name: string;
-  description: string;
-  expiresAt: Date;
-}
-
 // Create mock object for serverExecuteGetApiKeys
 const mocks = vi.hoisted(() => ({
   getApiKeys: vi.fn(),
