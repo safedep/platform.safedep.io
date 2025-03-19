@@ -5,7 +5,7 @@ import React from "react";
 import { useState } from "react";
 import { externalUrls } from "@/lib/config";
 
-const Footer: React.FC = () => {
+function Footer() {
   const [year, setYear] = useState(new Date().getFullYear());
 
   useState(() => {
@@ -27,6 +27,6 @@ const Footer: React.FC = () => {
       </p>
     </footer>
   );
-};
+}
 
 export default Footer;
