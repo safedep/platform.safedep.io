@@ -1,6 +1,6 @@
 import { UserIcon } from "lucide-react";
 import { redirect } from "next/navigation";
-import { getSessionOrRedirectTo, getUserInfo } from "../actions";
+import { getSessionOrRedirectTo, getUserInfo } from "./actions";
 import { sessionSetTenant } from "@/lib/session/session";
 import TenantSelector from "@/components/tenant-selector";
 
