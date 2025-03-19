@@ -4,7 +4,7 @@ import { getSessionOrRedirectTo, getUserInfo } from "./actions";
 import { sessionSetTenant } from "@/lib/session/session";
 import TenantSelector from "@/components/tenant-selector";
 
-export default async function Home() {
+export default async function Page() {
   const session = await getSessionOrRedirectTo("/auth");
   const userInfo = await getUserInfo();
 
