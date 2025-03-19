@@ -42,7 +42,7 @@ export default function UserDetails({
     <div className="flex flex-col gap-4 justify-end w-[90%]">
       <TeamSwitcher teams={data.teams} />
       {user ? (
-        <Card className="w-full max-w-md border border-gray-300 rounded-xl shadow-lg shadow-blue-600/50">
+        <Card className="w-full max-w-md border border-gray-300 rounded-xl shadow-lg">
           <CardHeader>
             <CardTitle className="flex items-center justify-between">
               <div>User Information</div>

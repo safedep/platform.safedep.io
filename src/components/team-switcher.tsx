@@ -28,7 +28,7 @@ export function TeamSwitcher({
   return (
     <DropdownMenu>
       <DropdownMenuTrigger asChild>
-        <div className="flex items-center p-4 gap-2 cursor-pointer border border-gray-300 rounded-xl shadow-lg shadow-blue-600/50">
+        <div className="flex items-center p-4 gap-2 cursor-pointer border border-gray-300 rounded-xl shadow-lg">
           <div className="flex aspect-square size-8 items-center justify-center rounded-lg bg-sidebar-primary text-sidebar-primary-foreground">
             <activeTeam.logo className="size-4" />
           </div>
