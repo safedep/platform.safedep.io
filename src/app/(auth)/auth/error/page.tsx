@@ -19,12 +19,14 @@ function AuthErrorComponent() {
           <div className="bg-red-50 border border-red-200 rounded-md p-4 mb-4">
             <p className="text-red-700">{decodeURIComponent(errorMessage)}</p>
           </div>
-          <Link
+
+          {/* This must not be a Link since we do not want Nextjs to prefetch this route */}
+          <a
             href="/auth/login"
             className="inline-block bg-blue-600 hover:bg-blue-700 text-white font-medium py-2 px-4 rounded-md transition-colors"
           >
             Return to Sign In
-          </Link>
+          </a>
         </div>
       </div>
     </div>
