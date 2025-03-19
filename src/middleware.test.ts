@@ -1,7 +1,22 @@
 import { NextRequest, NextResponse } from "next/server";
 import { describe, expect, it, vi, beforeEach, afterEach } from "vitest";
+import type { Mock } from "vitest";
 import { middleware } from "./middleware";
 import { auth0 } from "./lib/auth0";
+
+// Define types for mocked objects
+type MockedSession = {
+  user: {
+    email: string;
+    email_verified: false | true;
+    [key: string]: unknown;
+  };
+};
+
+type MockedResponse = {
+  headers: Map<string, string>;
+  [key: string]: unknown;
+};
 
 // Mock next/server and auth0
 vi.mock("next/server", async () => {
@@ -33,7 +48,7 @@ describe("Middleware", () => {
         href: "http://localhost:3000",
       },
       url: "http://localhost:3000",
-    } as unknown as NextRequest;
+    } as NextRequest;
 
     vi.clearAllMocks();
   });
@@ -62,12 +77,13 @@ describe("Middleware", () => {
 
   it("redirects to verify-email page when user is logged in but email is not verified", async () => {
     // Mock auth0.getSession to return unverified user
-    (auth0.getSession as any).mockResolvedValue({
+    const mockSession: MockedSession = {
       user: {
         email: "test@example.com",
         email_verified: false,
       },
-    });
+    };
+    (auth0.getSession as Mock).mockResolvedValue(mockSession);
 
     await middleware(mockRequest);
 
@@ -83,12 +99,13 @@ describe("Middleware", () => {
     // Set up an unverified user on the verify-email page
     mockRequest.nextUrl.pathname = "/auth/verify-email";
 
-    (auth0.getSession as any).mockResolvedValue({
+    const mockSession: MockedSession = {
       user: {
         email: "test@example.com",
         email_verified: false,
       },
-    });
+    };
+    (auth0.getSession as Mock).mockResolvedValue(mockSession);
 
     await middleware(mockRequest);
 
@@ -98,12 +115,13 @@ describe("Middleware", () => {
 
   it("does not redirect when user's email is verified", async () => {
     // Mock auth0.getSession to return verified user
-    (auth0.getSession as any).mockResolvedValue({
+    const mockSession: MockedSession = {
       user: {
         email: "test@example.com",
         email_verified: true,
       },
-    });
+    };
+    (auth0.getSession as Mock).mockResolvedValue(mockSession);
 
     await middleware(mockRequest);
 
@@ -112,14 +130,16 @@ describe("Middleware", () => {
   });
 
   it("passes through to auth0.middleware when no email verification issues", async () => {
-    const mockResponse = { headers: new Map() };
-    (auth0.middleware as any).mockResolvedValue(mockResponse);
-    (auth0.getSession as any).mockResolvedValue({
+    const mockResponse: MockedResponse = { headers: new Map() };
+    (auth0.middleware as Mock).mockResolvedValue(mockResponse);
+
+    const mockSession: MockedSession = {
       user: {
         email: "test@example.com",
         email_verified: true,
       },
-    });
+    };
+    (auth0.getSession as Mock).mockResolvedValue(mockSession);
 
     const result = await middleware(mockRequest);
 
