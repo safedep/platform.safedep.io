@@ -11,7 +11,18 @@ export async function getUserInfo() {
     return redirect("/auth");
   }
   const client = createUserServiceClient(token);
-  return await client.getUserInfo({});
+  try {
+    return await client.getUserInfo({});
+  } catch (error: unknown) {
+    // Check if the error is related to the user not being onboarded
+    if (
+      error instanceof Error &&
+      error.message.includes("unauthenticated: resource not found")
+    ) {
+      return redirect("/onboard");
+    }
+    throw error;
+  }
 }
 
 export async function getSessionOrRedirectTo(path: string) {
