@@ -28,11 +28,11 @@ export function TeamSwitcher({
   return (
     <DropdownMenu>
       <DropdownMenuTrigger asChild>
-        <div className="flex items-center p-4 gap-2 cursor-pointer rounded-lg border border-1">
+        <div className="flex items-center p-4 gap-2 cursor-pointer border border-gray-300 rounded-xl shadow-lg">
           <div className="flex aspect-square size-8 items-center justify-center rounded-lg bg-sidebar-primary text-sidebar-primary-foreground">
             <activeTeam.logo className="size-4" />
           </div>
-          <div className="hidden md:grid flex-1 text-left text-sm leading-tight ml-2">
+          <div className="grid flex-1 text-left text-sm leading-tight ml-2">
             <span className="truncate font-semibold">{activeTeam.name}</span>
             <span className="truncate text-xs">{activeTeam.plan}</span>
           </div>
@@ -42,7 +42,7 @@ export function TeamSwitcher({
       <DropdownMenuContent
         className="w-[--radix-dropdown-menu-trigger-width] min-w-56 rounded-lg"
         align="start"
-        side="bottom"
+        side="right"
         sideOffset={4}
       >
         <DropdownMenuLabel className="text-xs text-muted-foreground">
