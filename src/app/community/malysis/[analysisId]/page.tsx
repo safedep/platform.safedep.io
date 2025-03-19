@@ -1,52 +1,28 @@
 "use client";
 
 import MalwareAnalysisReportCard from "@/components/malysis/MalwareAnalysisReportCard";
-import {
-  AnalysisStatus,
-  GetAnalysisReportResponse,
-  GetAnalysisReportResponseSchema,
-} from "@buf/safedep_api.bufbuild_es/safedep/services/malysis/v1/malysis_pb";
+import { AnalysisStatus } from "@buf/safedep_api.bufbuild_es/safedep/services/malysis/v1/malysis_pb";
 import { useParams } from "next/navigation";
-import { useEffect, useState } from "react";
-import MalwareAnalysisCardLoading from "@/components/malysis/MalwareAnalysisReportLoading";
 import MalwareAnalysisError from "@/components/malysis/MalwareAnalysisError";
-import { fromJson } from "@bufbuild/protobuf";
+import { useQuery } from "@tanstack/react-query";
+import { getAnalysisReport } from "./actions";
+import MalwareAnalysisCardLoading from "@/components/malysis/MalwareAnalysisReportLoading";
 
 export default function Page() {
-  const { analysisId } = useParams<{ analysisId?: string }>();
-  const [error, setError] = useState<Error>();
-  const [loading, setLoading] = useState(true);
-  const [response, setResponse] = useState<GetAnalysisReportResponse>();
+  const { analysisId } = useParams<{ analysisId: string }>();
 
-  useEffect(() => {
-    async function fetchReport() {
-      const response = await fetch(
-        `/api/community/malysis/reports/${analysisId}`,
-        { cache: "force-cache" },
-      );
-      if (!response.ok) {
-        const errorData = await response.json();
-        throw new Error(errorData.message || "Failed to fetch malware report.");
-      }
-      const data = await response.json();
-      return fromJson(GetAnalysisReportResponseSchema, data);
-    }
+  const {
+    data: response,
+    error,
+    isLoading,
+  } = useQuery({
+    queryKey: ["analysisReport", analysisId],
+    queryFn: () => getAnalysisReport(analysisId),
+  });
 
-    fetchReport()
-      .then((report) => {
-        setResponse(report);
-      })
-      .catch((error) => {
-        setError(error);
-      })
-      .finally(() => {
-        setLoading(false);
-      });
-  }, [analysisId]);
-
-  if (loading) {
+  if (isLoading) {
     return (
-      <div className="flex py-8 h-dvh">
+      <div className="flex py-8 items-start h-dvh">
         <MalwareAnalysisCardLoading />
       </div>
     );
@@ -55,7 +31,7 @@ export default function Page() {
   if (response?.status === AnalysisStatus.FAILED || error) {
     return (
       <div className="flex py-8 items-start h-dvh">
-        <MalwareAnalysisError error={error} />
+        <MalwareAnalysisError error={error ?? undefined} />
       </div>
     );
   }

@@ -1,7 +1,6 @@
 "use client";
 
 import { useState } from "react";
-
 import { Button } from "@/components/ui/button";
 import {
   Card,
@@ -73,9 +72,15 @@ export default function TenantSelector({
         </div>
       </CardContent>
       <CardFooter className="flex justify-between">
-        <Button variant="outline" asChild disabled={isLoading}>
-          <a href="/auth/logout">Logout</a>
-        </Button>
+        {isLoading ? (
+          <Button variant="outline" disabled>
+            Logout
+          </Button>
+        ) : (
+          <Button variant="outline" asChild>
+            <a href="/auth/logout">Logout</a>
+          </Button>
+        )}
       </CardFooter>
     </Card>
   );
