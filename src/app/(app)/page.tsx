@@ -10,7 +10,7 @@ export default async function Home() {
 
   // if the user has no tenant, go to the onboarding page and make them create
   // one
-  if (userInfo?.access.length === 0) {
+  if (userInfo.access.length === 0) {
     return redirect("/onboard");
   }
 
