@@ -59,7 +59,7 @@ export default function Page() {
             <button
               className="w-full bg-blue-600 text-white py-2 px-4 rounded-md hover:bg-blue-700 transition-colors flex items-center justify-center group"
               type="button"
-              onClick={() => router.push("/api/auth/login")}
+              onClick={() => router.push("/auth/login")}
             >
               Continue to Login
               <ArrowRight className="ml-2 h-4 w-4 group-hover:translate-x-1 transition-transform" />
