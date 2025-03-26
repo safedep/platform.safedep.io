@@ -23,7 +23,7 @@ export function packageRegistryUrl(p?: PackageVersion): string {
     case Ecosystem.GO:
       return `https://pkg.go.dev/${name}`;
     case Ecosystem.GITHUB_ACTIONS:
-      return `https://github.com/marketplace/actions/${name}`;
+      return `https://github.com/${name}`;
     case Ecosystem.PACKAGIST:
       return `https://packagist.org/packages/${name}`;
     case Ecosystem.TERRAFORM:
