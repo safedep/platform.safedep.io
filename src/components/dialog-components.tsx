@@ -42,7 +42,7 @@ export function AlreadyOnboardedDialog() {
             <CheckCircle2 className="h-12 w-12 text-green-500" />
           </div>
           <DialogTitle className="text-center text-xl">
-            You're Already Onboarded!
+            You&apos;re Already Onboarded!
           </DialogTitle>
           <DialogDescription className="text-center">
             <span>
