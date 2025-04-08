@@ -1,3 +1,4 @@
+import { SessionExpirationDialog } from "@/components/dialog-components";
 import Footer from "@/components/Footer";
 import UserActions from "@/components/header";
 import Image from "next/image";
@@ -15,7 +16,7 @@ export default function Layout({ children }: { children: React.ReactNode }) {
       </header>
 
       <main className="grow">{children}</main>
-
+      <SessionExpirationDialog />
       <Footer />
     </div>
   );
