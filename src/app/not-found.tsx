@@ -12,7 +12,7 @@ export default function NotFound() {
         <div className="space-y-2">
           <h1 className="text-4xl font-bold tracking-tight">Page Not Found</h1>
           <p className="text-muted-foreground">
-            The page you're looking for doesn't exist.
+            The page you&apos;re looking for doesn&apos;t exist.
           </p>
         </div>
         <div className="flex flex-col sm:flex-row gap-4 justify-center">
