@@ -22,7 +22,8 @@ export default async function Page() {
     if (userInfo.access.length > 0) {
       return <AlreadyOnboardedDialog />;
     }
-  } catch {
+  } catch (error) {
+    console.error("Error getting user info:", error);
     // If there's an error getting user info, we'll let them proceed with onboarding
     // This handles the case where the user is not found in the system yet
   }
