@@ -3,7 +3,8 @@ import OnboardClient from "./client";
 import { redirect } from "next/navigation";
 import "server-only";
 import { createUserServiceClient } from "@/lib/rpc/client";
-import { AlreadyOnboardedDialog } from "@/components/dialog-components";
+import AlreadyOnboardedDialog from "@/components/dialog-components";
+import { Code, ConnectError } from "@connectrpc/connect";
 
 export default async function Page() {
   const session = await auth0.getSession();
@@ -12,19 +13,24 @@ export default async function Page() {
     return redirect("/auth");
   }
 
-  // Check if user is already onboarded
+  const token = (await auth0.getAccessToken()).token;
+  const client = createUserServiceClient(token);
+
   try {
-    const token = (await auth0.getAccessToken()).token;
-    const client = createUserServiceClient(token);
     const userInfo = await client.getUserInfo({});
 
     // If user has any tenants, they are already onboarded
     if (userInfo.access.length > 0) {
       return <AlreadyOnboardedDialog />;
     }
-  } catch {
-    // If there's an error getting user info, we'll let them proceed with onboarding
-    // This handles the case where the user is not found in the system yet
+  } catch (error) {
+    // Only handle the case where user is not found in the system
+    if (error instanceof ConnectError && error.code === Code.NotFound) {
+      // Let them proceed with onboarding
+      return <OnboardClient user={session?.user} />;
+    }
+    // For any other error, redirect to root
+    return redirect("/");
   }
 
   return <OnboardClient user={session?.user} />;

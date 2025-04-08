@@ -22,7 +22,7 @@ import { useUser } from "@auth0/nextjs-auth0";
 import { AlertTriangle } from "lucide-react";
 
 // This is the dialog that is shown when the user is already onboarded
-export function AlreadyOnboardedDialog() {
+export default function AlreadyOnboardedDialog() {
   const router = useRouter();
 
   useEffect(() => {
