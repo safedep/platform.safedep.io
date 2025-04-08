@@ -4,6 +4,7 @@ import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { describe, it, expect, vi, beforeEach } from "vitest";
 import Page from "./page";
 import userEvent from "@testing-library/user-event";
+import { Code, ConnectError } from "@connectrpc/connect";
 
 const mocks = vi.hoisted(() => ({
   createOnboarding: vi.fn(),
@@ -18,6 +19,8 @@ const mocks = vi.hoisted(() => ({
   mockReplace: vi.fn(),
 
   getSession: vi.fn(),
+
+  getUserInfo: vi.fn(),
 }));
 
 vi.mock("server-only", () => ({}));
@@ -25,7 +28,14 @@ vi.mock("server-only", () => ({}));
 vi.mock("@/lib/auth0", () => ({
   auth0: {
     getSession: mocks.getSession,
+    getAccessToken: async () => ({ token: "test-token" }),
   },
+}));
+
+vi.mock("@/lib/rpc/client", () => ({
+  createUserServiceClient: () => ({
+    getUserInfo: mocks.getUserInfo,
+  }),
 }));
 
 vi.mock("next/navigation", () => ({
@@ -33,6 +43,9 @@ vi.mock("next/navigation", () => ({
     push: mocks.mockPush,
     replace: mocks.mockReplace,
   }),
+  redirect: (path: string) => {
+    throw new Error(`Redirect to ${path}`);
+  },
 }));
 
 vi.mock("@auth0/nextjs-auth0", () => ({
@@ -67,15 +80,19 @@ describe("Onboard Component", () => {
   }
 
   const mockUser = {
-    name: "My Name",
+    name: "Test User",
     email: "test@example.com",
   };
 
   beforeEach(() => {
     vi.resetAllMocks();
-    mocks.getSession.mockReturnValue({
+    mocks.getSession.mockResolvedValue({
       user: mockUser,
     });
+    // Mock getUserInfo to return NotFound error by default
+    mocks.getUserInfo.mockRejectedValue(
+      new ConnectError("User not found", Code.NotFound),
+    );
   });
 
   it("renders onboarding form with user name", async () => {
