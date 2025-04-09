@@ -253,13 +253,25 @@ describe("Onboard Component", () => {
 
   it("redirects to auth when no session", async () => {
     mocks.getSession.mockResolvedValue({ user: null });
-    await expect(Page()).rejects.toThrow("Redirect to /auth");
-    expect(mocks.redirect).toHaveBeenCalledWith("/auth");
+    try {
+      render(await Page());
+      throw new Error("Expected redirect but none occurred");
+    } catch (error: unknown) {
+      expect(error).toBeInstanceOf(Error);
+      expect((error as Error).message).toBe("Redirect to /auth");
+      expect(mocks.redirect).toHaveBeenCalledWith("/auth");
+    }
   });
 
   it("redirects to root when user is already onboarded", async () => {
     mocks.getUserInfo.mockResolvedValue({});
-    await expect(Page()).rejects.toThrow("Redirect to /");
-    expect(mocks.redirect).toHaveBeenCalledWith("/");
+    try {
+      render(await Page());
+      throw new Error("Expected redirect but none occurred");
+    } catch (error: unknown) {
+      expect(error).toBeInstanceOf(Error);
+      expect((error as Error).message).toBe("Redirect to /");
+      expect(mocks.redirect).toHaveBeenCalledWith("/");
+    }
   });
 });
