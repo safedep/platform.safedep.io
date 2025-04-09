@@ -10,8 +10,8 @@ export default defineConfig({
     setupFiles: ["./setupFiles.ts"],
     reporters:
       process.env.GITHUB_ACTIONS === "true"
-        ? ["dot", "github-actions"]
-        : ["dot"],
+        ? ["default", "github-actions"]
+        : ["default"],
     coverage: {
       reporter: ["text", "json", "json-summary", "html"],
       include: ["src/**/*.{ts,tsx}"],
