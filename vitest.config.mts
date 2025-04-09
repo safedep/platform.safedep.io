@@ -8,5 +8,17 @@ export default defineConfig({
     environment: "jsdom",
     globals: true,
     setupFiles: ["./setupFiles.ts"],
+    reporters:
+      process.env.GITHUB_ACTIONS === "true"
+        ? ["default", "github-actions"]
+        : ["default"],
+    coverage: {
+      reporter: ["text", "json", "json-summary", "html"],
+      include: ["src/**/*.{ts,tsx}"],
+      exclude: [
+        "src/app/(app)/api/**/*.{ts,tsx}",
+        "src/components/ui/**/*.{ts,tsx}",
+      ],
+    },
   },
 });
