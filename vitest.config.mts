@@ -15,7 +15,10 @@ export default defineConfig({
     coverage: {
       reporter: ["text", "json", "json-summary", "html"],
       include: ["src/**/*.{ts,tsx}"],
-      exclude: ["src/app/(app)/api/**/*.{ts,tsx}", "src/components/ui/**/*.{ts,tsx}"],
+      exclude: [
+        "src/app/(app)/api/**/*.{ts,tsx}",
+        "src/components/ui/**/*.{ts,tsx}",
+      ],
     },
   },
 });
