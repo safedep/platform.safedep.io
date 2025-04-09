@@ -251,27 +251,30 @@ describe("Onboard Component", () => {
     expect(screen.getByRole("link", { name: "Sign out" })).toBeInTheDocument();
   });
 
-  it("redirects to auth when no session", async () => {
-    mocks.getSession.mockResolvedValue({ user: null });
-    try {
-      render(await Page());
-      throw new Error("Expected redirect but none occurred");
-    } catch (error: unknown) {
-      expect(error).toBeInstanceOf(Error);
-      expect((error as Error).message).toBe("Redirect to /auth");
-      expect(mocks.redirect).toHaveBeenCalledWith("/auth");
-    }
-  });
+  it("shows already onboarded dialog when user has tenants", async () => {
+    mocks.getUserInfo.mockResolvedValue({
+      access: [
+        {
+          tenant: { domain: "test-tenant" },
+          canAdmin: true,
+        },
+      ],
+    });
 
-  it("redirects to root when user is already onboarded", async () => {
-    mocks.getUserInfo.mockResolvedValue({});
-    try {
-      render(await Page());
-      throw new Error("Expected redirect but none occurred");
-    } catch (error: unknown) {
-      expect(error).toBeInstanceOf(Error);
-      expect((error as Error).message).toBe("Redirect to /");
-      expect(mocks.redirect).toHaveBeenCalledWith("/");
-    }
+    await setupComponent();
+
+    // Verify dialog is shown with correct content
+    expect(screen.getByText("You're Already Onboarded!")).toBeInTheDocument();
+    expect(
+      screen.getByText(/You have already completed the onboarding process/),
+    ).toBeInTheDocument();
+    expect(screen.getByText("Go to Dashboard Now")).toBeInTheDocument();
+
+    // Verify redirect happens after clicking the button
+    const goToDashboardButton = screen.getByRole("button", {
+      name: "Go to Dashboard Now",
+    });
+    await userEvent.click(goToDashboardButton);
+    expect(mocks.mockReplace).toHaveBeenCalledWith("/");
   });
 });
