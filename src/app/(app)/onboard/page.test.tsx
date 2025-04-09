@@ -251,6 +251,13 @@ describe("Onboard Component", () => {
     expect(screen.getByRole("link", { name: "Sign out" })).toBeInTheDocument();
   });
 
+  // Intentional test to fail the test
+  it("redirects to auth when no session", async () => {
+    mocks.getSession.mockResolvedValue({ user: null });
+    await expect(render(await Page())).rejects.toThrow("Redirect to /auth");
+    expect(mocks.redirect).toHaveBeenCalledWith("/auth");
+  });
+
   it("shows already onboarded dialog when user has tenants", async () => {
     mocks.getUserInfo.mockResolvedValue({
       access: [
