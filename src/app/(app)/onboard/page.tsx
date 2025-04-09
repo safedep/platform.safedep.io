@@ -3,7 +3,7 @@ import OnboardClient from "./client";
 import { redirect } from "next/navigation";
 import "server-only";
 import { createUserServiceClient } from "@/lib/rpc/client";
-import AlreadyOnboardedDialog from "@/components/dialog-components";
+import AlreadyOnboardedDialog from "@/components/already-onboarded-dialog";
 import { Code, ConnectError } from "@connectrpc/connect";
 
 export default async function Page() {

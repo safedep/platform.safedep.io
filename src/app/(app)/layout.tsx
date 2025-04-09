@@ -1,4 +1,4 @@
-import { SessionExpirationDialog } from "@/components/dialog-components";
+import SessionExpirationDialog from "@/components/session-expiration-dialog";
 import Footer from "@/components/Footer";
 import UserActions from "@/components/header";
 import Image from "next/image";

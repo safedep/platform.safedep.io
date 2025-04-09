@@ -13,14 +13,11 @@ const mocks = vi.hoisted(() => ({
     error: vi.fn(),
   },
   useUser: vi.fn(),
-
   mockPush: vi.fn(),
-
   mockReplace: vi.fn(),
-
   getSession: vi.fn(),
-
   getUserInfo: vi.fn(),
+  redirect: vi.fn(),
 }));
 
 vi.mock("server-only", () => ({}));
@@ -43,9 +40,7 @@ vi.mock("next/navigation", () => ({
     push: mocks.mockPush,
     replace: mocks.mockReplace,
   }),
-  redirect: (path: string) => {
-    throw new Error(`Redirect to ${path}`);
-  },
+  redirect: mocks.redirect,
 }));
 
 vi.mock("@auth0/nextjs-auth0", () => ({
@@ -93,6 +88,10 @@ describe("Onboard Component", () => {
     mocks.getUserInfo.mockRejectedValue(
       new ConnectError("User not found", Code.NotFound),
     );
+    // Setup default redirect behavior
+    mocks.redirect.mockImplementation((path: string) => {
+      throw new Error(`Redirect to ${path}`);
+    });
   });
 
   it("renders onboarding form with user name", async () => {
@@ -250,5 +249,17 @@ describe("Onboard Component", () => {
   it("logout link is present", async () => {
     await setupComponent();
     expect(screen.getByRole("link", { name: "Sign out" })).toBeInTheDocument();
+  });
+
+  it("redirects to auth when no session", async () => {
+    mocks.getSession.mockResolvedValue({ user: null });
+    await expect(Page()).rejects.toThrow("Redirect to /auth");
+    expect(mocks.redirect).toHaveBeenCalledWith("/auth");
+  });
+
+  it("redirects to root when user is already onboarded", async () => {
+    mocks.getUserInfo.mockResolvedValue({});
+    await expect(Page()).rejects.toThrow("Redirect to /");
+    expect(mocks.redirect).toHaveBeenCalledWith("/");
   });
 });
