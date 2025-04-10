@@ -44,12 +44,17 @@ ENV NEXT_TELEMETRY_DISABLED=1 \
 RUN corepack enable pnpm && \
     pnpm config set store-dir /pnpm/store
 
+# Need 
+ARG NEXT_PUBLIC_POSTHOG_KEY
+ENV NEXT_PUBLIC_POSTHOG_KEY=${NEXT_PUBLIC_POSTHOG_KEY:-''}
+
 # Build application with cache optimization
 RUN --mount=type=cache,id=pnpm,target=/pnpm/store \
     --mount=type=cache,id=next,target=/app/.next/cache \
     # we need the sentry auth token only during build time to upload sourcemaps
     # to sentry
-    --mount=type=secret,id=sentry_auth_token,env=SENTRY_AUTH_TOKEN \
+    # --mount=type=secret,id=sentry_auth_token,env=SENTRY_AUTH_TOKEN \
+    # mount posthog public key
     pnpm run build
 
 # --------------------------------------------
