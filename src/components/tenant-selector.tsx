@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useTransition } from "react";
 import { Button } from "@/components/ui/button";
 import {
   Card,
@@ -29,7 +29,13 @@ export default function TenantSelector({
   userInfo,
   handleSetTenant,
 }: TenantSelectorProps) {
-  const [isLoading, setIsLoading] = useState(false);
+  const [isPending, startTransition] = useTransition();
+
+  function setTenant(value: string) {
+    startTransition(async () => {
+      await handleSetTenant(value);
+    });
+  }
 
   return (
     <Card className="w-full max-w-md">
@@ -43,17 +49,7 @@ export default function TenantSelector({
         <div className="grid w-full items-center gap-4">
           <div className="flex flex-col space-y-1.5">
             <Label htmlFor="tenant">Tenant</Label>
-            <Select
-              name="tenant"
-              onValueChange={async (tenant) => {
-                setIsLoading(true);
-                try {
-                  await handleSetTenant(tenant);
-                } finally {
-                  setIsLoading(false);
-                }
-              }}
-            >
+            <Select name="tenant" onValueChange={setTenant}>
               <SelectTrigger>
                 <SelectValue placeholder="Select tenant to continue ..." />
               </SelectTrigger>
@@ -72,7 +68,7 @@ export default function TenantSelector({
         </div>
       </CardContent>
       <CardFooter className="flex justify-between">
-        {isLoading ? (
+        {isPending ? (
           <Button variant="outline" disabled>
             Logout
           </Button>
