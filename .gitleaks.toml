@@ -1,0 +1,8 @@
+title = "Gitleaks development"
+
+[extend]
+useDefault = true
+
+[allowlist]
+# ignore package.json
+paths = ['''(^|/)package.json''']
