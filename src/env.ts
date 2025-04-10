@@ -56,6 +56,11 @@ export const env = createEnv({
       ]),
       "development",
     ),
+    NEXT_PUBLIC_POSTHOG_KEY: v.string(),
+    NEXT_PUBLIC_POSTHOG_HOST: v.optional(
+      v.string(),
+      "https://us.i.posthog.com",
+    ),
   },
 
   /**
@@ -63,6 +68,8 @@ export const env = createEnv({
    */
   experimental__runtimeEnv: {
     NEXT_PUBLIC_ENV: process.env.NEXT_PUBLIC_ENV,
+    NEXT_PUBLIC_POSTHOG_KEY: process.env.NEXT_PUBLIC_POSTHOG_KEY,
+    NEXT_PUBLIC_POSTHOG_HOST: process.env.NEXT_PUBLIC_POSTHOG_HOST,
   },
 
   /**
