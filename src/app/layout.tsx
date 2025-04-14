@@ -6,6 +6,7 @@ import "./globals.css";
 import { Toaster } from "@/components/ui/sonner";
 import TanstackQueryProvider from "@/components/providers/tanstack-query";
 import { ReactQueryDevtools } from "@tanstack/react-query-devtools";
+import PostHogProvider from "@/components/providers/posthog-provider";
 
 const geistSans = Geist({
   subsets: ["latin"],
@@ -36,15 +37,13 @@ export const metadata: Metadata = {
  */
 export default function RootLayout({
   children,
-}: Readonly<{
-  children: React.ReactNode;
-}>) {
+}: Readonly<{ children: React.ReactNode }>) {
   return (
     <html lang="en">
       <Auth0Provider>
         <TanstackQueryProvider>
           <body className={`${geistSans.className} antialiased`}>
-            {children}
+            <PostHogProvider>{children}</PostHogProvider>
 
             <Toaster />
             <ReactQueryDevtools />

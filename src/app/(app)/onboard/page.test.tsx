@@ -4,6 +4,7 @@ import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { describe, it, expect, vi, beforeEach } from "vitest";
 import Page from "./page";
 import userEvent from "@testing-library/user-event";
+import { Code, ConnectError } from "@connectrpc/connect";
 
 const mocks = vi.hoisted(() => ({
   createOnboarding: vi.fn(),
@@ -12,12 +13,11 @@ const mocks = vi.hoisted(() => ({
     error: vi.fn(),
   },
   useUser: vi.fn(),
-
   mockPush: vi.fn(),
-
   mockReplace: vi.fn(),
-
   getSession: vi.fn(),
+  getUserInfo: vi.fn(),
+  redirect: vi.fn(),
 }));
 
 vi.mock("server-only", () => ({}));
@@ -25,7 +25,14 @@ vi.mock("server-only", () => ({}));
 vi.mock("@/lib/auth0", () => ({
   auth0: {
     getSession: mocks.getSession,
+    getAccessToken: async () => ({ token: "test-token" }),
   },
+}));
+
+vi.mock("@/lib/rpc/client", () => ({
+  createUserServiceClient: () => ({
+    getUserInfo: mocks.getUserInfo,
+  }),
 }));
 
 vi.mock("next/navigation", () => ({
@@ -33,6 +40,7 @@ vi.mock("next/navigation", () => ({
     push: mocks.mockPush,
     replace: mocks.mockReplace,
   }),
+  redirect: mocks.redirect,
 }));
 
 vi.mock("@auth0/nextjs-auth0", () => ({
@@ -67,14 +75,22 @@ describe("Onboard Component", () => {
   }
 
   const mockUser = {
-    name: "My Name",
+    name: "Test User",
     email: "test@example.com",
   };
 
   beforeEach(() => {
     vi.resetAllMocks();
-    mocks.getSession.mockReturnValue({
+    mocks.getSession.mockResolvedValue({
       user: mockUser,
+    });
+    // Mock getUserInfo to return NotFound error by default
+    mocks.getUserInfo.mockRejectedValue(
+      new ConnectError("User not found", Code.NotFound),
+    );
+    // Setup default redirect behavior
+    mocks.redirect.mockImplementation((path: string) => {
+      throw new Error(`Redirect to ${path}`);
     });
   });
 
@@ -233,5 +249,32 @@ describe("Onboard Component", () => {
   it("logout link is present", async () => {
     await setupComponent();
     expect(screen.getByRole("link", { name: "Sign out" })).toBeInTheDocument();
+  });
+
+  it("shows already onboarded dialog when user has tenants", async () => {
+    mocks.getUserInfo.mockResolvedValue({
+      access: [
+        {
+          tenant: { domain: "test-tenant" },
+          canAdmin: true,
+        },
+      ],
+    });
+
+    await setupComponent();
+
+    // Verify dialog is shown with correct content
+    expect(screen.getByText("You're Already Onboarded!")).toBeInTheDocument();
+    expect(
+      screen.getByText(/You have already completed the onboarding process/),
+    ).toBeInTheDocument();
+    expect(screen.getByText("Go to Dashboard Now")).toBeInTheDocument();
+
+    // Verify redirect happens after clicking the button
+    const goToDashboardButton = screen.getByRole("button", {
+      name: "Go to Dashboard Now",
+    });
+    await userEvent.click(goToDashboardButton);
+    expect(mocks.mockReplace).toHaveBeenCalledWith("/");
   });
 });

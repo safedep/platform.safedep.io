@@ -49,14 +49,15 @@
     "@tanstack/react-query": "^5.69.0",
     "@tanstack/react-table": "^8.21.2",
     "@uiw/react-codemirror": "^4.23.10",
-    "badge": "^1.0.3",
     "class-variance-authority": "^0.7.1",
     "clsx": "^2.1.1",
     "cmdk": "1.0.4",
     "date-fns": "^4.1.0",
     "lucide-react": "^0.462.0",
-    "next": "15.2.3",
+    "next": "15.2.4",
     "next-themes": "^0.4.6",
+    "posthog-js": "^1.235.0",
+    "posthog-node": "^4.11.3",
     "react": "19.0.0",
     "react-dom": "19.0.0",
     "react-hook-form": "^7.54.2",
@@ -99,7 +100,7 @@
     "vite-tsconfig-paths": "^5.1.4",
     "vitest": "^3.0.9"
   },
-  "packageManager": "pnpm@10.5.2+sha512.da9dc28cd3ff40d0592188235ab25d3202add8a207afbedc682220e4a0029ffbff4562102b9e6e46b4e3f9e8bd53e6d05de48544b0c57d4b0179e22c76d1199b",
+  "packageManager": "pnpm@10.8.0+sha512.0e82714d1b5b43c74610193cb20734897c1d00de89d0e18420aebc5977fa13d780a9cb05734624e81ebd81cc876cd464794850641c48b9544326b5622ca29971",
   "pnpm": {
     "onlyBuiltDependencies": [
       "@sentry/cli",

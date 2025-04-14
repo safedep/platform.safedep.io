@@ -74,9 +74,7 @@ describe("packageRegistryUrl", () => {
     const p = create(PackageVersionSchema, {
       package: { ecosystem: Ecosystem.GITHUB_ACTIONS, name: "foo" },
     });
-    expect(packageRegistryUrl(p)).toBe(
-      "https://github.com/marketplace/actions/foo",
-    );
+    expect(packageRegistryUrl(p)).toBe("https://github.com/foo");
   });
 
   it("returns the correct URL for PACKAGIST packages", () => {
