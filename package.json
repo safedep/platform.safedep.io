@@ -9,7 +9,9 @@
     "lint": "next lint",
     "check": "next lint && tsc --noEmit",
     "prepare": "husky",
-    "test": "vitest"
+    "test": "vitest",
+    "inject": "posthog-cli sourcemap inject --directory ./.next/static/chunks",
+    "upload": "posthog-cli sourcemap upload --directory ./.next/static/chunks"
   },
   "lint-staged": {
     "**/*": "prettier --write --ignore-unknown"
