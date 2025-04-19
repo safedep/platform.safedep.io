@@ -143,7 +143,10 @@ export default function Page() {
             <div className="flex flex-col space-y-1.5 mt-8">
               <Label htmlFor="key">API Key</Label>
               <div className="flex items-center gap-2">
-                <code className="relative rounded bg-muted px-[0.8rem] py-[0.8rem] font-mono text-sm font-semibold min-w-[30rem]">
+                <code
+                  id="sensitive"
+                  className="relative rounded bg-muted px-[0.8rem] py-[0.8rem] font-mono text-sm font-semibold min-w-[30rem]"
+                >
                   {keyData.key}
                 </code>
                 <Button onClick={handleCopyKey}>Copy</Button>

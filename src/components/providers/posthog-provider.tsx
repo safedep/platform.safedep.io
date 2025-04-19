@@ -19,6 +19,9 @@ export default function PostHogProvider({
       capture_pageview: false, // We capture pageviews manually
       capture_pageleave: true, // Enable pageleave capture
       mask_personal_data_properties: true,
+      session_recording: {
+        maskTextSelector: "#sensitive",
+      },
     });
   }, []);
 
