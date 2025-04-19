@@ -1,6 +1,7 @@
 name: Upload Source Maps to PostHog
 
 on:
+  pull_request:
   push:
     branches:
       - main
@@ -22,7 +23,7 @@ jobs:
       - name: Use Node.js
         uses: actions/setup-node@v4
         with:
-          node-version: '22.x'
+          node-version: "22.x"
 
       - name: Install dependencies
         run: pnpm install
@@ -43,6 +44,6 @@ jobs:
         run: |
           # First try to inject sourcemaps
           posthog-cli sourcemap inject --directory ./.next/static/chunks || echo "Warning: Sourcemap injection failed, continuing with upload"
-          
+
           # Then upload sourcemaps
-          posthog-cli sourcemap upload --directory ./.next/static/chunks 
+          posthog-cli sourcemap upload --directory ./.next/static/chunks
