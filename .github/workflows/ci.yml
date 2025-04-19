@@ -69,3 +69,18 @@ jobs:
         run: pnpm build
         env:
           SKIP_ENV_VALIDATION: true
+
+      - name: Install PostHog CLI
+        run: |
+          curl --proto '=https' --tlsv1.2 -LsSf https://github.com/PostHog/posthog/releases/download/posthog-cli-v0.0.4/posthog-cli-installer.sh | sh
+
+      - name: Inject and upload source maps to PostHog
+        env:
+          POSTHOG_CLI_ENV_ID: ${{ secrets.POSTHOG_CLI_ENV_ID }}
+          POSTHOG_CLI_TOKEN: ${{ secrets.POSTHOG_CLI_TOKEN }}
+        run: |
+          # First try to inject sourcemaps
+          posthog-cli sourcemap inject --directory ./.next/static/chunks || echo "Warning: Sourcemap injection failed, continuing with upload"
+
+          # Then upload sourcemaps
+          posthog-cli sourcemap upload --directory ./.next/static/chunks
