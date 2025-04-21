@@ -20,7 +20,9 @@ export default function PostHogProvider({
       capture_pageleave: true, // Enable pageleave capture
       mask_personal_data_properties: true,
       session_recording: {
-        maskTextSelector: "#sensitive",
+        // mask everything: inputs and text fields
+        maskAllInputs: true,
+        maskTextSelector: "*",
       },
     });
   }, []);
