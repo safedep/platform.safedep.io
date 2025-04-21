@@ -1,16 +1,12 @@
-name: Continuous Integration
+name: PostHog Source Maps
+
 on:
-  pull_request:
   push:
     branches:
       - main
 
-permissions:
-  contents: read
-  pull-requests: write
-
 jobs:
-  run-test:
+  upload-sourcemaps:
     timeout-minutes: 15
     runs-on: ubuntu-latest
     strategy:
@@ -18,13 +14,19 @@ jobs:
         node-version: ["22.x"]
     name: Build with Node ${{ matrix.node-version }}
     steps:
-      - uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
 
       - name: Install pnpm
-        uses: pnpm/action-setup@fe02b34f77f8bc703788d5817da081398fad5dd2
+        uses: pnpm/action-setup@v2
+        with:
+          version: 8
 
       - name: Use Node.js ${{ matrix.node-version }}
-        uses: actions/setup-node@39370e3970a6d050c480ffad4ff0ed4d3fdee5af
+        uses: actions/setup-node@v4
+        with:
+          node-version: ${{ matrix.node-version }}
 
       - name: Set buf registry
         run: pnpm config set @buf:registry https://buf.build/gen/npm/v1/
@@ -35,7 +37,7 @@ jobs:
         run: |
           echo "STORE_PATH=$(pnpm store path --silent)" >> $GITHUB_OUTPUT
 
-      - uses: actions/cache@1bd1e32a3bdc45362d1e726936510720a7c30a57
+      - uses: actions/cache@v3
         name: Setup pnpm cache
         with:
           path: ${{ steps.pnpm-store.outputs.STORE_PATH }}
@@ -46,26 +48,22 @@ jobs:
       - name: Install dependencies
         run: pnpm install
 
-      - name: Prettier
-        run: pnpm prettier --check .
-
-      - name: Lint
-        run: pnpm check
-        env:
-          SKIP_ENV_VALIDATION: true
-
-      - name: Test
-        run: pnpm test
-
-      - name: "Test Coverage"
-        if: github.event_name != 'pull_request' || (github.event_name == 'pull_request' && github.event.pull_request.head.repo.full_name == github.repository)
-        run: pnpm vitest run --coverage
-
-      - name: "Report Coverage"
-        if: always()
-        uses: davelosert/vitest-coverage-report-action@v2
-
       - name: Build
         run: pnpm build
         env:
           SKIP_ENV_VALIDATION: true
+
+      - name: Install PostHog CLI
+        run: |
+          curl --proto '=https' --tlsv1.2 -LsSf https://github.com/PostHog/posthog/releases/download/posthog-cli-v0.0.4/posthog-cli-installer.sh | sh
+
+      - name: Inject and upload source maps to PostHog
+        env:
+          POSTHOG_CLI_ENV_ID: ${{ secrets.POSTHOG_CLI_ENV_ID }}
+          POSTHOG_CLI_TOKEN: ${{ secrets.POSTHOG_CLI_TOKEN }}
+        run: |
+          # First try to inject sourcemaps
+          pnpm posthog-inject || echo "Warning: Sourcemap injection failed, continuing with upload"
+
+          # Then upload sourcemaps
+          pnpm posthog-upload
