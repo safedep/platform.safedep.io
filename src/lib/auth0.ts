@@ -5,11 +5,14 @@ import { NextResponse } from "next/server";
 import "server-only";
 
 export const auth0 = new Auth0Client({
-  clientId: env.AUTH0_CLIENT_ID,
-  clientSecret: env.AUTH0_CLIENT_SECRET,
-  secret: env.AUTH0_SECRET,
-  appBaseUrl: env.AUTH0_BASE_URL,
-  domain: env.AUTH0_DOMAIN,
+  // NOTE: all the fallback values are to make auth0 client happy during build
+  // time. They are not used in runtime. In runtime our own t3-env ensures that
+  // the env vars are always available.
+  clientId: env.AUTH0_CLIENT_ID ?? "do-not-use",
+  clientSecret: env.AUTH0_CLIENT_SECRET ?? "do-not-use",
+  secret: env.AUTH0_SECRET ?? "do-not-use",
+  appBaseUrl: env.AUTH0_BASE_URL ?? "http://localhost:3000",
+  domain: env.AUTH0_DOMAIN ?? "do.not.use",
   routes: {
     callback: "/api/auth/callback",
   },
