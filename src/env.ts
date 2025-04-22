@@ -35,7 +35,7 @@ export const env = createEnv({
     // auth0
     AUTH0_SECRET: v.string(),
     AUTH0_BASE_URL: v.string(),
-    AUTH0_ISSUER_BASE_URL: v.string(),
+    AUTH0_DOMAIN: v.string(),
     AUTH0_CLIENT_ID: v.string(),
     AUTH0_CLIENT_SECRET: v.string(),
   },
