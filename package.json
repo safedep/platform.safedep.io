@@ -17,7 +17,7 @@
     "**/*": "prettier --write --ignore-unknown"
   },
   "dependencies": {
-    "@auth0/nextjs-auth0": "^4.1.0",
+    "@auth0/nextjs-auth0": "^4.4.2",
     "@buf/safedep_api.bufbuild_es": "2.2.3-20250220040650-95f49a54134a.1",
     "@bufbuild/protobuf": "^2.2.4",
     "@codemirror/lang-sql": "^6.8.0",
