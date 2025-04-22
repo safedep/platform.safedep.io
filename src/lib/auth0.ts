@@ -22,7 +22,7 @@ export const auth0 = new Auth0Client({
     // In such cases, we want to redirect the user to the verify-email page.
     if (error instanceof AuthorizationError) {
       return NextResponse.redirect(
-        new URL("/auth/verify-email", env.APP_BASE_URL),
+        new URL("/auth/verify-email", env.AUTH0_BASE_URL),
       );
     }
     // for any other error, we want to redirect the user to the error page to let
@@ -31,14 +31,14 @@ export const auth0 = new Auth0Client({
       return NextResponse.redirect(
         new URL(
           `/auth/error?message=${encodeURIComponent(error.message)}`,
-          env.APP_BASE_URL,
+          env.AUTH0_BASE_URL,
         ),
       );
     }
     // if everything went well, we redirect the user to the page they were
     // trying to access before being redirected to the login page.
     return NextResponse.redirect(
-      new URL(context.returnTo || "/", env.APP_BASE_URL),
+      new URL(context.returnTo || "/", env.AUTH0_BASE_URL),
     );
   },
 });
