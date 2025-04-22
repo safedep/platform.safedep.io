@@ -12,7 +12,7 @@ export const auth0 = new Auth0Client({
   clientSecret: env.AUTH0_CLIENT_SECRET ?? "do-not-use",
   secret: env.AUTH0_SECRET ?? "do-not-use",
   appBaseUrl: env.AUTH0_BASE_URL ?? "http://localhost:3000",
-  domain: env.AUTH0_DOMAIN ?? "do.not.use",
+  domain: env.AUTH0_ISSUER_BASE_URL ?? "do.not.use",
   routes: {
     callback: "/api/auth/callback",
   },
