@@ -39,7 +39,7 @@ export async function getTenantAndToken() {
   }
 
   try {
-    const accessToken = (await auth0.getSession())?.tokenSet.accessToken;
+    const accessToken = (await auth0.getAccessToken()).token;
     if (!accessToken) {
       return redirect("/auth");
     }
