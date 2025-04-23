@@ -3,8 +3,32 @@
 import ApiKeyList from "./components/api-key-list";
 import TenantSwitcher from "@/components/tenant-switcher";
 import UserInfo from "@/components/user-info";
+import { ApiKey, getColumns } from "./columns";
+import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
+import { deleteApiKey, getApiKeys } from "./actions";
+import { toast } from "sonner";
 
 export default function KeysPage() {
+  const queryClient = useQueryClient();
+
+  const { data: apiKeys } = useQuery({
+    queryKey: ["api-keys"],
+    queryFn: async () => await getApiKeys(),
+  });
+
+  const { mutate: deleteKey } = useMutation({
+    mutationKey: ["api-keys"],
+    mutationFn: async (key: ApiKey) => await deleteApiKey(key.id),
+    onSuccess: () => {
+      toast.success("Key deleted successfully");
+      queryClient.invalidateQueries({ queryKey: ["api-keys"] });
+    },
+  });
+
+  const columns = getColumns({
+    onDeleteKey: (key) => deleteKey(key),
+  });
+
   return (
     <div className="container mx-auto flex grow items-center justify-center px-4 py-8 lg:px-0">
       <div className="flex flex-col gap-4 lg:flex-row">
@@ -22,15 +46,7 @@ export default function KeysPage() {
         </div>
 
         {/* API Keys List */}
-        <ApiKeyList
-          apiKeys={Array.from({ length: 10 }, (_, index) => ({
-            id: `key-${index + 1}`,
-            name: `API Key ${index + 1}`,
-            description: `API Key ${index + 1} Description`,
-            expiresAt: `2025-01-01`,
-          }))}
-          onCreateKey={() => {}}
-        />
+        <ApiKeyList columns={columns} apiKeys={apiKeys?.apiKeys ?? []} />
       </div>
     </div>
   );
