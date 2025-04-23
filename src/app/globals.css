@@ -1,7 +1,13 @@
 @import "tailwindcss";
+@plugin "@tailwindcss/typography";
 @import "tw-animate-css";
 
 @custom-variant dark (&:is(.dark *));
+
+/* Font config */
+@theme inline {
+  --font-mono: var(--font-jetbrains-mono);
+}
 
 @theme inline {
   --color-background: var(--background);
