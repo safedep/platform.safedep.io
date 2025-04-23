@@ -1,8 +1,13 @@
 "use server";
 
-import { createApiKeyServiceClient } from "@/lib/rpc/client";
-import { getTenantAndToken } from "@/lib/session/session";
+import { auth0 } from "@/lib/auth0";
+import {
+  createApiKeyServiceClient,
+  createUserServiceClient,
+} from "@/lib/rpc/client";
+import { getTenantAndToken, sessionGetTenant } from "@/lib/session/session";
 import { timestampDate } from "@bufbuild/protobuf/wkt";
+import { redirect } from "next/navigation";
 
 export async function deleteApiKey(keyId: string) {
   const { tenant, accessToken } = await getTenantAndToken();
@@ -22,6 +27,32 @@ export async function getApiKeys() {
       description: key.description,
       expiresAt: key.expiresAt ? timestampDate(key.expiresAt) : new Date(),
     })),
+  };
+}
+
+export async function getUserInfo() {
+  const { accessToken, user } = await auth0.getSession().then((sess) => ({
+    accessToken: sess?.tokenSet.accessToken,
+    user: sess?.user,
+  }));
+  if (!user || !accessToken) {
+    return redirect("/auth");
+  }
+
+  const tenant = await sessionGetTenant();
+  if (!tenant) {
+    return redirect("/");
+  }
+
+  const userService = createUserServiceClient(accessToken);
+  const userInfo = await userService.getUserInfo({});
+  return {
+    userInfo: {
+      name: userInfo.user?.name ?? "",
+      email: userInfo.user?.email ?? "",
+      avatar: user.picture ?? "",
+    },
+    tenant,
   };
 }
 

@@ -5,11 +5,17 @@ import TenantSwitcher from "@/components/tenant-switcher";
 import UserInfo from "@/components/user-info";
 import { ApiKey, getColumns } from "./columns";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
-import { deleteApiKey, getApiKeys } from "./actions";
+import { deleteApiKey, getApiKeys, getUserInfo } from "./actions";
 import { toast } from "sonner";
+import UserInfoSkeleton from "@/components/user-info-skeleton";
 
 export default function KeysPage() {
   const queryClient = useQueryClient();
+
+  const userInfoQuery = useQuery({
+    queryKey: ["user-info"],
+    queryFn: async () => await getUserInfo(),
+  });
 
   const { data: apiKeys } = useQuery({
     queryKey: ["api-keys"],
@@ -23,6 +29,11 @@ export default function KeysPage() {
       toast.success("Key deleted successfully");
       queryClient.invalidateQueries({ queryKey: ["api-keys"] });
     },
+    onError: (error) => {
+      toast.error("Failed to delete key", {
+        description: error.message,
+      });
+    },
   });
 
   const columns = getColumns({
@@ -35,14 +46,18 @@ export default function KeysPage() {
         <div className="flex flex-col gap-4">
           <TenantSwitcher />
 
-          <UserInfo
-            userData={{
-              name: "Arunanshu Biswas",
-              email: "arunanshu.biswas@safedep.io",
-              tenant: "default-team.safedep-io.safedep.io",
-              avatar: "https://github.com/arunanshub.png",
-            }}
-          />
+          {userInfoQuery.isLoading ? (
+            <UserInfoSkeleton />
+          ) : (
+            <UserInfo
+              userData={{
+                name: userInfoQuery.data?.userInfo.name ?? "",
+                email: userInfoQuery.data?.userInfo.email ?? "",
+                tenant: userInfoQuery.data?.tenant ?? "",
+                avatar: userInfoQuery.data?.userInfo.avatar ?? "",
+              }}
+            />
+          )}
         </div>
 
         {/* API Keys List */}
