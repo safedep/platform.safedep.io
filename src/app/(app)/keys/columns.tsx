@@ -72,7 +72,7 @@ export function getColumns({
     column.accessor("expiresAt", {
       header: () => <div className="text-right">Expires At</div>,
       cell: ({ row }) => (
-        <div className="text-right">
+        <div className="text-right" suppressHydrationWarning>
           {row.original.expiresAt.toLocaleDateString()}
         </div>
       ),

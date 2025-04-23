@@ -41,8 +41,8 @@ export default function KeysPage() {
   });
 
   return (
-    <div className="container mx-auto flex grow items-center justify-center px-4 py-8 lg:px-0">
-      <div className="flex flex-col gap-4 lg:flex-row">
+    <div className="flex h-full w-full grow flex-col items-center gap-4 p-8">
+      <div className="flex h-full w-full flex-col gap-4 lg:flex-row">
         <div className="flex flex-col gap-4">
           <TenantSwitcher />
 
@@ -61,7 +61,11 @@ export default function KeysPage() {
         </div>
 
         {/* API Keys List */}
-        <ApiKeyList columns={columns} apiKeys={apiKeys?.apiKeys ?? []} />
+        <ApiKeyList
+          columns={columns}
+          apiKeys={apiKeys?.apiKeys ?? []}
+          className="min-w-96 grow"
+        />
       </div>
     </div>
   );
