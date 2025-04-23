@@ -5,9 +5,13 @@ export async function middleware(request: NextRequest) {
   // 1) Mounts the /api/auth/* handlers, parses cookies, etc.
   const response = await auth0.middleware(request);
 
-  // 2) If there’s a refresh-token available and the access-token is expired,
+  // 2) If there's a refresh-token available and the access-token is expired,
   //    this will grab a fresh AT and persist new cookies on `response`.
-  await auth0.getAccessToken(request, response);
+  const session = await auth0.getSession(request);
+  if (session) {
+    // only runs when user is logged in
+    await auth0.getAccessToken(request, response);
+  }
 
   return response;
 }
