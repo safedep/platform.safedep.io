@@ -10,6 +10,10 @@
   },
   "dependencies": {
     "@auth0/nextjs-auth0": "^4.4.2",
+    "@buf/safedep_api.bufbuild_es": "2.2.5-20250421115348-06862ba1eb25.1",
+    "@bufbuild/protobuf": "^2.2.5",
+    "@connectrpc/connect": "^2.0.2",
+    "@connectrpc/connect-node": "^2.0.2",
     "@t3-oss/env-nextjs": "^0.12.0",
     "@tanstack/react-query": "^5.74.4",
     "class-variance-authority": "^0.7.1",
