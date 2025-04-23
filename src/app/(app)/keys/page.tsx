@@ -1,6 +1,6 @@
 "use client";
 
-import ApiKeyList from "@/components/api-key-list";
+import ApiKeyList from "./components/api-key-list";
 import TenantSwitcher from "@/components/tenant-switcher";
 import UserInfo from "@/components/user-info";
 
@@ -30,9 +30,6 @@ export default function KeysPage() {
             expiresAt: `2025-01-01`,
           }))}
           onCreateKey={() => {}}
-          onCopyKeyId={() => {}}
-          onEditKey={() => {}}
-          onRevokeKey={() => {}}
         />
       </div>
     </div>
