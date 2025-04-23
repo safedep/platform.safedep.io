@@ -39,7 +39,7 @@ export default function UserMenu() {
         <div className="p-1.5">
           <Button
             variant="ghost"
-            className="text-muted-foreground w-full justify-start gap-2"
+            className="w-full justify-start gap-2"
             size="sm"
             asChild
           >
