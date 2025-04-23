@@ -21,24 +21,21 @@ import {
   flexRender,
   getCoreRowModel,
   useReactTable,
+  type ColumnDef,
 } from "@tanstack/react-table";
-import { ApiKey, columns } from "../columns";
+import Link from "next/link";
 
-export interface ApiKeyListProps {
+export interface ApiKeyListProps<TData, TValue> {
   className?: string;
-  apiKeys: ApiKey[];
-  onCreateKey?: () => void;
+  apiKeys: TData[];
+  columns: ColumnDef<TData, TValue>[];
 }
 
-export default function ApiKeyList({
+export default function ApiKeyList<TData, TValue>({
   className,
   apiKeys,
-  onCreateKey,
-}: ApiKeyListProps) {
-  function handleCreateKey() {
-    if (onCreateKey) onCreateKey();
-  }
-
+  columns,
+}: ApiKeyListProps<TData, TValue>) {
   const table = useReactTable({
     data: apiKeys,
     columns,
@@ -51,12 +48,11 @@ export default function ApiKeyList({
         <CardTitle className="text-2xl">
           <div className="flex items-center justify-between gap-2">
             <span>API Keys</span>
-            <Button
-              onClick={handleCreateKey}
-              className="flex items-center gap-2"
-            >
-              <PlusCircle className="h-4 w-4" />
-              <span>Create New Key</span>
+            <Button asChild>
+              <Link href="/keys/create" className="flex items-center gap-2">
+                <PlusCircle className="h-4 w-4" />
+                <span>Create New Key</span>
+              </Link>
             </Button>
           </div>
         </CardTitle>
@@ -89,7 +85,10 @@ export default function ApiKeyList({
               <TableBody>
                 {table.getRowModel().rows.length === 0 ? (
                   <TableRow>
-                    <TableCell colSpan={5} className="py-8 text-center">
+                    <TableCell
+                      colSpan={columns.length}
+                      className="py-8 text-center"
+                    >
                       <p className="text-muted-foreground">
                         No API keys found. Create your first key to get started.
                       </p>
