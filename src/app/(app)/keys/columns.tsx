@@ -78,7 +78,7 @@ export function getColumns({
       ),
     }),
     column.display({
-      header: "Actions",
+      id: "actions",
       cell: ({ row }) => {
         const apiKey = row.original;
 
@@ -99,7 +99,6 @@ export function getColumns({
               >
                 Copy Key ID
               </DropdownMenuItem>
-              <DropdownMenuItem>Edit Key</DropdownMenuItem>
               <DropdownMenuItem
                 className="text-destructive"
                 onClick={() => onDeleteKey(apiKey)}

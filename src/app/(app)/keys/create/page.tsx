@@ -240,6 +240,7 @@ function KeyCreated({ tenant, apiKey }: { tenant: string; apiKey: string }) {
 
   function handleCopyKey() {
     navigator.clipboard.writeText(apiKey);
+    toast.success("API key copied to clipboard");
   }
   return (
     <div className="container mx-auto">
