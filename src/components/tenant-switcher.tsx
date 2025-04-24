@@ -1,13 +1,12 @@
 "use client";
 
 import * as React from "react";
-import { Briefcase, ChevronsUpDown, Plus, ArrowRight } from "lucide-react";
+import { Briefcase, ChevronsUpDown } from "lucide-react";
 import {
   DropdownMenu,
   DropdownMenuContent,
   DropdownMenuItem,
   DropdownMenuLabel,
-  DropdownMenuSeparator,
   DropdownMenuShortcut,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
@@ -32,7 +31,7 @@ export interface TenantSwitcherProps {
   className?: string;
   initialTenant: string;
   tenants: Access[];
-  onTenantChange(tenant: string): void;
+  onTenantChange(tenant: string): Promise<void>;
 }
 
 /**
@@ -48,13 +47,14 @@ export default function TenantSwitcher({
   tenants,
   onTenantChange,
 }: TenantSwitcherProps) {
-  const [, setActiveTenant] = React.useState<string>(initialTenant);
+  const [, startTransition] = React.useTransition();
 
   function handleTenantChange(tenant: string) {
-    setActiveTenant(tenant);
-    if (onTenantChange) {
-      onTenantChange(tenant);
-    }
+    startTransition(async () => {
+      if (onTenantChange) {
+        await onTenantChange(tenant);
+      }
+    });
   }
 
   return (
@@ -76,10 +76,7 @@ export default function TenantSwitcher({
               </div>
             </Button>
           </DropdownMenuTrigger>
-          <DropdownMenuContent
-            className="w-[--radix-dropdown-menu-trigger-width] min-w-56"
-            align="start"
-          >
+          <DropdownMenuContent className="min-w-full" align="start">
             <DropdownMenuLabel className="text-muted-foreground text-xs">
               Tenants
             </DropdownMenuLabel>
@@ -96,22 +93,6 @@ export default function TenantSwitcher({
                 <DropdownMenuShortcut>⌘{index + 1}</DropdownMenuShortcut>
               </DropdownMenuItem>
             ))}
-            <DropdownMenuSeparator />
-            <DropdownMenuItem className="gap-2 p-2">
-              <div className="bg-background flex size-6 items-center justify-center rounded-md border">
-                <Plus className="size-4" />
-              </div>
-              <div className="text-muted-foreground font-medium">Add team</div>
-            </DropdownMenuItem>
-            <DropdownMenuSeparator />
-            <DropdownMenuItem className="gap-2 p-2">
-              <div className="bg-background flex size-6 items-center justify-center rounded-md border">
-                <ArrowRight className="size-4" />
-              </div>
-              <div className="text-muted-foreground font-medium">
-                Switch Tenant
-              </div>
-            </DropdownMenuItem>
           </DropdownMenuContent>
         </DropdownMenu>
       </CardContent>
