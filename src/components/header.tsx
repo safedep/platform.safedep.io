@@ -1,4 +1,4 @@
-import UserMenu from "@/components/user-menu";
+import UserMenu from "@/components/header/user-menu";
 import Link from "next/link";
 import Image from "next/image";
 
