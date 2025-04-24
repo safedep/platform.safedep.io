@@ -53,15 +53,14 @@ export default function KeysClient({
   });
 
   return (
-    <div className="flex h-full w-full grow flex-col items-center gap-4">
-      <div className="flex h-full w-full flex-col gap-4 md:flex-row">
+    <div className="@container/keys">
+      <div className="flex flex-1 flex-col gap-4 @4xl:flex-row">
         <div className="flex flex-col gap-4">
           <TenantSwitcher
             tenants={userInfoQuery.data?.tenants ?? []}
             initialTenant={userInfoQuery.data?.currentTenant ?? ""}
             onTenantChange={handleSwitchTenant}
           />
-
           {userInfoQuery.isLoading ? (
             <UserInfoSkeleton />
           ) : (
@@ -75,7 +74,6 @@ export default function KeysClient({
             />
           )}
         </div>
-
         {/* API Keys List */}
         <ApiKeyList
           columns={columns}

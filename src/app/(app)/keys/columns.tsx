@@ -55,7 +55,7 @@ export function getColumns({
     column.accessor("id", {
       header: "ID",
       cell: ({ row }) => (
-        <span className="font-mono text-sm">
+        <span className="text-muted-foreground font-mono text-sm">
           {row.original.id.slice(0, 8)}...
         </span>
       ),
