@@ -7,7 +7,6 @@ import {
   DropdownMenuContent,
   DropdownMenuItem,
   DropdownMenuLabel,
-  DropdownMenuShortcut,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
 import { Button } from "@/components/ui/button";
@@ -80,7 +79,7 @@ export default function TenantSwitcher({
             <DropdownMenuLabel className="text-muted-foreground text-xs">
               Tenants
             </DropdownMenuLabel>
-            {tenants.map(({ tenant }, index) => (
+            {tenants.map(({ tenant }) => (
               <DropdownMenuItem
                 key={tenant?.domain}
                 onClick={() => handleTenantChange(tenant?.domain ?? "")}
@@ -90,7 +89,6 @@ export default function TenantSwitcher({
                   <Briefcase className="size-3.5 shrink-0" />
                 </div>
                 {tenant?.domain}
-                <DropdownMenuShortcut>⌘{index + 1}</DropdownMenuShortcut>
               </DropdownMenuItem>
             ))}
           </DropdownMenuContent>
