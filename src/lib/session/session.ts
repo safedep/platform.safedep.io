@@ -25,6 +25,21 @@ export async function sessionRequireTenant() {
   return tenant;
 }
 
+/**
+ * Require the user to be authenticated. If they are not, redirect to the given
+ * path.
+ *
+ * @param redirectTo - The path to redirect to if the user is not authenticated.
+ * @returns The session if the user is authenticated.
+ */
+export async function sessionRequireAuth(redirectTo = "/auth") {
+  const session = await auth0.getSession();
+  if (!session) {
+    redirect(redirectTo);
+  }
+  return session;
+}
+
 export async function getTenantAndToken() {
   let tenant;
   try {

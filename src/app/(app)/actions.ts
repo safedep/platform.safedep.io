@@ -28,13 +28,3 @@ export async function getUserInfo() {
     throw error;
   }
 }
-
-export async function getSessionOrRedirectTo(path: string) {
-  const session = await auth0.getSession();
-  // if we don't have a session, it doesn't make sense to keep the tenant intact
-  // anymore
-  if (!session?.user) {
-    return redirect(path);
-  }
-  return session;
-}

@@ -1,11 +1,11 @@
 import TenantSelector from "@/components/tenant-selector";
-import { getSessionOrRedirectTo, getUserInfo } from "./actions";
+import { getUserInfo } from "./actions";
 import { redirect } from "next/navigation";
-import { sessionSetTenant } from "@/lib/session/session";
+import { sessionRequireAuth, sessionSetTenant } from "@/lib/session/session";
 
 export default async function TenantSelectorPage() {
   const userInfo = await getUserInfo();
-  const userEmail = (await getSessionOrRedirectTo("/auth")).user.email;
+  const userEmail = (await sessionRequireAuth()).user.email;
 
   // if the user has no tenant, go to the onboarding page and make them create
   // one
