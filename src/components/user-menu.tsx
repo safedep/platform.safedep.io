@@ -24,7 +24,7 @@ export default function UserMenu() {
         </button>
       </PopoverTrigger>
 
-      <PopoverContent className="w-64 p-0" align="end">
+      <PopoverContent className="min-w-64 p-0" align="end">
         <div className="flex items-center gap-2 border-b p-3">
           <Avatar className="h-8 w-8">
             <AvatarImage src={user?.picture} />
