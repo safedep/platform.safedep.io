@@ -63,7 +63,7 @@ export function getColumns({
         </span>
       ),
       meta: {
-        className: "hidden md:table-cell",
+        className: "hidden @2xl/keys-list:table-cell",
       },
     }),
     column.accessor("expiresAt", {

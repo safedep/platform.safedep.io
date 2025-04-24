@@ -76,7 +76,7 @@ export default function KeysClient() {
         <ApiKeyList
           columns={columns}
           apiKeys={apiKeys?.apiKeys ?? []}
-          className="grow lg:min-w-96"
+          className="@container/keys-list grow lg:min-w-96"
         />
       </div>
     </div>
