@@ -25,9 +25,9 @@ export default function KeysPage() {
   const { mutate: deleteKey } = useMutation({
     mutationKey: ["api-keys"],
     mutationFn: async (key: ApiKey) => await deleteApiKey(key.id),
-    onSuccess: () => {
+    onSuccess: async () => {
       toast.success("Key deleted successfully");
-      queryClient.invalidateQueries({ queryKey: ["api-keys"] });
+      await queryClient.invalidateQueries({ queryKey: ["api-keys"] });
     },
     onError: (error) => {
       toast.error("Failed to delete key", {
@@ -36,22 +36,13 @@ export default function KeysPage() {
     },
   });
 
-  const switchTenantMutation = useMutation({
-    mutationKey: ["switch-tenant"],
-    mutationFn: async (tenant: string) => await switchTenant(tenant),
-    onMutate: async () => {
-      await Promise.all([
-        queryClient.invalidateQueries({ queryKey: ["user-info"] }),
-        queryClient.invalidateQueries({ queryKey: ["api-keys"] }),
-      ]);
-    },
-    onSuccess: () => {
-      toast.success("Tenant switched successfully");
-    },
-    onError: (error) => {
-      toast.error("Failed to switch tenant", { description: error.message });
-    },
-  });
+  async function handleSwitchTenant(tenant: string) {
+    await switchTenant(tenant);
+    await Promise.all([
+      queryClient.invalidateQueries({ queryKey: ["api-keys"] }),
+      queryClient.invalidateQueries({ queryKey: ["user-info"] }),
+    ]);
+  }
 
   const columns = getColumns({
     onDeleteKey: (key) => deleteKey(key),
@@ -64,12 +55,10 @@ export default function KeysPage() {
           <TenantSwitcher
             tenants={userInfoQuery.data?.tenants ?? []}
             initialTenant={userInfoQuery.data?.currentTenant ?? ""}
-            onTenantChange={(tenant) => {
-              switchTenantMutation.mutate(tenant);
-            }}
+            onTenantChange={handleSwitchTenant}
           />
 
-          {userInfoQuery.isLoading ? (
+          {userInfoQuery.isFetching ? (
             <UserInfoSkeleton />
           ) : (
             <UserInfo
