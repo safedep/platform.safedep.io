@@ -9,6 +9,8 @@ import {
 import { Button } from "@/components/ui/button";
 import Link from "next/link";
 import { Metadata } from "next";
+import { auth0 } from "@/lib/auth0";
+import { redirect } from "next/navigation";
 
 export const metadata: Metadata = {
   title: "Verify Email | Safedep Platform",
@@ -16,6 +18,14 @@ export const metadata: Metadata = {
 };
 
 export default async function Page() {
+  // Check if the user is already logged in and verified
+  const session = await auth0.getSession();
+
+  // If user is logged in and email is verified, redirect to dashboard
+  if (session?.user?.email_verified) {
+    return redirect("/");
+  }
+
   return (
     <div className="flex flex-1 items-center justify-center p-4">
       <Card className="w-full max-w-md shadow-lg">
