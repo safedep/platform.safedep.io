@@ -54,7 +54,7 @@ export default function KeysClient({
 
   return (
     <div className="flex h-full w-full grow flex-col items-center gap-4">
-      <div className="flex h-full w-full flex-col gap-4 lg:flex-row">
+      <div className="flex h-full w-full flex-col gap-4 md:flex-row">
         <div className="flex flex-col gap-4">
           <TenantSwitcher
             tenants={userInfoQuery.data?.tenants ?? []}

@@ -8,7 +8,7 @@ export default function AppLayout({ children }: { children: ReactNode }) {
       <Header />
 
       {/* occupy the remaining space */}
-      <main className="flex h-full flex-1 flex-col bg-gray-100 p-4 lg:p-8">
+      <main className="flex h-full flex-1 flex-col bg-gray-100 p-4 md:p-8">
         {children}
       </main>
 
