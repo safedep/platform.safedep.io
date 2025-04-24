@@ -80,10 +80,10 @@ export default async function Page() {
             {/* Actions */}
             <div className="space-y-3">
               <Button className="group w-full" size="lg" asChild>
-                <Link href="/auth/login">
+                <a href="/auth/login">
                   Continue to Login
                   <ArrowRight className="ml-2 transition-transform group-hover:translate-x-1" />
-                </Link>
+                </a>
               </Button>
 
               <Button className="w-full" variant="outline" size="lg" asChild>
