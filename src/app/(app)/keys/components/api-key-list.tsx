@@ -24,6 +24,7 @@ import {
   type ColumnDef,
 } from "@tanstack/react-table";
 import Link from "next/link";
+import { cn } from "@/lib/utils";
 
 export interface ApiKeyListProps<TData, TValue> {
   className?: string;
@@ -69,7 +70,10 @@ export default function ApiKeyList<TData, TValue>({
                     {headerGroup.headers.map((header) => (
                       <TableHead
                         key={header.id}
-                        className={header.column.columnDef.meta?.className}
+                        className={cn(
+                          "break-words whitespace-normal",
+                          header.column.columnDef.meta?.className ?? "",
+                        )}
                       >
                         {header.isPlaceholder
                           ? null
@@ -100,7 +104,10 @@ export default function ApiKeyList<TData, TValue>({
                       {row.getVisibleCells().map((cell) => (
                         <TableCell
                           key={cell.id}
-                          className={cell.column.columnDef.meta?.className}
+                          className={cn(
+                            "break-words whitespace-normal",
+                            cell.column.columnDef.meta?.className ?? "",
+                          )}
                         >
                           {flexRender(
                             cell.column.columnDef.cell,

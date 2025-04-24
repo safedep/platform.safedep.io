@@ -54,9 +54,6 @@ export function getColumns({
     }),
     column.accessor("name", {
       header: "Name",
-      cell: ({ row }) => (
-        <span className="line-clamp-1 truncate">{row.original.name}</span>
-      ),
     }),
     column.accessor("description", {
       header: "Description",
@@ -79,6 +76,9 @@ export function getColumns({
     }),
     column.display({
       id: "actions",
+      meta: {
+        className: "w-4",
+      },
       cell: ({ row }) => {
         const apiKey = row.original;
 
