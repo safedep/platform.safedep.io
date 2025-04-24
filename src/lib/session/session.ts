@@ -35,7 +35,7 @@ export async function sessionRequireTenant() {
 export async function sessionRequireAuth(redirectTo = "/auth") {
   const session = await auth0.getSession();
   if (!session) {
-    redirect(redirectTo);
+    return redirect(redirectTo);
   }
   return session;
 }

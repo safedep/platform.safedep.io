@@ -9,39 +9,43 @@ import { deleteApiKey, getApiKeys, getUserInfo, switchTenant } from "./actions";
 import { toast } from "sonner";
 import UserInfoSkeleton from "@/components/user-info-skeleton";
 
-export default function KeysClient() {
+export default function KeysClient({
+  initialTenant,
+}: {
+  initialTenant: string;
+}) {
   const queryClient = useQueryClient();
 
   const userInfoQuery = useQuery({
-    queryKey: ["user-info"],
+    queryKey: ["user-info", initialTenant],
     queryFn: async () => await getUserInfo(),
   });
 
   const { data: apiKeys } = useQuery({
-    queryKey: ["api-keys"],
+    queryKey: ["api-keys", initialTenant],
     queryFn: async () => await getApiKeys(),
   });
 
   const { mutate: deleteKey } = useMutation({
-    mutationKey: ["api-keys"],
-    mutationFn: async (key: ApiKey) => await deleteApiKey(key.id),
-    onSuccess: async () => {
-      toast.success("Key deleted successfully");
-      await queryClient.invalidateQueries({ queryKey: ["api-keys"] });
+    mutationKey: ["api-keys", initialTenant],
+    mutationFn: (key: ApiKey) => {
+      const promise = deleteApiKey(key.id);
+      toast.promise(promise, {
+        loading: "Deleting key...",
+        success: "Key deleted successfully",
+        error: "Failed to delete key",
+      });
+      return promise;
     },
-    onError: (error) => {
-      toast.error("Failed to delete key", {
-        description: error.message,
+    onSuccess: async () => {
+      await queryClient.invalidateQueries({
+        queryKey: ["api-keys", initialTenant],
       });
     },
   });
 
   async function handleSwitchTenant(tenant: string) {
     await switchTenant(tenant);
-    await Promise.all([
-      queryClient.invalidateQueries({ queryKey: ["api-keys"] }),
-      queryClient.invalidateQueries({ queryKey: ["user-info"] }),
-    ]);
   }
 
   const columns = getColumns({
