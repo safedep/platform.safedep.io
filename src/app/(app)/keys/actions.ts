@@ -5,8 +5,13 @@ import {
   createApiKeyServiceClient,
   createUserServiceClient,
 } from "@/lib/rpc/client";
-import { getTenantAndToken, sessionGetTenant } from "@/lib/session/session";
+import {
+  getTenantAndToken,
+  sessionGetTenant,
+  sessionSetTenant,
+} from "@/lib/session/session";
 import { timestampDate } from "@bufbuild/protobuf/wkt";
+import { revalidatePath } from "next/cache";
 import { redirect } from "next/navigation";
 
 export async function deleteApiKey(keyId: string) {
@@ -52,8 +57,14 @@ export async function getUserInfo() {
       email: userInfo.user?.email ?? "",
       avatar: user.picture ?? "",
     },
-    tenant,
+    tenants: userInfo.access,
+    currentTenant: tenant,
   };
 }
 
 export type ApiKeys = Awaited<ReturnType<typeof getApiKeys>>;
+
+export async function switchTenant(tenant: string) {
+  await sessionSetTenant(tenant);
+  revalidatePath("/keys");
+}

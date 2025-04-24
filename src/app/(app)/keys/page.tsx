@@ -5,7 +5,7 @@ import TenantSwitcher from "@/components/tenant-switcher";
 import UserInfo from "@/components/user-info";
 import { ApiKey, getColumns } from "./columns";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
-import { deleteApiKey, getApiKeys, getUserInfo } from "./actions";
+import { deleteApiKey, getApiKeys, getUserInfo, switchTenant } from "./actions";
 import { toast } from "sonner";
 import UserInfoSkeleton from "@/components/user-info-skeleton";
 
@@ -36,6 +36,23 @@ export default function KeysPage() {
     },
   });
 
+  const switchTenantMutation = useMutation({
+    mutationKey: ["switch-tenant"],
+    mutationFn: async (tenant: string) => await switchTenant(tenant),
+    onMutate: async () => {
+      await Promise.all([
+        queryClient.invalidateQueries({ queryKey: ["user-info"] }),
+        queryClient.invalidateQueries({ queryKey: ["api-keys"] }),
+      ]);
+    },
+    onSuccess: () => {
+      toast.success("Tenant switched successfully");
+    },
+    onError: (error) => {
+      toast.error("Failed to switch tenant", { description: error.message });
+    },
+  });
+
   const columns = getColumns({
     onDeleteKey: (key) => deleteKey(key),
   });
@@ -44,7 +61,13 @@ export default function KeysPage() {
     <div className="flex h-full w-full grow flex-col items-center gap-4 p-8">
       <div className="flex h-full w-full flex-col gap-4 lg:flex-row">
         <div className="flex flex-col gap-4">
-          <TenantSwitcher />
+          <TenantSwitcher
+            tenants={userInfoQuery.data?.tenants ?? []}
+            initialTenant={userInfoQuery.data?.currentTenant ?? ""}
+            onTenantChange={(tenant) => {
+              switchTenantMutation.mutate(tenant);
+            }}
+          />
 
           {userInfoQuery.isLoading ? (
             <UserInfoSkeleton />
@@ -53,7 +76,7 @@ export default function KeysPage() {
               userData={{
                 name: userInfoQuery.data?.userInfo.name ?? "",
                 email: userInfoQuery.data?.userInfo.email ?? "",
-                tenant: userInfoQuery.data?.tenant ?? "",
+                tenant: userInfoQuery.data?.currentTenant ?? "",
                 avatar: userInfoQuery.data?.userInfo.avatar ?? "",
               }}
             />

@@ -8,7 +8,6 @@ import {
   PopoverTrigger,
 } from "@/components/ui/popover";
 import { useUser } from "@auth0/nextjs-auth0";
-import Link from "next/link";
 
 export default function UserMenu() {
   const { user } = useUser();
@@ -43,10 +42,10 @@ export default function UserMenu() {
             size="sm"
             asChild
           >
-            <Link href="/auth/logout">
+            <a href="/auth/logout">
               <LogOut className="h-3.5 w-3.5" />
               Log out
-            </Link>
+            </a>
           </Button>
         </div>
       </PopoverContent>
