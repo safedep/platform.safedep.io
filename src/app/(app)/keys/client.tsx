@@ -29,11 +29,19 @@ export default function KeysClient({
   const { mutate: deleteKey } = useMutation({
     mutationKey: ["api-keys", initialTenant],
     mutationFn: (key: ApiKey) => {
-      const promise = deleteApiKey(key.id);
+      const promise = deleteApiKey(key.id).then((res) => {
+        if (res?.error) {
+          throw new Error(res.error);
+        }
+      });
+
       toast.promise(promise, {
         loading: "Deleting key...",
         success: "Key deleted successfully",
-        error: "Failed to delete key",
+        error: (error) => ({
+          message: "Failed to delete key",
+          description: error.message,
+        }),
       });
       return promise;
     },

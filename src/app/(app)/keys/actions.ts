@@ -11,13 +11,25 @@ import {
   sessionSetTenant,
 } from "@/lib/session/session";
 import { timestampDate } from "@bufbuild/protobuf/wkt";
+import { Code } from "@connectrpc/connect";
+import { ConnectError } from "@connectrpc/connect";
 import { revalidatePath } from "next/cache";
 import { redirect } from "next/navigation";
 
 export async function deleteApiKey(keyId: string) {
   const { tenant, accessToken } = await getTenantAndToken();
   const keyService = createApiKeyServiceClient(tenant, accessToken);
-  await keyService.deleteApiKey({ keyId });
+  try {
+    await keyService.deleteApiKey({ keyId });
+  } catch (error) {
+    if (error instanceof ConnectError && error.code == Code.PermissionDenied) {
+      return {
+        error: "You are not authorized to delete this API key",
+      } as const;
+    }
+
+    throw error;
+  }
 }
 
 export async function getApiKeys() {
