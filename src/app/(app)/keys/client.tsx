@@ -58,7 +58,7 @@ export default function KeysClient() {
             onTenantChange={handleSwitchTenant}
           />
 
-          {userInfoQuery.isFetching ? (
+          {userInfoQuery.isLoading ? (
             <UserInfoSkeleton />
           ) : (
             <UserInfo

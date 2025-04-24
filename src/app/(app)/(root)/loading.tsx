@@ -1,3 +1,9 @@
+/**
+ * This route is grouped under (root) since we want to show the loading
+ * indicator for only this route.
+ * If it wasn't grouped under (root), the loading indicator would be shown for
+ * all routes in the (app) group.
+ */
 import { Skeleton } from "@/components/ui/skeleton";
 
 export default function TenantSelectorLoading() {

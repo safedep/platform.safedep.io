@@ -1,5 +1,5 @@
 import TenantSelector from "@/components/tenant-selector";
-import { getUserInfo } from "./actions";
+import { getUserInfo } from "../actions";
 import { redirect } from "next/navigation";
 import { sessionRequireAuth, sessionSetTenant } from "@/lib/session/session";
 
