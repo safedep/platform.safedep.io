@@ -49,7 +49,7 @@ export default function KeysPage() {
   });
 
   return (
-    <div className="flex h-full w-full grow flex-col items-center gap-4 p-8">
+    <div className="flex h-full w-full grow flex-col items-center gap-4">
       <div className="flex h-full w-full flex-col gap-4 lg:flex-row">
         <div className="flex flex-col gap-4">
           <TenantSwitcher
@@ -76,7 +76,7 @@ export default function KeysPage() {
         <ApiKeyList
           columns={columns}
           apiKeys={apiKeys?.apiKeys ?? []}
-          className="min-w-96 grow"
+          className="grow lg:min-w-96"
         />
       </div>
     </div>

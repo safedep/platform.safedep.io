@@ -28,7 +28,7 @@ export default function UserInfo({ className, userData }: UserInfoProps) {
   }
 
   return (
-    <Card className={cn("min-w-sm", className)}>
+    <Card className={cn("lg:min-w-sm", className)}>
       <CardHeader>
         <CardTitle className="flex items-center justify-between text-lg font-semibold">
           <span>User Information</span>
