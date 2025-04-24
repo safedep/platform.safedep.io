@@ -48,7 +48,7 @@ export default function ApiKeyList<TData, TValue>({
       <CardHeader>
         <CardTitle className="text-2xl">
           <div className="flex items-center justify-between gap-2">
-            <span>API Keys</span>
+            <span>Manage API Keys</span>
             <Button asChild>
               <Link href="/keys/create" className="flex items-center gap-2">
                 <PlusCircle className="h-4 w-4" />
