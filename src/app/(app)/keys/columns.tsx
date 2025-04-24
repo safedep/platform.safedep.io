@@ -54,6 +54,9 @@ export function getColumns({
     }),
     column.accessor("name", {
       header: "Name",
+      meta: {
+        className: "w-[160px]",
+      },
     }),
     column.accessor("description", {
       header: "Description",
@@ -63,7 +66,7 @@ export function getColumns({
         </span>
       ),
       meta: {
-        className: "hidden @2xl/keys-list:table-cell",
+        className: "w-[200px] hidden @2xl/keys-list:table-cell",
       },
     }),
     column.accessor("expiresAt", {
@@ -73,11 +76,14 @@ export function getColumns({
           {row.original.expiresAt.toLocaleDateString()}
         </div>
       ),
+      meta: {
+        className: "w-[100px]",
+      },
     }),
     column.display({
       id: "actions",
       meta: {
-        className: "w-4",
+        className: "w-[64px]",
       },
       cell: ({ row }) => {
         const apiKey = row.original;
