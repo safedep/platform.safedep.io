@@ -20,12 +20,14 @@ export default async function TenantSelectorPage() {
   }
 
   return (
-    <div className="flex grow items-center justify-center px-4 md:px-0">
-      <TenantSelector
-        userEmail={userEmail ?? ""}
-        tenants={userInfo.access}
-        onSelectTenant={setTenantAndRedirect}
-      />
+    <div className="flex h-full grow items-center justify-center px-4 md:px-0">
+      <div className="w-full max-w-md">
+        <TenantSelector
+          userEmail={userEmail ?? ""}
+          tenants={userInfo.access}
+          onSelectTenant={setTenantAndRedirect}
+        />
+      </div>
     </div>
   );
 }

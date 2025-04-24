@@ -51,10 +51,7 @@ export default function TenantSelector({
           </CardDescription>
         </CardHeader>
         <CardContent className="flex flex-col gap-4">
-          <Select
-            defaultValue={tenants[0]?.tenant?.domain}
-            onValueChange={handleSelectTenant}
-          >
+          <Select onValueChange={handleSelectTenant}>
             <SelectTrigger className="w-full">
               <SelectValue placeholder="Select a tenant" />
             </SelectTrigger>

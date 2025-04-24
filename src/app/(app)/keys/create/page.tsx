@@ -2,7 +2,7 @@
 
 import * as React from "react";
 import { useForm } from "react-hook-form";
-import { useMutation } from "@tanstack/react-query";
+import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { valibotResolver } from "@hookform/resolvers/valibot";
 import * as v from "valibot";
 import { Button } from "@/components/ui/button";
@@ -41,7 +41,7 @@ import { useRouter } from "next/navigation";
 const formSchema = v.object({
   name: v.pipe(
     v.string(),
-    v.minLength(1, "Name is required"),
+    v.minLength(3, "Name must be at least 3 characters"),
     v.maxLength(100, "Name must be less than 100 characters"),
   ),
   description: v.pipe(
@@ -49,8 +49,8 @@ const formSchema = v.object({
     v.minLength(1, "Description is required"),
     v.maxLength(500, "Description must be less than 500 characters"),
   ),
-  expiryDays: v.union(
-    [v.literal("30"), v.literal("60"), v.literal("90"), v.literal("365")],
+  expiryDays: v.picklist(
+    ["30", "60", "90", "365"],
     "Please select a valid expiry period",
   ),
 });
@@ -69,27 +69,47 @@ export default function Page() {
     resolver: valibotResolver(formSchema),
   });
 
+  const queryClient = useQueryClient();
+
   const createKeyMutation = useMutation({
-    mutationFn: async (data: {
+    mutationFn: (data: {
       name: string;
       description: string;
       expiryDays: number;
     }) => {
-      const response = await createApiKey(data);
-      if (response.error) {
-        throw new Error(response.error);
-      }
+      const response = createApiKey(data).then((res) => {
+        if (res.error) {
+          throw new Error(res.error);
+        }
+        return res;
+      });
+
+      toast.promise(response, {
+        loading: "Creating API key...",
+        success: {
+          message: "API key created successfully",
+          description:
+            "You can now copy the key and use it in your API requests.",
+        },
+        error: (error) => {
+          if (error instanceof Error) {
+            return {
+              message: "Error creating API key",
+              description: error.message,
+            };
+          }
+          return {
+            message: "Error creating API key",
+            description: "An unknown error occurred",
+          };
+        },
+      });
+
       return response;
     },
-    onSuccess: () => {
-      toast.success("API key created successfully", {
-        description:
-          "You can now copy the key and use it in your API requests.",
-      });
-    },
-    onError: (error: Error) => {
-      toast.error("Error creating API key", {
-        description: error.message,
+    onSuccess: async () => {
+      await queryClient.invalidateQueries({
+        queryKey: ["api-keys"],
       });
     },
   });
@@ -102,65 +122,13 @@ export default function Page() {
     });
   }
 
-  function handleCopyKey() {
-    if (createKeyMutation.data?.key) {
-      navigator.clipboard.writeText(createKeyMutation.data.key);
-      toast.success("API key copied to clipboard");
-    }
-  }
-
-  function handleCopyTenant() {
-    if (createKeyMutation.data?.tenant) {
-      navigator.clipboard.writeText(createKeyMutation.data.tenant);
-      toast.success("Tenant copied to clipboard");
-    }
-  }
-
   // Show the key with a button to go back
   if (createKeyMutation.isSuccess) {
     return (
-      <div className="container mx-auto">
-        <Card>
-          <CardHeader>
-            <CardTitle>API Key Created</CardTitle>
-            <CardDescription>
-              Your API key has been created successfully.
-            </CardDescription>
-          </CardHeader>
-          <CardContent>
-            <div className="flex flex-col space-y-1.5">
-              <Label htmlFor="key">Current Tenant</Label>
-              <div className="flex items-center gap-2">
-                <code className="bg-muted relative min-w-[30rem] rounded px-[0.8rem] py-[0.8rem] font-mono text-sm font-semibold">
-                  {createKeyMutation.data.tenant}
-                </code>
-                <Button onClick={handleCopyTenant}>Copy</Button>
-              </div>
-            </div>
-            <div className="mt-8 flex flex-col space-y-1.5">
-              <Label htmlFor="key">API Key</Label>
-              <div className="flex items-center gap-2">
-                <code className="bg-muted relative min-w-[30rem] rounded px-[0.8rem] py-[0.8rem] font-mono text-sm font-semibold">
-                  {createKeyMutation.data.key}
-                </code>
-                <Button onClick={handleCopyKey}>Copy</Button>
-              </div>
-              <div className="text-accent-foreground text-sm">
-                Copy this key now. It will not be shown again.
-              </div>
-            </div>
-          </CardContent>
-          <CardFooter className="flex justify-between">
-            <Button
-              variant="outline"
-              type="button"
-              onClick={() => router.back()}
-            >
-              Back
-            </Button>
-          </CardFooter>
-        </Card>
-      </div>
+      <KeyCreated
+        tenant={createKeyMutation.data.tenant}
+        apiKey={createKeyMutation.data.key}
+      />
     );
   }
 
@@ -258,6 +226,59 @@ export default function Page() {
           </Card>
         </form>
       </Form>
+    </div>
+  );
+}
+
+function KeyCreated({ tenant, apiKey }: { tenant: string; apiKey: string }) {
+  const router = useRouter();
+
+  function handleCopyTenant() {
+    navigator.clipboard.writeText(tenant);
+    toast.success("Tenant copied to clipboard");
+  }
+
+  function handleCopyKey() {
+    navigator.clipboard.writeText(apiKey);
+  }
+  return (
+    <div className="container mx-auto">
+      <Card>
+        <CardHeader>
+          <CardTitle>API Key Created</CardTitle>
+          <CardDescription>
+            Your API key has been created successfully.
+          </CardDescription>
+        </CardHeader>
+        <CardContent>
+          <div className="flex flex-col gap-4">
+            <Label htmlFor="key">Current Tenant</Label>
+            <div className="flex items-center gap-2">
+              <code className="bg-muted relative min-w-[30rem] rounded px-[0.8rem] py-[0.8rem] font-mono text-sm font-semibold">
+                {tenant}
+              </code>
+              <Button onClick={handleCopyTenant}>Copy</Button>
+            </div>
+          </div>
+          <div className="flex flex-col gap-4">
+            <Label htmlFor="key">API Key</Label>
+            <div className="flex items-center gap-2">
+              <code className="bg-muted relative min-w-[30rem] rounded px-[0.8rem] py-[0.8rem] font-mono text-sm font-semibold">
+                {apiKey}
+              </code>
+              <Button onClick={handleCopyKey}>Copy</Button>
+            </div>
+            <div className="text-accent-foreground text-sm">
+              Copy this key now. It will not be shown again.
+            </div>
+          </div>
+        </CardContent>
+        <CardFooter className="flex justify-between">
+          <Button variant="outline" type="button" onClick={() => router.back()}>
+            Back
+          </Button>
+        </CardFooter>
+      </Card>
     </div>
   );
 }
