@@ -96,7 +96,9 @@ export default function OnboardingForm({ user }: { user: User }) {
 
   return (
     <div className="flex h-full grow flex-col items-center justify-center gap-2">
-      <Badge variant="outline">Welcome {user?.name}</Badge>
+      <Badge variant="outline" className="bg-gray-50">
+        Welcome {user?.name}
+      </Badge>
       <Card className="w-full max-w-md shadow-lg">
         <CardHeader className="space-y-1 text-center">
           <CardTitle className="text-2xl font-bold">
