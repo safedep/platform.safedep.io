@@ -41,11 +41,13 @@ import { useRouter } from "next/navigation";
 const formSchema = v.object({
   name: v.pipe(
     v.string(),
+    v.trim(),
     v.minLength(3, "Name must be at least 3 characters"),
     v.maxLength(100, "Name must be less than 100 characters"),
   ),
   description: v.pipe(
     v.string(),
+    v.trim(),
     v.minLength(1, "Description is required"),
     v.maxLength(500, "Description must be less than 500 characters"),
   ),

@@ -14,6 +14,17 @@ import {
   type ColumnDef,
 } from "@tanstack/react-table";
 import { toast } from "sonner";
+import { useState } from "react";
+import {
+  AlertDialog,
+  AlertDialogAction,
+  AlertDialogCancel,
+  AlertDialogContent,
+  AlertDialogDescription,
+  AlertDialogFooter,
+  AlertDialogHeader,
+  AlertDialogTitle,
+} from "@/components/ui/alert-dialog";
 
 export interface ApiKey {
   id: string;
@@ -88,35 +99,93 @@ export function getColumns({
       cell: ({ row }) => {
         const apiKey = row.original;
 
-        return (
-          <DropdownMenu>
-            <DropdownMenuTrigger asChild>
-              <Button variant="ghost" size="icon" className="h-8 w-8">
-                <MoreHorizontal className="h-4 w-4" />
-                <span className="sr-only">Open menu</span>
-              </Button>
-            </DropdownMenuTrigger>
-            <DropdownMenuContent align="end">
-              <DropdownMenuItem
-                onClick={() => {
-                  navigator.clipboard.writeText(apiKey.id);
-                  toast.success("Key ID copied to clipboard");
-                }}
-              >
-                Copy Key ID
-              </DropdownMenuItem>
-              <DropdownMenuItem
-                className="text-destructive"
-                onClick={() => onDeleteKey(apiKey)}
-              >
-                Delete Key
-              </DropdownMenuItem>
-            </DropdownMenuContent>
-          </DropdownMenu>
-        );
+        return <CellActions apiKey={apiKey} onDeleteKey={onDeleteKey} />;
       },
     }),
   ];
 
   return columns;
+}
+
+function DeleteKeyDialog({
+  apiKey,
+  open,
+  onOpenChange,
+  onConfirm,
+}: {
+  apiKey: ApiKey;
+  open: boolean;
+  onOpenChange: (open: boolean) => void;
+  onConfirm: () => void;
+}) {
+  return (
+    <AlertDialog open={open} onOpenChange={onOpenChange}>
+      <AlertDialogContent>
+        <AlertDialogHeader>
+          <AlertDialogTitle>Delete API Key</AlertDialogTitle>
+          <AlertDialogDescription>
+            Are you sure you want to delete the API key &quot;{apiKey.name}
+            &quot;? This action cannot be undone.
+          </AlertDialogDescription>
+        </AlertDialogHeader>
+        <AlertDialogFooter>
+          <AlertDialogCancel>Cancel</AlertDialogCancel>
+          <AlertDialogAction onClick={onConfirm} className="bg-destructive">
+            Delete
+          </AlertDialogAction>
+        </AlertDialogFooter>
+      </AlertDialogContent>
+    </AlertDialog>
+  );
+}
+
+function CellActions({
+  apiKey,
+  onDeleteKey,
+}: {
+  apiKey: ApiKey;
+  onDeleteKey: (key: ApiKey) => void;
+}) {
+  const [showDeleteDialog, setShowDeleteDialog] = useState(false);
+
+  return (
+    <>
+      <DropdownMenu>
+        <DropdownMenuTrigger asChild>
+          <Button variant="ghost" size="icon" className="h-8 w-8">
+            <MoreHorizontal className="h-4 w-4" />
+            <span className="sr-only">Open menu</span>
+          </Button>
+        </DropdownMenuTrigger>
+        <DropdownMenuContent align="end">
+          <DropdownMenuItem
+            onClick={() => {
+              navigator.clipboard.writeText(apiKey.id);
+              toast.success("Key ID copied to clipboard");
+            }}
+          >
+            Copy Key ID
+          </DropdownMenuItem>
+          <DropdownMenuItem
+            className="text-destructive"
+            onClick={() => setShowDeleteDialog(true)}
+          >
+            Delete Key
+          </DropdownMenuItem>
+        </DropdownMenuContent>
+      </DropdownMenu>
+
+      {showDeleteDialog && (
+        <DeleteKeyDialog
+          apiKey={apiKey}
+          open={showDeleteDialog}
+          onOpenChange={setShowDeleteDialog}
+          onConfirm={() => {
+            onDeleteKey(apiKey);
+            setShowDeleteDialog(false);
+          }}
+        />
+      )}
+    </>
+  );
 }
