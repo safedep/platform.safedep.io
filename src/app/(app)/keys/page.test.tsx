@@ -298,4 +298,54 @@ describe("Keys Page", () => {
 
     expect(mocks.actions.deleteApiKey).toHaveBeenCalledWith("my-api-key-id");
   });
+
+  it("should copy the API key to the clipboard when the copy button is clicked", async () => {
+    // Arrange
+    mocks.session.sessionGetTenant.mockResolvedValue("some-tenant");
+    mocks.actions.getUserInfo.mockResolvedValue({
+      userInfo: {
+        name: "John Doe",
+        email: "john.doe@example.com",
+        avatar: "https://example.com/avatar.png",
+      },
+      tenants: [],
+      currentTenant: "some-tenant",
+    } satisfies UserInfo);
+    mocks.actions.getApiKeys.mockResolvedValue({
+      tenant: "some-tenant",
+      apiKeys: [
+        {
+          id: "my-api-key-id",
+          name: "my-api-key",
+          description: "description of my-api-key",
+          expiresAt: new Date("2025-05-01"),
+        },
+      ],
+    } satisfies ApiKeys);
+    const user = userEvent.setup();
+
+    // Act
+    const { page, queryClient } = await setupPageComponent();
+    render(page);
+    await waitFor(() => {
+      expect(queryClient.isFetching()).toBe(0);
+    });
+
+    // Assert
+    const rows = screen.getAllByRole("row");
+    expect(rows).toHaveLength(2); // 0-th row is the header
+
+    // get the row at index 1 (that contains our api-key data)
+    const row1 = rows[1];
+
+    // get the button inside the actions cell
+    const actionsButton = within(row1).getByRole("button");
+    await user.click(actionsButton);
+
+    // find the delete button within the actions cell
+    const copyButton = screen.getByRole("menuitem", {
+      name: "Copy Key ID",
+    });
+    await user.click(copyButton);
+  });
 });
