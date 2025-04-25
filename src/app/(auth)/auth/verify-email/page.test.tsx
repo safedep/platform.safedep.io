@@ -1,6 +1,5 @@
-import { describe } from "node:test";
 import Page from "./page";
-import { expect, it, vi } from "vitest";
+import { expect, it, vi, describe } from "vitest";
 import { render, screen } from "@testing-library/react";
 
 const mocks = vi.hoisted(() => ({
