@@ -47,6 +47,8 @@ export async function getApiKeys() {
   };
 }
 
+export type ApiKeys = Awaited<ReturnType<typeof getApiKeys>>;
+
 export async function getUserInfo() {
   const { accessToken, user } = await auth0.getSession().then((sess) => ({
     accessToken: sess?.tokenSet.accessToken,
@@ -73,8 +75,6 @@ export async function getUserInfo() {
     currentTenant: tenant,
   };
 }
-
-export type ApiKeys = Awaited<ReturnType<typeof getApiKeys>>;
 
 export async function switchTenant(tenant: string) {
   await sessionSetTenant(tenant);
