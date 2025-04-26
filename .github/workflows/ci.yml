@@ -1,0 +1,61 @@
+name: CI
+
+on:
+  push:
+    branches: [main]
+  pull_request: {}
+
+permissions:
+  contents: read
+  pull-requests: write
+
+concurrency:
+  group: ${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  test-and-build:
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    strategy:
+      matrix:
+        node-version: ["22.x"] # extend to other LTS if you like
+    env:
+      # skip env validation for nextjs since we are just testing
+      SKIP_ENV_VALIDATION: true
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - uses: pnpm/action-setup@v4
+        name: Install pnpm
+        with:
+          run_install: false
+
+      - name: Install Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: ${{ matrix.node-version }}
+          cache: pnpm
+
+      - name: Install deps
+        run: pnpm install --frozen-lockfile
+
+      - name: Lint & Format check
+        run: |
+          pnpm prettier --check .
+          pnpm check
+
+      - name: Run tests & coverage
+        run: pnpm test && pnpm vitest run --coverage
+
+      - name: Report coverage
+        if: always()
+        uses: davelosert/vitest-coverage-report-action@v2
+
+      - name: Build
+        if: success()
+        run: pnpm build
+        env:
+          SKIP_ENV_VALIDATION: true
