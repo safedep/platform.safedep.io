@@ -1,9 +1,11 @@
 name: PostHog
 
 on:
+  # only upload sourcemaps on main production branch
   push:
     branches: [main]
-  pull_request:
+  # pull_request:
+  #   branches: [main]
 
 concurrency:
   group: ${{ github.workflow }}-${{ github.ref }}
