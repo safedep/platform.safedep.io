@@ -1,5 +1,5 @@
-import { describe, expect, it, vi } from "vitest";
-import { render, screen } from "@testing-library/react";
+import { afterEach, describe, expect, it, vi } from "vitest";
+import { render, screen, waitFor } from "@testing-library/react";
 import Page from "./page";
 import { SessionData } from "@auth0/nextjs-auth0/types";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
@@ -8,6 +8,7 @@ import userEvent from "@testing-library/user-event";
 const mocks = vi.hoisted(() => ({
   actions: {
     isUserOnboarded: vi.fn(),
+    createOnboarding: vi.fn(),
   },
   session: {
     sessionRequireAuth: vi.fn(),
@@ -16,7 +17,12 @@ const mocks = vi.hoisted(() => ({
     redirect: vi.fn(),
     useRouter: {
       replace: vi.fn(),
+      push: vi.fn(),
     },
+  },
+  toast: {
+    success: vi.fn(),
+    error: vi.fn(),
   },
 }));
 
@@ -24,6 +30,7 @@ vi.mock("server-only", () => ({}));
 
 vi.mock("./actions", () => ({
   isUserOnboarded: mocks.actions.isUserOnboarded,
+  createOnboarding: mocks.actions.createOnboarding,
 }));
 
 vi.mock("@/lib/session/session", () => ({
@@ -32,6 +39,13 @@ vi.mock("@/lib/session/session", () => ({
 
 vi.mock("next/navigation", () => ({
   useRouter: () => mocks.navigation.useRouter,
+}));
+
+vi.mock("sonner", () => ({
+  toast: {
+    success: mocks.toast.success,
+    error: mocks.toast.error,
+  },
 }));
 
 async function setupPageComponent() {
@@ -52,6 +66,10 @@ async function setupPageComponent() {
 }
 
 describe("Onboard page", () => {
+  afterEach(() => {
+    vi.resetAllMocks();
+  });
+
   it("should render", async () => {
     // arrange
     mocks.session.sessionRequireAuth.mockResolvedValue({
@@ -84,5 +102,56 @@ describe("Onboard page", () => {
     const closeDialogButton = screen.getByRole("button");
     await user.click(closeDialogButton);
     expect(mocks.navigation.useRouter.replace).toHaveBeenCalledWith("/");
+  });
+
+  it("should show onboarding form if user is not onboarded", async () => {
+    // arrange
+    mocks.session.sessionRequireAuth.mockResolvedValue({
+      user: { email: "test@test.com" },
+      tokenSet: { accessToken: "test-access-token" },
+    } as SessionData);
+    mocks.actions.isUserOnboarded.mockResolvedValue(false);
+    mocks.actions.createOnboarding.mockResolvedValue({
+      tenant: "test-tenant",
+    });
+    const user = userEvent.setup();
+
+    // act
+    const { page, queryClient } = await setupPageComponent();
+    render(page);
+
+    // find the name input
+    const nameInput = screen.getByRole("textbox", { name: "Name" });
+    await user.type(nameInput, "John Doe");
+    // find the organization name input
+    const organizationNameInput = screen.getByRole("textbox", {
+      name: "Organization Name",
+    });
+    await user.type(organizationNameInput, "Acme Inc.");
+    // find the organization domain input
+    const organizationDomainInput = screen.getByRole("textbox", {
+      name: "Organization Domain",
+    });
+    await user.type(organizationDomainInput, "acme.com");
+    // find the submit button
+    const submitButton = screen.getByRole("button", {
+      name: "Create Organization",
+    });
+    await user.click(submitButton);
+
+    // let the mutation finish
+    await waitFor(() => {
+      expect(queryClient.isMutating()).toBe(0);
+    });
+
+    // assert
+    expect(mocks.actions.createOnboarding).toHaveBeenCalledWith({
+      name: "John Doe",
+      organizationName: "Acme Inc.",
+      organizationDomain: "acme.com",
+      email: "test@test.com", // comes from the session
+    });
+    expect(mocks.navigation.useRouter.push).toHaveBeenCalledWith("/");
+    expect(mocks.toast.success).toHaveBeenCalled();
   });
 });
