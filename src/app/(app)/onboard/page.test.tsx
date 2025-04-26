@@ -154,4 +154,54 @@ describe("Onboard page", () => {
     expect(mocks.navigation.useRouter.push).toHaveBeenCalledWith("/");
     expect(mocks.toast.success).toHaveBeenCalled();
   });
+
+  it("should show error toast if onboarding form submission fails", async () => {
+    // arrange
+    mocks.session.sessionRequireAuth.mockResolvedValue({
+      user: { email: "test@test.com" },
+      tokenSet: { accessToken: "test-access-token" },
+    } as SessionData);
+    mocks.actions.isUserOnboarded.mockResolvedValue(false);
+    mocks.actions.createOnboarding.mockResolvedValue({
+      error: "test-error",
+    });
+    const user = userEvent.setup();
+
+    // act
+    const { page, queryClient } = await setupPageComponent();
+    render(page);
+
+    // find the name input
+    const nameInput = screen.getByRole("textbox", { name: "Name" });
+    await user.type(nameInput, "John Doe");
+    // find the organization name input
+    const organizationNameInput = screen.getByRole("textbox", {
+      name: "Organization Name",
+    });
+    await user.type(organizationNameInput, "Acme Inc.");
+    // find the organization domain input
+    const organizationDomainInput = screen.getByRole("textbox", {
+      name: "Organization Domain",
+    });
+    await user.type(organizationDomainInput, "acme.com");
+    // find the submit button
+    const submitButton = screen.getByRole("button", {
+      name: "Create Organization",
+    });
+    await user.click(submitButton);
+
+    // let the mutation finish
+    await waitFor(() => {
+      expect(queryClient.isMutating()).toBe(0);
+    });
+
+    // assert
+    expect(mocks.actions.createOnboarding).toHaveBeenCalledWith({
+      name: "John Doe",
+      organizationName: "Acme Inc.",
+      organizationDomain: "acme.com",
+      email: "test@test.com", // comes from the session
+    });
+    expect(mocks.toast.error).toHaveBeenCalled();
+  });
 });
