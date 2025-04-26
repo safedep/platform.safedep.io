@@ -13,7 +13,7 @@ RUN apk add --no-cache libc6-compat
 WORKDIR /app
 
 # Copy package management files
-COPY package.json pnpm-lock.yaml .npmrc* ./
+COPY package.json pnpm-lock.yaml pnpm-workspace.yaml .npmrc* ./
 
 # Since we are using corepack, we need to modify the pnpm cache dir's path
 RUN corepack enable pnpm && \
