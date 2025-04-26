@@ -316,9 +316,9 @@ function KeyCreated({ tenant, apiKey }: { tenant: string; apiKey: string }) {
         </CardDescription>
       </CardHeader>
       <CardContent className="space-y-6">
-        <div className="space-y-3">
-          <Label htmlFor="tenant" className="text-sm font-medium">
-            Current Tenant
+        <fieldset className="space-y-3">
+          <Label asChild className="text-sm font-medium">
+            <legend>Current Tenant</legend>
           </Label>
           <div className="flex flex-col items-start gap-2 sm:flex-row sm:items-center">
             <div className="w-full overflow-x-auto">
@@ -330,11 +330,11 @@ function KeyCreated({ tenant, apiKey }: { tenant: string; apiKey: string }) {
               Copy
             </Button>
           </div>
-        </div>
+        </fieldset>
 
-        <div className="space-y-3">
-          <Label htmlFor="key" className="text-sm font-medium">
-            API Key
+        <fieldset className="space-y-3">
+          <Label asChild className="text-sm font-medium">
+            <legend>API Key</legend>
           </Label>
           <div className="flex flex-col items-start gap-2 sm:flex-row sm:items-center">
             <div className="bg-muted relative h-10 w-full overflow-hidden rounded">
@@ -423,7 +423,7 @@ function KeyCreated({ tenant, apiKey }: { tenant: string; apiKey: string }) {
               Important: Copy this key now. It will not be shown again.
             </p>
           </div>
-        </div>
+        </fieldset>
       </CardContent>
       <CardFooter className="flex justify-between">
         <Button variant="outline" type="button" onClick={() => router.back()}>
