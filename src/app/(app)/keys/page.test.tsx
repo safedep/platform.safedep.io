@@ -21,6 +21,10 @@ const mocks = vi.hoisted(() => ({
   navigation: {
     redirect: vi.fn(),
   },
+  toast: {
+    promise: vi.fn(),
+    success: vi.fn(),
+  },
 }));
 
 vi.mock("./actions", () => ({
@@ -37,6 +41,13 @@ vi.mock("@/lib/session/session", () => ({
 
 vi.mock("next/navigation", () => ({
   redirect: mocks.navigation.redirect,
+}));
+
+vi.mock("sonner", () => ({
+  toast: {
+    promise: mocks.toast.promise,
+    success: mocks.toast.success,
+  },
 }));
 
 function createQueryClient() {
@@ -264,6 +275,7 @@ describe("Keys Page", () => {
         },
       ],
     } satisfies ApiKeys);
+    mocks.actions.deleteApiKey.mockResolvedValue(undefined);
     const user = userEvent.setup();
 
     // Act
@@ -273,7 +285,6 @@ describe("Keys Page", () => {
       expect(queryClient.isFetching()).toBe(0);
     });
 
-    // Assert
     const rows = screen.getAllByRole("row");
     expect(rows).toHaveLength(2); // 0-th row is the header
 
@@ -297,6 +308,7 @@ describe("Keys Page", () => {
     await user.click(confirmDeleteButton);
 
     expect(mocks.actions.deleteApiKey).toHaveBeenCalledWith("my-api-key-id");
+    expect(mocks.toast.promise).toHaveBeenCalled();
   });
 
   it("should copy the API key to the clipboard when the copy button is clicked", async () => {
