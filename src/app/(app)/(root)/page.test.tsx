@@ -22,7 +22,7 @@ vi.mock("@/lib/session/session", () => ({
   sessionSetTenant: mocks.sessionSetTenant,
 }));
 
-vi.mock("../actions", () => ({
+vi.mock("./actions", () => ({
   getUserInfo: mocks.getUserInfo,
 }));
 
