@@ -48,7 +48,7 @@ jobs:
           pnpm check
 
       - name: Run tests & coverage
-        run: pnpm test && pnpm vitest run --coverage
+        run: pnpm test --coverage
 
       - name: Report coverage
         if: always()
