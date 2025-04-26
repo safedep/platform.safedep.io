@@ -1,3 +1,4 @@
+"use server";
 import { ArrowUpRight } from "lucide-react";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
@@ -7,7 +8,6 @@ import {
   type Report,
 } from "@buf/safedep_api.bufbuild_es/safedep/messages/malysis/v1/report_pb";
 import Link from "next/link";
-import { useMemo } from "react";
 import { packageRegistryUrl } from "@/lib/rpc/utils";
 import MalwareAnalysisMetadata from "./malysis-metadata";
 import MalwareAnalysisBadge from "./malysis-badge";
@@ -54,7 +54,7 @@ export interface MalwareAnalysisReportCardProps {
   verificationRecord?: VerificationRecord;
 }
 
-export default function MalwareAnalysisReportCard({
+export default async function MalwareAnalysisReportCard({
   report,
   verificationRecord,
 }: MalwareAnalysisReportCardProps) {
@@ -63,13 +63,8 @@ export default function MalwareAnalysisReportCard({
     verificationRecord,
   );
   const packageName = `${report.packageVersion?.package?.name}@${report.packageVersion?.version}`;
-  const packageUrl = useMemo(() => {
-    return packageRegistryUrl(report.packageVersion);
-  }, [report.packageVersion]);
-  const evidences = useMemo(
-    () => [...report.fileEvidences, ...report.projectEvidences],
-    [report.fileEvidences, report.projectEvidences],
-  );
+  const packageUrl = packageRegistryUrl(report.packageVersion);
+  const evidences = [...report.fileEvidences, ...report.projectEvidences];
 
   return (
     <div className="container mx-auto max-w-6xl space-y-6 p-4">
