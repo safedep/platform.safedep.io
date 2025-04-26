@@ -3,6 +3,7 @@ import { getAnalysisReport } from "./actions";
 import MalwareAnalysisError from "@/components/malysis/malysis-error";
 import { AnalysisStatus } from "@buf/safedep_api.bufbuild_es/safedep/services/malysis/v1/malysis_pb";
 import MalwareAnalysisReportCard from "@/components/malysis/malysis-report-card";
+import { Code, ConnectError } from "@connectrpc/connect";
 
 export const metadata: Metadata = {
   title: "Malysis",
@@ -20,11 +21,14 @@ export default async function Page({
   try {
     response = await getAnalysisReport(analysisId);
   } catch (error) {
-    return (
-      <div className="flex h-dvh items-start py-8">
-        <MalwareAnalysisError error={error as Error} />
-      </div>
-    );
+    if (error instanceof ConnectError && error.code === Code.NotFound) {
+      return (
+        <div className="flex h-dvh items-start py-8">
+          <MalwareAnalysisError error={error} />
+        </div>
+      );
+    }
+    throw error;
   }
 
   // TODO: Add a loading state for the analysis report
