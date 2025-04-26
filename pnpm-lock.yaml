@@ -80,9 +80,6 @@ importers:
       framer-motion:
         specifier: ^12.9.2
         version: 12.9.2(react-dom@19.1.0(react@19.1.0))(react@19.1.0)
-      happy-dom:
-        specifier: ^17.4.4
-        version: 17.4.4
       lucide-react:
         specifier: ^0.503.0
         version: 0.503.0(react@19.1.0)
@@ -171,6 +168,9 @@ importers:
       eslint-config-next:
         specifier: 15.3.1
         version: 15.3.1(eslint@9.25.1(jiti@2.4.2))(typescript@5.8.3)
+      happy-dom:
+        specifier: ^17.4.4
+        version: 17.4.4
       prettier:
         specifier: ^3.5.3
         version: 3.5.3
