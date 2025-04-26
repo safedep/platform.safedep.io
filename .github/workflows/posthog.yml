@@ -1,0 +1,57 @@
+name: PostHog
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+
+concurrency:
+  group: ${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  posthog:
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    strategy:
+      matrix:
+        node-version: ["22.x"] # extend to other LTS if you like
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683
+
+      - uses: pnpm/action-setup@a7487c7e89a18df4991f7f222e4898a00d66ddda
+        name: Install pnpm
+        with:
+          run_install: false
+
+      - name: Install Node.js
+        uses: actions/setup-node@49933ea5288caeca8642d1e84afbd3f7d6820020
+        with:
+          node-version: ${{ matrix.node-version }}
+          cache: pnpm
+
+      - name: Install deps
+        run: pnpm install --frozen-lockfile
+
+      - name: Build
+        run: |
+          pnpm build
+          cp -r public .next/standalone/
+          cp -r .next/static .next/standalone/.next/
+        env:
+          STANDALONE_IN_PROD: true # generate standalone build
+          SKIP_ENV_VALIDATION: true
+
+      # TODO: Uploading the sourcemaps to PostHog is not enough. Posthog
+      # requires us to deploy the modified files to our site. Currently we are
+      # NOT doing this.
+      # https://posthog.com/docs/error-tracking/installation#uploading-source-maps-1
+      - name: Inject Posthog and upload sourcemaps
+        run:
+          posthog-cli sourcemap inject --directory .next/standalone/.next/static
+          posthog-cli sourcemap upload --directory .next/standalone/.next/static
+        env:
+          POSTHOG_CLI_ENV_ID: ${{ secrets.POSTHOG_CLI_ENV_ID }}
+          POSTHOG_CLI_TOKEN: ${{ secrets.POSTHOG_CLI_TOKEN }}
