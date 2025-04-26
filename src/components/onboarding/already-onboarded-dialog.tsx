@@ -11,6 +11,7 @@ import {
 } from "@/components/ui/dialog";
 import { Button } from "@/components/ui/button";
 import { CheckCircle2 } from "lucide-react";
+import Link from "next/link";
 
 // This is the dialog that is shown when the user is already onboarded
 export default function AlreadyOnboardedDialog() {
@@ -26,7 +27,7 @@ export default function AlreadyOnboardedDialog() {
   }, [router]);
 
   return (
-    <Dialog open={true}>
+    <Dialog open={true} modal onOpenChange={() => router.replace("/")}>
       <DialogContent className="sm:max-w-md">
         <DialogHeader className="space-y-4">
           <div className="mx-auto flex h-12 w-12 items-center justify-center rounded-full bg-green-100">
@@ -45,8 +46,8 @@ export default function AlreadyOnboardedDialog() {
           Redirecting you to the dashboard in a few seconds...
         </div>
 
-        <Button onClick={() => router.replace("/")} className="mt-2 w-full">
-          Go to Dashboard Now
+        <Button asChild className="mt-2 w-full">
+          <Link href="/">Go to Dashboard Now</Link>
         </Button>
       </DialogContent>
     </Dialog>
