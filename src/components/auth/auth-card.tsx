@@ -22,7 +22,7 @@ export default function AuthCard({
         <div className="flex flex-col gap-6 p-6 sm:p-8">
           <div className="flex justify-center">
             <Image
-              src="/Logo.svg"
+              src="/safedep-logo.svg"
               alt="SafeDep Logo"
               width={80}
               height={80}
