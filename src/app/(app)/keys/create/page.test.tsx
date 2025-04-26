@@ -14,6 +14,7 @@ const mocks = vi.hoisted(() => ({
   navigation: {
     useRouter: {
       push: vi.fn(),
+      back: vi.fn(),
     },
   },
 }));
@@ -51,6 +52,20 @@ describe("Keys Create Page", () => {
   it("should render", async () => {
     const { page } = await setupPageComponent();
     render(page);
+  });
+
+  it("should navigate back when the cancel button is clicked", async () => {
+    // arrange
+    const user = userEvent.setup();
+
+    // act: click the cancel button
+    const { page } = await setupPageComponent();
+    render(page);
+    const cancelButton = screen.getByRole("button", { name: "Cancel" });
+    await user.click(cancelButton);
+
+    // assert: the router.back function is called
+    expect(mocks.navigation.useRouter.back).toHaveBeenCalled();
   });
 
   it("should submit the create key form", async () => {
@@ -143,5 +158,11 @@ describe("Keys Create Page", () => {
     // TODO: get the actual API key value and verify it. The value is broken
     // into multiple span elements, hence it's not possible to use getByText
     // to verify the value.
+
+    // find the back button and click it
+    const backButton = screen.getByRole("button", { name: "Back" });
+    await user.click(backButton);
+    // assert: the router.back function is called
+    expect(mocks.navigation.useRouter.back).toHaveBeenCalled();
   });
 });
