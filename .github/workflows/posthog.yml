@@ -57,7 +57,7 @@ jobs:
       # NOT doing this.
       # https://posthog.com/docs/error-tracking/installation#uploading-source-maps-1
       - name: Inject Posthog and upload sourcemaps
-        run:
+        run: |
           posthog-cli sourcemap inject --directory .next/standalone/.next/static
           posthog-cli sourcemap upload --directory .next/standalone/.next/static
         env:
