@@ -6,7 +6,9 @@
     "dev": "next dev --turbopack",
     "build": "next build",
     "start": "next start",
-    "lint": "next lint"
+    "lint": "next lint",
+    "check": "pnpm tsc --noEmit && pnpm lint",
+    "test": "vitest run"
   },
   "dependencies": {
     "@auth0/nextjs-auth0": "^4.5.0",
