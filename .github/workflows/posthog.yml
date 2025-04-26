@@ -47,7 +47,10 @@ jobs:
       - name: Install PostHog CLI
         run: |
           curl --proto '=https' --tlsv1.2 -LsSf https://github.com/PostHog/posthog/releases/download/posthog-cli-v0.0.4/posthog-cli-installer.sh | sh
-          posthog-cli-update
+          echo "PATH=$HOME/.posthog/:$PATH" >> $GITHUB_ENV
+          
+      - name: Update PostHog CLI
+        run: posthog-cli-update
 
       # TODO: Uploading the sourcemaps to PostHog is not enough. Posthog
       # requires us to deploy the modified files to our site. Currently we are
