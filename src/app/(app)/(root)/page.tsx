@@ -2,6 +2,11 @@ import TenantSelector from "@/components/tenant-selector";
 import { getUserInfo } from "./actions";
 import { redirect } from "next/navigation";
 import { sessionRequireAuth, sessionSetTenant } from "@/lib/session/session";
+import { Metadata } from "next";
+
+export const metadata: Metadata = {
+  title: "Choose your tenant",
+};
 
 export default async function TenantSelectorPage() {
   const userInfo = await getUserInfo();

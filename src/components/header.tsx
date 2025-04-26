@@ -11,7 +11,7 @@ export default function Header() {
             <Link href="/">
               <Image
                 src="/safedep-logo.svg"
-                alt="Safedep Logo"
+                alt="SafeDep Logo"
                 width={160}
                 height={50}
                 className="h-10 w-auto"

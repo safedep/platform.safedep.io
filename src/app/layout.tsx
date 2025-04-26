@@ -15,9 +15,13 @@ const jetBrainsMono = JetBrains_Mono({
 });
 
 export const metadata: Metadata = {
-  title: "SafeDep | Open Source Software Supply Chain Security Platform",
+  title: {
+    template: "%s | SafeDep Platform",
+    default: "SafeDep | Open Source Software Supply Chain Security Platform",
+  },
   description:
     "Welcome to SafeDep. Onboard to SafeDep cloud, generate authentication credentials and access platform APIs",
+  keywords: ["SafeDep", "Open Source", "Supply Chain", "Security", "Platform"],
 };
 
 /**

@@ -5,8 +5,8 @@ import { AnalysisStatus } from "@buf/safedep_api.bufbuild_es/safedep/services/ma
 import MalwareAnalysisReportCard from "@/components/malysis/malysis-report-card";
 
 export const metadata: Metadata = {
-  title: "Malysis | Safedep Platform",
-  description: "Malware analysis results by Safedep",
+  title: "Malysis",
+  description: "Malware analysis results by SafeDep",
 };
 
 export default async function Page({

@@ -5,7 +5,7 @@ import { isUserOnboarded } from "./actions";
 import { Metadata } from "next";
 
 export const metadata: Metadata = {
-  title: "Onboarding | Safedep Platform",
+  title: "Onboarding",
 };
 
 export default async function Page() {

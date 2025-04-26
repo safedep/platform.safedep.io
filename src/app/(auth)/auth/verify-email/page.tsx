@@ -13,7 +13,7 @@ import { auth0 } from "@/lib/auth0";
 import { redirect } from "next/navigation";
 
 export const metadata: Metadata = {
-  title: "Verify Email | Safedep Platform",
+  title: "Verify your email",
   description: "Verify your email to continue",
 };
 
