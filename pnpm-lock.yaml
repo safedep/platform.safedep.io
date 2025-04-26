@@ -116,9 +116,6 @@ importers:
       valibot:
         specifier: ^1.0.0
         version: 1.0.0(typescript@5.8.3)
-      zod:
-        specifier: ^3.24.3
-        version: 3.24.3
     devDependencies:
       '@eslint/eslintrc':
         specifier: ^3.3.1
@@ -7600,6 +7597,7 @@ snapshots:
 
   yocto-queue@0.1.0: {}
 
-  zod@3.24.3: {}
+  zod@3.24.3:
+    optional: true
 
   zwitch@2.0.4: {}
