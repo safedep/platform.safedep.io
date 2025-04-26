@@ -10,7 +10,7 @@ pre-commit:
     - name: format
       run: pnpm prettier --write {staged_files}
       glob:
-        - "*.{js,ts,jsx,tsx,json,css,md}"
+        - "*.{js,ts,jsx,tsx,json,css,md,yaml,yml}"
       stage_fixed: true
 
     - name: gitleaks
