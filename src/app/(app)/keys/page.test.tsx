@@ -323,6 +323,7 @@ describe("Keys Page", () => {
       ],
     } satisfies ApiKeys);
     const user = userEvent.setup();
+    vi.spyOn(navigator.clipboard, "writeText");
 
     // Act
     const { page, queryClient } = await setupPageComponent();
@@ -342,10 +343,11 @@ describe("Keys Page", () => {
     const actionsButton = within(row1).getByRole("button");
     await user.click(actionsButton);
 
-    // find the delete button within the actions cell
+    // find the copy key id button within the actions cell
     const copyButton = screen.getByRole("menuitem", {
       name: "Copy Key ID",
     });
     await user.click(copyButton);
+    expect(navigator.clipboard.writeText).toHaveBeenCalledWith("my-api-key-id");
   });
 });
