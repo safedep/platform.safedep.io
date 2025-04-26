@@ -4,7 +4,7 @@ import { redirect } from "next/navigation";
 import { Metadata } from "next";
 
 export const metadata: Metadata = {
-  title: "API Keys | SafeDep",
+  title: "API Keys | SafeDep Platform",
   description: "Manage your API keys",
 };
 
