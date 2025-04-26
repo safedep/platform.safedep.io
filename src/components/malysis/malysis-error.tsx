@@ -3,13 +3,13 @@ import { AlertCircle } from "lucide-react";
 import { Card, CardContent, CardHeader } from "@/components/ui/card";
 
 interface ErrorMalwareAnalysisProps {
-  error?: Error;
+  message?: string;
   reset?: () => void;
   goBack?: () => void;
 }
 
 export default function MalwareAnalysisError({
-  error,
+  message,
 }: ErrorMalwareAnalysisProps) {
   return (
     <div className="container mx-auto grid min-h-[50vh] max-w-6xl place-items-center space-y-6 p-4">
@@ -22,7 +22,7 @@ export default function MalwareAnalysisError({
                 Analysis Failed
               </h1>
               <p className="text-muted-foreground text-base">
-                {error?.message ??
+                {message ??
                   "We couldn't analyze this package. Please try again later."}
               </p>
             </div>

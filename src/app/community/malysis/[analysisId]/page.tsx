@@ -24,7 +24,9 @@ export default async function Page({
     if (error instanceof ConnectError && error.code === Code.NotFound) {
       return (
         <div className="flex h-dvh items-start py-8">
-          <MalwareAnalysisError error={error} />
+          {/* need to use a custom message since nextjs doesn't forward error messages
+           * from the server to the client */}
+          <MalwareAnalysisError message={error.message} />
         </div>
       );
     }
