@@ -204,4 +204,52 @@ describe("Onboard page", () => {
     });
     expect(mocks.toast.error).toHaveBeenCalled();
   });
+
+  it("handles unexpected error during submission", async () => {
+    // arrange
+    mocks.actions.createOnboarding.mockRejectedValueOnce(
+      new Error("Network Error"),
+    );
+    mocks.session.sessionRequireAuth.mockResolvedValue({
+      user: { email: "test@test.com" },
+      tokenSet: { accessToken: "test-access-token" },
+    } as SessionData);
+    const user = userEvent.setup();
+
+    // act
+    const { page, queryClient } = await setupPageComponent();
+    render(page);
+
+    // find the name input
+    const nameInput = screen.getByRole("textbox", { name: "Name" });
+    await user.type(nameInput, "John Doe");
+    // find the organization name input
+    const organizationNameInput = screen.getByRole("textbox", {
+      name: "Organization Name",
+    });
+    await user.type(organizationNameInput, "Acme Inc.");
+    // find the organization domain input
+    const organizationDomainInput = screen.getByRole("textbox", {
+      name: "Organization Domain",
+    });
+    await user.type(organizationDomainInput, "networkerror.com");
+    // find the submit button
+    const submitButton = screen.getByRole("button", {
+      name: "Create Organization",
+    });
+    await user.click(submitButton);
+
+    // let the mutation finish
+    await waitFor(() => {
+      expect(queryClient.isMutating()).toBe(0);
+    });
+
+    // assert
+    expect(mocks.toast.error).toHaveBeenCalledWith(
+      "Failed to create organization",
+      {
+        description: "Network Error",
+      },
+    );
+  });
 });
