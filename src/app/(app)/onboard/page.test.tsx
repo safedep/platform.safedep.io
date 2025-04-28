@@ -1,4 +1,13 @@
-import { afterEach, describe, expect, it, vi } from "vitest";
+import {
+  afterAll,
+  afterEach,
+  beforeAll,
+  beforeEach,
+  describe,
+  expect,
+  it,
+  vi,
+} from "vitest";
 import { render, screen, waitFor } from "@testing-library/react";
 import Page from "./page";
 import { SessionData } from "@auth0/nextjs-auth0/types";
@@ -66,8 +75,25 @@ async function setupPageComponent() {
 }
 
 describe("Onboard page", () => {
+  // https://github.com/testing-library/user-event/issues/1115#issuecomment-2495876991
+  // Need this for checking pending state in the button during form submission.
+  beforeAll(() => {
+    // https://vitest.dev/api/vi.html#vi-stubglobal
+    vi.stubGlobal("jest", {
+      advanceTimersByTime: vi.advanceTimersByTime,
+    });
+  });
+  afterAll(() => {
+    vi.unstubAllGlobals();
+  });
+
+  beforeEach(() => {
+    vi.useFakeTimers();
+  });
   afterEach(() => {
     vi.resetAllMocks();
+    vi.runOnlyPendingTimers();
+    vi.useRealTimers();
   });
 
   it("should render", async () => {
@@ -88,7 +114,9 @@ describe("Onboard page", () => {
   it("should show already onboarded dialog if user is already onboarded", async () => {
     // arrange
     mocks.actions.isUserOnboarded.mockResolvedValue(true);
-    const user = userEvent.setup();
+    const user = userEvent.setup({
+      advanceTimers: vi.advanceTimersByTime,
+    });
 
     // act
     const { page } = await setupPageComponent();
@@ -114,7 +142,9 @@ describe("Onboard page", () => {
     mocks.actions.createOnboarding.mockResolvedValue({
       tenant: "test-tenant",
     });
-    const user = userEvent.setup();
+    const user = userEvent.setup({
+      advanceTimers: vi.advanceTimersByTime,
+    });
 
     // act
     const { page, queryClient } = await setupPageComponent();
@@ -162,37 +192,54 @@ describe("Onboard page", () => {
       tokenSet: { accessToken: "test-access-token" },
     } as SessionData);
     mocks.actions.isUserOnboarded.mockResolvedValue(false);
-    mocks.actions.createOnboarding.mockImplementation(() => {
-      return new Promise((resolve) => {
-        setTimeout(() => resolve({ tenant: "test-tenant" }), 1000);
-      });
-    });
-    const user = userEvent.setup();
+    mocks.actions.createOnboarding.mockImplementation(
+      () =>
+        new Promise((resolve) =>
+          setTimeout(() => resolve({ tenant: "test-tenant" }), 5_000),
+        ),
+    );
 
-    // act
-    const { page } = await setupPageComponent();
+    // tell userEvent how to advance our fake timers
+    const user = userEvent.setup({
+      advanceTimers: vi.advanceTimersByTime,
+    });
+
+    const { page, queryClient } = await setupPageComponent();
     render(page);
-    // fill the form
-    const nameInput = screen.getByRole("textbox", { name: "Name" });
-    await user.type(nameInput, "John Doe");
-    const organizationNameInput = screen.getByRole("textbox", {
-      name: "Organization Name",
-    });
-    await user.type(organizationNameInput, "Acme Inc.");
-    const organizationDomainInput = screen.getByRole("textbox", {
-      name: "Organization Domain",
-    });
-    await user.type(organizationDomainInput, "acme.com");
 
-    // find the submit button
+    // fill the form
+    await user.type(screen.getByRole("textbox", { name: "Name" }), "John Doe");
+    await user.type(
+      screen.getByRole("textbox", { name: "Organization Name" }),
+      "Acme Inc.",
+    );
+    await user.type(
+      screen.getByRole("textbox", { name: "Organization Domain" }),
+      "acme.com",
+    );
+
+    // Act
     const submitButton = screen.getByRole("button", {
       name: "Create Organization",
     });
     await user.click(submitButton);
 
-    // assert
+    // Assert: button should be disabled and show "Creating..."
     expect(submitButton).toBeDisabled();
     expect(submitButton).toHaveTextContent(/Creating.../i);
+    // still disabled after 1 second
+    vi.advanceTimersByTime(1_000);
+    expect(submitButton).toBeDisabled();
+    expect(submitButton).toHaveTextContent(/Creating.../i);
+    // let the server action finish
+    vi.runAllTimers();
+
+    await waitFor(() => {
+      // the mutation should be finished
+      expect(queryClient.isMutating()).toBe(0);
+    });
+    expect(submitButton).toBeEnabled();
+    expect(submitButton).toHaveTextContent(/Create Organization/i);
   });
 
   it("should show error toast if onboarding form submission fails", async () => {
@@ -205,7 +252,9 @@ describe("Onboard page", () => {
     mocks.actions.createOnboarding.mockResolvedValue({
       error: "test-error",
     });
-    const user = userEvent.setup();
+    const user = userEvent.setup({
+      advanceTimers: vi.advanceTimersByTime,
+    });
 
     // act
     const { page, queryClient } = await setupPageComponent();
@@ -254,7 +303,9 @@ describe("Onboard page", () => {
       user: { email: "test@test.com" },
       tokenSet: { accessToken: "test-access-token" },
     } as SessionData);
-    const user = userEvent.setup();
+    const user = userEvent.setup({
+      advanceTimers: vi.advanceTimersByTime,
+    });
 
     // act
     const { page, queryClient } = await setupPageComponent();
