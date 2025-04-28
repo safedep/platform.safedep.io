@@ -28,21 +28,25 @@ import { User } from "@auth0/nextjs-auth0/types";
 import { createOnboarding } from "./actions";
 import { useRouter } from "next/navigation";
 
+const DOMAIN_REGEX = /^(?!-)([a-z0-9-]{1,63}(?<!-)\.)+[a-z]{2,6}$/iu;
+
 // Define the form schema with Valibot
 const formSchema = v.object({
   name: v.pipe(
     v.string(),
-    v.minLength(2, "Name must be at least 2 characters"),
-    v.maxLength(50, "Name must be less than 50 characters"),
+    v.minLength(1, "Name must be at least 1 characters"),
+    v.maxLength(100, "Name must be less than 100 characters"),
   ),
   organizationName: v.pipe(
     v.string(),
-    v.minLength(2, "Organization name must be at least 2 characters"),
+    v.minLength(1, "Organization name must be at least 1 characters"),
     v.maxLength(100, "Organization name must be less than 100 characters"),
   ),
   organizationDomain: v.pipe(
     v.string(),
-    v.minLength(3, "Domain must be at least 3 characters"),
+    v.regex(DOMAIN_REGEX, "Invalid domain"),
+    v.minLength(1, "Domain must be at least 1 characters"),
+    v.maxLength(100, "Domain must be less than 100 characters"),
   ),
 });
 
