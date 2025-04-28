@@ -1,4 +1,13 @@
-import { describe, expect, it, vi } from "vitest";
+import {
+  afterAll,
+  afterEach,
+  beforeEach,
+  beforeAll,
+  describe,
+  expect,
+  it,
+  vi,
+} from "vitest";
 import Page from "./page";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { render, screen, waitFor, within } from "@testing-library/react";
@@ -49,6 +58,27 @@ async function setupPageComponent() {
 }
 
 describe("Keys Create Page", () => {
+  // https://github.com/testing-library/user-event/issues/1115#issuecomment-2495876991  // https://github.com/testing-library/user-event/issues/1115#issuecomment-2495876991
+  // Need this for checking pending state in the button during form submission.
+  beforeAll(() => {
+    // https://vitest.dev/api/vi.html#vi-stubglobal
+    vi.stubGlobal("jest", {
+      advanceTimersByTime: vi.advanceTimersByTime,
+    });
+  });
+  afterAll(() => {
+    vi.unstubAllGlobals();
+  });
+
+  beforeEach(() => {
+    vi.useFakeTimers();
+  });
+  afterEach(() => {
+    vi.resetAllMocks();
+    vi.runOnlyPendingTimers();
+    vi.useRealTimers();
+  });
+
   it("should render", async () => {
     const { page } = await setupPageComponent();
     render(page);
@@ -56,7 +86,9 @@ describe("Keys Create Page", () => {
 
   it("should navigate back when the cancel button is clicked", async () => {
     // arrange
-    const user = userEvent.setup();
+    const user = userEvent.setup({
+      advanceTimers: vi.advanceTimersByTime,
+    });
 
     // act: click the cancel button
     const { page } = await setupPageComponent();
@@ -70,7 +102,9 @@ describe("Keys Create Page", () => {
 
   it("should submit the create key form", async () => {
     // arrange
-    const user = userEvent.setup();
+    const user = userEvent.setup({
+      advanceTimers: vi.advanceTimersByTime,
+    });
     mocks.actions.createApiKey.mockResolvedValue({
       keyId: "test-key-id",
       key: "test-key",
@@ -79,7 +113,7 @@ describe("Keys Create Page", () => {
     vi.spyOn(navigator.clipboard, "writeText");
 
     // act
-    const { page } = await setupPageComponent();
+    const { page, queryClient } = await setupPageComponent();
     render(page);
 
     // select the name input
@@ -112,6 +146,11 @@ describe("Keys Create Page", () => {
       name: "test-key",
       description: "test-description",
       expiryDays: 30,
+    });
+
+    // wait for the mutation to finish
+    await waitFor(() => {
+      expect(queryClient.isMutating()).toBe(0);
     });
 
     // assert the key created modal is shown
@@ -158,6 +197,70 @@ describe("Keys Create Page", () => {
     // TODO: get the actual API key value and verify it. The value is broken
     // into multiple span elements, hence it's not possible to use getByText
     // to verify the value.
+
+    // find the back button and click it
+    const backButton = screen.getByRole("button", { name: "Back" });
+    await user.click(backButton);
+    // assert: the router.back function is called
+    expect(mocks.navigation.useRouter.back).toHaveBeenCalled();
+  });
+
+  it("should show disabled button if form is submitting", async () => {
+    // arrange
+    const user = userEvent.setup({
+      advanceTimers: vi.advanceTimersByTime,
+    });
+    // mock the createApiKey action to take 5 seconds to resolve
+    mocks.actions.createApiKey.mockImplementation(
+      () =>
+        new Promise((resolve) =>
+          setTimeout(
+            () =>
+              resolve({
+                keyId: "test-key-id",
+                key: "test-key",
+                tenant: "test-tenant",
+              }),
+            5_000,
+          ),
+        ),
+    );
+
+    // act
+    const { page, queryClient } = await setupPageComponent();
+    render(page);
+
+    // fill the form
+    await user.type(screen.getByRole("textbox", { name: "Name" }), "test-key");
+    await user.type(
+      screen.getByRole("textbox", { name: "Description" }),
+      "test-description",
+    );
+
+    // select the create button
+    const createButton = screen.getByRole("button", { name: "Create" });
+    await user.click(createButton);
+
+    // assert: the button should be disabled and show "Creating..."
+    expect(createButton).toBeDisabled();
+    expect(createButton).toHaveTextContent(/Creating.../i);
+    // still disabled after 1 second
+    vi.advanceTimersByTime(1_000);
+    expect(createButton).toBeDisabled();
+    expect(createButton).toHaveTextContent(/Creating.../i);
+    // let the server action finish
+    vi.runAllTimers();
+
+    // wait for the mutation to finish
+    await waitFor(() => {
+      expect(queryClient.isMutating()).toBe(0);
+    });
+
+    // assert the key created modal is shown
+    expect(
+      screen.getByText("Your API key has been created successfully."),
+    ).toBeInTheDocument();
+    expect(screen.getByText("test-tenant")).toBeInTheDocument();
 
     // find the back button and click it
     const backButton = screen.getByRole("button", { name: "Back" });
