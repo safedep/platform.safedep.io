@@ -155,6 +155,46 @@ describe("Onboard page", () => {
     expect(mocks.toast.success).toHaveBeenCalled();
   });
 
+  it("should show disabled button if form is submitting", async () => {
+    // arrange
+    mocks.session.sessionRequireAuth.mockResolvedValue({
+      user: { email: "test@test.com" },
+      tokenSet: { accessToken: "test-access-token" },
+    } as SessionData);
+    mocks.actions.isUserOnboarded.mockResolvedValue(false);
+    mocks.actions.createOnboarding.mockImplementation(() => {
+      return new Promise((resolve) => {
+        setTimeout(() => resolve({ tenant: "test-tenant" }), 1000);
+      });
+    });
+    const user = userEvent.setup();
+
+    // act
+    const { page } = await setupPageComponent();
+    render(page);
+    // fill the form
+    const nameInput = screen.getByRole("textbox", { name: "Name" });
+    await user.type(nameInput, "John Doe");
+    const organizationNameInput = screen.getByRole("textbox", {
+      name: "Organization Name",
+    });
+    await user.type(organizationNameInput, "Acme Inc.");
+    const organizationDomainInput = screen.getByRole("textbox", {
+      name: "Organization Domain",
+    });
+    await user.type(organizationDomainInput, "acme.com");
+
+    // find the submit button
+    const submitButton = screen.getByRole("button", {
+      name: "Create Organization",
+    });
+    await user.click(submitButton);
+
+    // assert
+    expect(submitButton).toBeDisabled();
+    expect(submitButton).toHaveTextContent(/Creating.../i);
+  });
+
   it("should show error toast if onboarding form submission fails", async () => {
     // arrange
     mocks.session.sessionRequireAuth.mockResolvedValue({
