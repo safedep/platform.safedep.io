@@ -26,6 +26,10 @@ const mocks = vi.hoisted(() => ({
       back: vi.fn(),
     },
   },
+  toast: {
+    promise: vi.fn(),
+    success: vi.fn(),
+  },
 }));
 
 vi.mock("@/lib/session/session", () => ({
@@ -38,6 +42,10 @@ vi.mock("./actions", () => ({
 
 vi.mock("next/navigation", () => ({
   useRouter: () => mocks.navigation.useRouter,
+}));
+
+vi.mock("sonner", () => ({
+  toast: mocks.toast,
 }));
 
 // shadcn combobox uses hasPointerCapture internally which is not supported in
@@ -267,5 +275,79 @@ describe("Keys Create Page", () => {
     await user.click(backButton);
     // assert: the router.back function is called
     expect(mocks.navigation.useRouter.back).toHaveBeenCalled();
+  });
+
+  it("should show error if the createApiKey action fails with expected error", async () => {
+    // arrange
+    const user = userEvent.setup({
+      advanceTimers: vi.advanceTimersByTime,
+    });
+    mocks.actions.createApiKey.mockResolvedValue({
+      error: "test-error",
+    });
+
+    // act
+    const { page, queryClient } = await setupPageComponent();
+    render(page);
+
+    // select the name input
+    const nameInput = screen.getByRole("textbox", { name: "Name" });
+    await user.type(nameInput, "test-key");
+
+    // select the description input
+    const descriptionInput = screen.getByRole("textbox", {
+      name: "Description",
+    });
+    await user.type(descriptionInput, "test-description");
+
+    // select the create button and press it
+    const createButton = screen.getByRole("button", { name: "Create" });
+    await user.click(createButton);
+
+    // wait for the mutation to finish
+    await waitFor(async () => {
+      expect(queryClient.isMutating()).toBe(0);
+    });
+
+    // assert: the error message is shown
+    expect(mocks.toast.promise).toHaveBeenCalled();
+    const rejectedPromise = mocks.toast.promise.mock.calls[0][0]; // get the rejected promise
+    await expect(rejectedPromise).rejects.toThrow("test-error");
+  });
+
+  it("should show error if the createApiKey action fails with unexpected error", async () => {
+    // arrange
+    const user = userEvent.setup({
+      advanceTimers: vi.advanceTimersByTime,
+    });
+    mocks.actions.createApiKey.mockRejectedValue(new Error("test-error"));
+
+    // act
+    const { page, queryClient } = await setupPageComponent();
+    render(page);
+
+    // select the name input
+    const nameInput = screen.getByRole("textbox", { name: "Name" });
+    await user.type(nameInput, "test-key");
+
+    // select the description input
+    const descriptionInput = screen.getByRole("textbox", {
+      name: "Description",
+    });
+    await user.type(descriptionInput, "test-description");
+
+    // select the create button and press it
+    const createButton = screen.getByRole("button", { name: "Create" });
+    await user.click(createButton);
+
+    // wait for the mutation to finish
+    await waitFor(async () => {
+      expect(queryClient.isMutating()).toBe(0);
+    });
+
+    // assert: the error message is shown
+    expect(mocks.toast.promise).toHaveBeenCalled();
+    const rejectedPromise = mocks.toast.promise.mock.calls[0][0]; // get the rejected promise
+    await expect(rejectedPromise).rejects.toThrow("test-error");
   });
 });
