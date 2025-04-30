@@ -6,11 +6,11 @@ import { UserService } from "@buf/safedep_api.bufbuild_es/safedep/services/contr
 import { InsightService } from "@buf/safedep_api.bufbuild_es/safedep/services/insights/v2/insights_pb";
 import { MalwareAnalysisService } from "@buf/safedep_api.bufbuild_es/safedep/services/malysis/v1/malysis_pb";
 import { TenantService } from "@buf/safedep_api.bufbuild_es/safedep/services/controltower/v1/tenant_pb";
+import { env } from "@/env";
+import "server-only";
 
-const apiBaseUrl = (process.env.API_BASE_URL ||
-  "https://api.safedep.io") as string;
-const cloudApiBaseUrl = (process.env.CLOUD_API_BASE_URL ||
-  "https://cloud.safedep.io") as string;
+const apiBaseUrl = env.API_BASE_URL;
+const cloudApiBaseUrl = env.CLOUD_API_BASE_URL;
 
 function authenticationInterceptor(token: string, tenant: string): Interceptor {
   return (next) => async (req) => {
@@ -24,13 +24,11 @@ function authenticationInterceptor(token: string, tenant: string): Interceptor {
  * Create a ConnectRPC transport with authentication headers
  */
 export function createTransport(apiUrl: string, tenant: string, token: string) {
-  const transport = createConnectTransport({
+  return createConnectTransport({
     baseUrl: apiUrl,
     httpVersion: "1.1",
     interceptors: [authenticationInterceptor(token, tenant)],
   });
-
-  return transport;
 }
 
 export function createInsightServiceClient(tenant: string, token: string) {

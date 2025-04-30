@@ -1,27 +1,23 @@
-import "@testing-library/jest-dom";
+import { describe, it, expect } from "vitest";
+import AuthPage from "./page";
 import { render, screen } from "@testing-library/react";
-import { describe, expect, it, vi } from "vitest";
-import Auth from "./page";
-import { act } from "react";
 
-vi.mock("server-only", () => ({}));
+describe("Auth Page", () => {
+  it("should render the page", () => {
+    // Arrange
+    render(<AuthPage />);
 
-vi.mock("@/env", () => ({
-  env: {
-    AUTH0_CLIENT_ID: "test",
-  },
-}));
+    // Assert
+    expect(screen.getByText("Welcome to SafeDep")).toBeInTheDocument();
+    expect(screen.getByText("Create Account")).toBeInTheDocument();
+    expect(screen.getByText("Login")).toBeInTheDocument();
+  });
 
-describe("AuthPage", () => {
-  it("renders welcome text", async () => {
-    await act(async () => {
-      render(<Auth />);
-    });
-    const heading = screen.getByRole("heading", {
-      name: /welcome to safedep/i,
-    });
-    expect(heading).toBeDefined();
+  it("has links to the login and signup pages", () => {
+    // Arrange
+    render(<AuthPage />);
 
+    // Assert
     const loginLink = screen.getByRole("link", { name: /login/i });
     expect(loginLink).toBeInTheDocument();
     expect(loginLink).toHaveAttribute("href", "/auth/login");

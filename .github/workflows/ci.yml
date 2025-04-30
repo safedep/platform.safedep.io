@@ -1,71 +1,61 @@
-name: Continuous Integration
+name: CI
+
 on:
-  pull_request:
   push:
-    branches:
-      - main
+    branches: [main, staging]
+  pull_request:
 
 permissions:
   contents: read
   pull-requests: write
 
+concurrency:
+  group: ${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
+
 jobs:
-  run-test:
-    timeout-minutes: 15
+  test-and-build:
     runs-on: ubuntu-latest
+    timeout-minutes: 15
     strategy:
       matrix:
-        node-version: ["22.x"]
-    name: Build with Node ${{ matrix.node-version }}
+        node-version: ["22.x"] # extend to other LTS if you like
+    env:
+      # skip env validation for nextjs since we are just testing
+      SKIP_ENV_VALIDATION: true
+
     steps:
-      - uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683
+      - name: Checkout
+        uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683
 
-      - name: Install pnpm
-        uses: pnpm/action-setup@fe02b34f77f8bc703788d5817da081398fad5dd2
-
-      - name: Use Node.js ${{ matrix.node-version }}
-        uses: actions/setup-node@39370e3970a6d050c480ffad4ff0ed4d3fdee5af
-
-      - name: Set buf registry
-        run: pnpm config set @buf:registry https://buf.build/gen/npm/v1/
-
-      - name: Get pnpm store directory
-        id: pnpm-store
-        shell: bash
-        run: |
-          echo "STORE_PATH=$(pnpm store path --silent)" >> $GITHUB_OUTPUT
-
-      - uses: actions/cache@1bd1e32a3bdc45362d1e726936510720a7c30a57
-        name: Setup pnpm cache
+      - uses: pnpm/action-setup@a7487c7e89a18df4991f7f222e4898a00d66ddda
+        name: Install pnpm
         with:
-          path: ${{ steps.pnpm-store.outputs.STORE_PATH }}
-          key: ${{ runner.os }}-${{ matrix.node-version }}-pnpm-store-${{ hashFiles('**/pnpm-lock.yaml') }}
-          restore-keys: |
-            ${{ runner.os }}-${{ matrix.node-version }}-pnpm-store-
+          run_install: false
 
-      - name: Install dependencies
-        run: pnpm install
+      - name: Install Node.js
+        uses: actions/setup-node@49933ea5288caeca8642d1e84afbd3f7d6820020
+        with:
+          node-version: ${{ matrix.node-version }}
+          cache: pnpm
 
-      - name: Prettier
-        run: pnpm prettier --check .
+      - name: Install deps
+        run: pnpm install --frozen-lockfile
 
-      - name: Lint
-        run: pnpm check
-        env:
-          SKIP_ENV_VALIDATION: true
+      - name: Lint & Format check
+        run: |
+          pnpm prettier --check .
+          pnpm check
 
-      - name: Test
-        run: pnpm test
+      - name: Run tests & coverage
+        run: pnpm test --coverage
 
-      - name: "Test Coverage"
-        if: github.event_name != 'pull_request' || (github.event_name == 'pull_request' && github.event.pull_request.head.repo.full_name == github.repository)
-        run: pnpm vitest run --coverage
-
-      - name: "Report Coverage"
+      - name: Report coverage
         if: always()
-        uses: davelosert/vitest-coverage-report-action@v2
+        uses: davelosert/vitest-coverage-report-action@7bf7d3c1b17a0e27c7e0d14190fb39168584bed2
 
       - name: Build
+        if: success()
         run: pnpm build
         env:
-          SKIP_ENV_VALIDATION: true
+          STANDALONE_IN_PROD: true # generate standalone build

@@ -1,24 +1,27 @@
-import { Auth0Provider } from "@auth0/nextjs-auth0";
-import "@radix-ui/themes/styles.css";
 import type { Metadata } from "next";
-import { Geist } from "next/font/google";
+import { Inter, JetBrains_Mono } from "next/font/google";
 import "./globals.css";
+import Providers from "@/providers/providers";
 import { Toaster } from "@/components/ui/sonner";
-import TanstackQueryProvider from "@/components/providers/tanstack-query";
-import { ReactQueryDevtools } from "@tanstack/react-query-devtools";
-import PostHogProvider from "@/components/providers/posthog-provider";
 
-const geistSans = Geist({
+const inter = Inter({
   subsets: ["latin"],
+  variable: "--font-inter",
+});
+
+const jetBrainsMono = JetBrains_Mono({
+  subsets: ["latin"],
+  variable: "--font-jetbrains-mono",
 });
 
 export const metadata: Metadata = {
-  title: "SafeDep | Open Source Software Supply Chain Security Platform",
+  title: {
+    template: "%s | SafeDep Platform",
+    default: "SafeDep | Open Source Software Supply Chain Security Platform",
+  },
   description:
     "Welcome to SafeDep. Onboard to SafeDep cloud, generate authentication credentials and access platform APIs",
-  icons: {
-    icon: "/safedep.svg",
-  },
+  keywords: ["SafeDep", "Open Source", "Supply Chain", "Security", "Platform"],
 };
 
 /**
@@ -37,19 +40,17 @@ export const metadata: Metadata = {
  */
 export default function RootLayout({
   children,
-}: Readonly<{ children: React.ReactNode }>) {
+}: Readonly<{
+  children: React.ReactNode;
+}>) {
   return (
     <html lang="en">
-      <Auth0Provider>
-        <TanstackQueryProvider>
-          <body className={`${geistSans.className} antialiased`}>
-            <PostHogProvider>{children}</PostHogProvider>
-
-            <Toaster />
-            <ReactQueryDevtools />
-          </body>
-        </TanstackQueryProvider>
-      </Auth0Provider>
+      <body
+        className={`${inter.className} ${jetBrainsMono.variable} antialiased`}
+      >
+        <Providers>{children}</Providers>
+        <Toaster richColors closeButton theme="light" />
+      </body>
     </html>
   );
 }

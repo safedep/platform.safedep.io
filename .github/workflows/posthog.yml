@@ -1,69 +1,67 @@
-name: PostHog Source Maps
+name: PostHog
 
 on:
+  # only upload sourcemaps on main production branch
   push:
-    branches:
-      - main
+    branches: [main]
+  # pull_request:
+  #   branches: [main]
+
+concurrency:
+  group: ${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
 
 jobs:
-  upload-sourcemaps:
-    timeout-minutes: 15
+  posthog:
     runs-on: ubuntu-latest
+    timeout-minutes: 15
     strategy:
       matrix:
-        node-version: ["22.x"]
-    name: Build with Node ${{ matrix.node-version }}
+        node-version: ["22.x"] # extend to other LTS if you like
+
     steps:
-      - uses: actions/checkout@v4
-        with:
-          fetch-depth: 0
+      - name: Checkout
+        uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683
 
-      - name: Install pnpm
-        uses: pnpm/action-setup@v2
+      - uses: pnpm/action-setup@a7487c7e89a18df4991f7f222e4898a00d66ddda
+        name: Install pnpm
         with:
-          version: 8
+          run_install: false
 
-      - name: Use Node.js ${{ matrix.node-version }}
-        uses: actions/setup-node@v4
+      - name: Install Node.js
+        uses: actions/setup-node@49933ea5288caeca8642d1e84afbd3f7d6820020
         with:
           node-version: ${{ matrix.node-version }}
+          cache: pnpm
 
-      - name: Set buf registry
-        run: pnpm config set @buf:registry https://buf.build/gen/npm/v1/
-
-      - name: Get pnpm store directory
-        id: pnpm-store
-        shell: bash
-        run: |
-          echo "STORE_PATH=$(pnpm store path --silent)" >> $GITHUB_OUTPUT
-
-      - uses: actions/cache@v3
-        name: Setup pnpm cache
-        with:
-          path: ${{ steps.pnpm-store.outputs.STORE_PATH }}
-          key: ${{ runner.os }}-${{ matrix.node-version }}-pnpm-store-${{ hashFiles('**/pnpm-lock.yaml') }}
-          restore-keys: |
-            ${{ runner.os }}-${{ matrix.node-version }}-pnpm-store-
-
-      - name: Install dependencies
-        run: pnpm install
+      - name: Install deps
+        run: pnpm install --frozen-lockfile
 
       - name: Build
-        run: pnpm build
+        run: |
+          pnpm build
+          cp -r public .next/standalone/
+          cp -r .next/static .next/standalone/.next/
         env:
+          STANDALONE_IN_PROD: true # generate standalone build
           SKIP_ENV_VALIDATION: true
 
       - name: Install PostHog CLI
         run: |
           curl --proto '=https' --tlsv1.2 -LsSf https://github.com/PostHog/posthog/releases/download/posthog-cli-v0.0.4/posthog-cli-installer.sh | sh
+          echo "PATH=$HOME/.posthog/:$PATH" >> $GITHUB_ENV
 
-      - name: Inject and upload source maps to PostHog
+      - name: Update PostHog CLI
+        run: posthog-cli-update
+
+      # TODO: Uploading the sourcemaps to PostHog is not enough. Posthog
+      # requires us to deploy the modified files to our site. Currently we are
+      # NOT doing this.
+      # https://posthog.com/docs/error-tracking/installation#uploading-source-maps-1
+      - name: Inject Posthog and upload sourcemaps
+        run: |
+          posthog-cli sourcemap inject --directory .next/standalone/.next/static
+          posthog-cli sourcemap upload --directory .next/standalone/.next/static
         env:
           POSTHOG_CLI_ENV_ID: ${{ secrets.POSTHOG_CLI_ENV_ID }}
           POSTHOG_CLI_TOKEN: ${{ secrets.POSTHOG_CLI_TOKEN }}
-        run: |
-          # First try to inject sourcemaps
-          pnpm posthog-inject || echo "Warning: Sourcemap injection failed, continuing with upload"
-
-          # Then upload sourcemaps
-          pnpm posthog-upload

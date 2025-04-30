@@ -1,16 +1,12 @@
 "use client";
-
-import { useTransition } from "react";
 import { Button } from "@/components/ui/button";
 import {
   Card,
   CardContent,
   CardDescription,
-  CardFooter,
   CardHeader,
   CardTitle,
 } from "@/components/ui/card";
-import { Label } from "@/components/ui/label";
 import {
   Select,
   SelectContent,
@@ -18,66 +14,66 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
-import { GetUserInfoResponse } from "@buf/safedep_api.bufbuild_es/safedep/services/controltower/v1/user_pb";
+import { UserIcon } from "lucide-react";
+import { Access } from "@buf/safedep_api.bufbuild_es/safedep/messages/controltower/v1/access_pb";
+import { useTransition } from "react";
 
 interface TenantSelectorProps {
-  userInfo: GetUserInfoResponse;
-  handleSetTenant: (tenant: string) => Promise<void>;
+  userEmail: string;
+  tenants: Access[];
+  onSelectTenant(tenant: string): Promise<void>;
 }
 
 export default function TenantSelector({
-  userInfo,
-  handleSetTenant,
+  userEmail,
+  tenants,
+  onSelectTenant,
 }: TenantSelectorProps) {
-  const [isPending, startTransition] = useTransition();
+  const [, startTransition] = useTransition();
 
-  function setTenant(value: string) {
+  async function handleSelectTenant(tenant: string) {
     startTransition(async () => {
-      await handleSetTenant(value);
+      await onSelectTenant(tenant);
     });
   }
 
   return (
-    <Card className="w-full max-w-md">
-      <CardHeader>
-        <CardTitle>Select Tenant</CardTitle>
-        <CardDescription>
-          Select the tenant for use with the application
-        </CardDescription>
-      </CardHeader>
-      <CardContent>
-        <div className="grid w-full items-center gap-4">
-          <div className="flex flex-col space-y-1.5">
-            <Label htmlFor="tenant">Tenant</Label>
-            <Select name="tenant" onValueChange={setTenant}>
-              <SelectTrigger>
-                <SelectValue placeholder="Select tenant to continue ..." />
-              </SelectTrigger>
-              <SelectContent position="popper">
-                {userInfo?.access.map((access) => (
-                  <SelectItem
-                    key={access?.tenant?.domain}
-                    value={access?.tenant?.domain ?? ""}
-                  >
-                    {access.tenant?.domain}
-                  </SelectItem>
-                ))}
-              </SelectContent>
-            </Select>
+    <div className="flex w-full max-w-md flex-col items-center">
+      <div className="text-muted-foreground mb-3 flex items-center justify-center gap-1.5 text-sm">
+        <UserIcon className="h-3.5 w-3.5" />
+        <span>Welcome {userEmail}</span>
+      </div>
+      <Card className="w-full shadow-md">
+        <CardHeader>
+          <CardTitle>Select tenant</CardTitle>
+          <CardDescription>
+            Select the tenant to use with the application
+          </CardDescription>
+        </CardHeader>
+        <CardContent className="flex flex-col gap-4">
+          <Select onValueChange={handleSelectTenant}>
+            <SelectTrigger className="w-full">
+              <SelectValue placeholder="Select a tenant" />
+            </SelectTrigger>
+            <SelectContent>
+              {tenants.map((tenant) => (
+                <SelectItem
+                  key={tenant.tenant?.domain}
+                  value={tenant.tenant?.domain ?? ""}
+                >
+                  {tenant.tenant?.domain}
+                </SelectItem>
+              ))}
+            </SelectContent>
+          </Select>
+
+          <div>
+            <Button variant="outline" className="w-full sm:w-auto" asChild>
+              <a href="/auth/logout">Logout</a>
+            </Button>
           </div>
-        </div>
-      </CardContent>
-      <CardFooter className="flex justify-between">
-        {isPending ? (
-          <Button variant="outline" disabled>
-            Logout
-          </Button>
-        ) : (
-          <Button variant="outline" asChild>
-            <a href="/auth/logout">Logout</a>
-          </Button>
-        )}
-      </CardFooter>
-    </Card>
+        </CardContent>
+      </Card>
+    </div>
   );
 }

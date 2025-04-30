@@ -1,22 +1,18 @@
-import SessionExpirationDialog from "@/components/session-expiration-dialog";
-import Footer from "@/components/Footer";
-import UserActions from "@/components/header";
-import Image from "next/image";
+import type { ReactNode } from "react";
+import Header from "@/components/header";
+import Footer from "@/components/footer";
 
-export default function Layout({ children }: { children: React.ReactNode }) {
+export default function AppLayout({ children }: { children: ReactNode }) {
   return (
-    <div className="flex flex-col h-svh">
-      <header className="flex h-16 shrink-0 items-center justify-between transition-[width,height] ease-linear group-has-[[data-collapsible=icon]]/sidebar-wrapper:h-12 m-8 px-0 sm:px-32">
-        <div className="flex items-center gap-2">
-          <Image src="/Logo.svg" alt="SafeDep Logo" width={80} height={80} />
-        </div>
-        <div className="flex items-center">
-          <UserActions />
-        </div>
-      </header>
+    <div className="flex min-h-svh flex-col">
+      <Header />
 
-      <main className="grow">{children}</main>
-      <SessionExpirationDialog />
+      {/* occupy the remaining space */}
+      <main className="flex h-full flex-1 flex-col bg-gray-100 p-4 md:p-8">
+        {children}
+      </main>
+
+      {/* put footer at the bottom of the page */}
       <Footer />
     </div>
   );

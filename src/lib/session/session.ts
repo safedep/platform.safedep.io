@@ -3,22 +3,21 @@ import { cookies } from "next/headers";
 import { redirect } from "next/navigation";
 import { auth0 } from "@/lib/auth0";
 
+const TENANT_COOKIE = "tenant";
+
 export async function sessionSetTenant(domain: string) {
-  const cookieStore = await cookies();
-  cookieStore.set("tenant", domain);
+  (await cookies()).set(TENANT_COOKIE, domain);
 }
 
 export async function sessionGetTenant() {
-  const cookieStore = await cookies();
-  return cookieStore.get("tenant")?.value;
+  return (await cookies()).get(TENANT_COOKIE)?.value;
 }
 
 export async function sessionClearTenant() {
-  const cookieStore = await cookies();
-  cookieStore.delete("tenant");
+  (await cookies()).delete(TENANT_COOKIE);
 }
 
-export async function sessionMustGetTenant() {
+export async function sessionRequireTenant() {
   const tenant = await sessionGetTenant();
   if (!tenant) {
     throw new Error("Tenant not found");
@@ -27,24 +26,32 @@ export async function sessionMustGetTenant() {
 }
 
 /**
- * Get the tenant and access token for authenticated requests.
- * This function will redirect to auth if the token is not available.
+ * Require the user to be authenticated. If they are not, redirect to the given
+ * path.
+ *
+ * @param redirectTo - The path to redirect to if the user is not authenticated.
+ * @returns The session if the user is authenticated.
  */
+export async function sessionRequireAuth(redirectTo = "/auth") {
+  const session = await auth0.getSession();
+  if (!session) {
+    return redirect(redirectTo);
+  }
+  return session;
+}
+
 export async function getTenantAndToken() {
   let tenant;
   try {
-    tenant = await sessionMustGetTenant();
+    tenant = await sessionRequireTenant();
   } catch {
-    return redirect("/");
+    redirect("/");
   }
 
-  try {
-    const accessToken = (await auth0.getAccessToken()).token;
-    if (!accessToken) {
-      return redirect("/auth");
-    }
-    return { accessToken, tenant };
-  } catch {
+  const { token: accessToken } = await auth0.getAccessToken();
+  if (!accessToken) {
     redirect("/auth");
   }
+
+  return { tenant, accessToken };
 }
