@@ -4,10 +4,10 @@ import { FileQuestion } from "lucide-react";
 
 export default function NotFound() {
   return (
-    <div className="flex flex-col items-center justify-center min-h-[60vh] px-4">
-      <div className="text-center space-y-6">
+    <div className="flex min-h-[60vh] flex-col items-center justify-center px-4">
+      <div className="space-y-6 text-center">
         <div className="flex justify-center">
-          <FileQuestion className="h-16 w-16 text-muted-foreground" />
+          <FileQuestion className="text-muted-foreground h-16 w-16" />
         </div>
         <div className="space-y-2">
           <h1 className="text-4xl font-bold tracking-tight">Page Not Found</h1>
@@ -15,7 +15,7 @@ export default function NotFound() {
             The page you&apos;re looking for doesn&apos;t exist.
           </p>
         </div>
-        <div className="flex flex-col sm:flex-row gap-4 justify-center">
+        <div className="flex flex-col justify-center gap-4 sm:flex-row">
           <Button asChild>
             <Link href="/">Go to Dashboard</Link>
           </Button>

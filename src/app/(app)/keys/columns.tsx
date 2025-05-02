@@ -1,5 +1,20 @@
 "use client";
 
+import { Button } from "@/components/ui/button";
+import { MoreHorizontal } from "lucide-react";
+import {
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuItem,
+  DropdownMenuTrigger,
+} from "@/components/ui/dropdown-menu";
+import {
+  createColumnHelper,
+  RowData,
+  type ColumnDef,
+} from "@tanstack/react-table";
+import { toast } from "sonner";
+import { useState } from "react";
 import {
   AlertDialog,
   AlertDialogAction,
@@ -9,146 +24,168 @@ import {
   AlertDialogFooter,
   AlertDialogHeader,
   AlertDialogTitle,
-  AlertDialogTrigger,
 } from "@/components/ui/alert-dialog";
-import { Button } from "@/components/ui/button";
-import {
-  DropdownMenu,
-  DropdownMenuContent,
-  DropdownMenuItem,
-  DropdownMenuLabel,
-  DropdownMenuSeparator,
-  DropdownMenuTrigger,
-} from "@/components/ui/dropdown-menu";
-import { toast } from "sonner";
-import { ColumnDef } from "@tanstack/react-table";
-import { CopyIcon, MoreHorizontal } from "lucide-react";
 
-import {
-  Tooltip,
-  TooltipContent,
-  TooltipProvider,
-  TooltipTrigger,
-} from "@/components/ui/tooltip";
-import { deleteApiKey } from "./actions";
+export interface ApiKey {
+  id: string;
+  name: string;
+  description: string | null;
+  expiresAt: Date;
+}
 
-async function deleteApiKeyDetails(keyId: string) {
-  try {
-    await deleteApiKey(keyId);
-    toast.success("The API key has been deleted.");
-  } catch (err) {
-    toast.error("Error deleting API key", {
-      description: err instanceof Error ? err.message : "Unknown error",
-    });
+declare module "@tanstack/react-table" {
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
+  interface ColumnMeta<TData extends RowData, TValue> {
+    /**
+     * Custom CSS classes for the column.
+     */
+    className?: string;
   }
 }
 
-// This type is used to define the shape of our data.
-// You can use a Zod schema here if you want.
-export type ApiKey = {
-  id: string;
-  name: string;
-  description: string;
-  expiresAt: Date;
-};
+export function getColumns({
+  onDeleteKey,
+}: {
+  onDeleteKey(key: ApiKey): void;
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+}): ColumnDef<ApiKey, any>[] {
+  const column = createColumnHelper<ApiKey>();
 
-export const columns: ColumnDef<ApiKey>[] = [
-  {
-    accessorKey: "id",
-    header: "ID",
-    cell: ({ row }) => (
-      <div className="flex items-center gap-2">
-        <span>{row.original.id.slice(0, 8) + "..."}</span>
-        <TooltipProvider>
-          <Tooltip>
-            <TooltipTrigger asChild>
-              <CopyIcon
-                className="h-4 w-4 cursor-pointer"
-                onClick={() => {
-                  navigator.clipboard.writeText(row.original.id);
-                  toast.success(
-                    "The API key ID has been copied to your clipboard",
-                  );
-                }}
-              />
-            </TooltipTrigger>
-            <TooltipContent>Copy full ID</TooltipContent>
-          </Tooltip>
-        </TooltipProvider>
-      </div>
-    ),
-  },
-  {
-    accessorKey: "name",
-    header: "Name",
-  },
-  {
-    accessorKey: "description",
-    header: "Description",
-  },
-  {
-    accessorKey: "expiresAt",
-    header: "Expires At",
-    enableSorting: true,
-    cell: ({ row }) => (
-      <span suppressHydrationWarning>
-        {row.original.expiresAt.toLocaleDateString()}
-      </span>
-    ),
-  },
-  {
-    id: "actions",
-    enableHiding: false,
-    cell: ({ row }) => {
-      const key = row.original;
-      return (
-        <DropdownMenu>
-          <DropdownMenuTrigger asChild>
-            <Button variant="ghost" className="h-8 w-8 p-0">
-              <span className="sr-only">Open menu</span>
-              <MoreHorizontal />
-            </Button>
-          </DropdownMenuTrigger>
-          <DropdownMenuContent align="end">
-            <DropdownMenuLabel>Actions</DropdownMenuLabel>
-            <DropdownMenuItem
-              onClick={() => {
-                navigator.clipboard.writeText(key.id);
-                toast.success(
-                  "The API key ID has been copied to your clipboard",
-                );
-              }}
-            >
-              Copy Key ID
-            </DropdownMenuItem>
-            <DropdownMenuSeparator />
-            <AlertDialog>
-              <AlertDialogTrigger asChild>
-                <DropdownMenuItem onSelect={(e) => e.preventDefault()}>
-                  Delete
-                </DropdownMenuItem>
-              </AlertDialogTrigger>
-              <AlertDialogContent>
-                <AlertDialogHeader>
-                  <AlertDialogTitle>Are you sure?</AlertDialogTitle>
-                  <AlertDialogDescription>
-                    This action will delete the API key. Any integrations using
-                    this key will stop working. This action cannot be undone.
-                  </AlertDialogDescription>
-                </AlertDialogHeader>
-                <AlertDialogFooter>
-                  <AlertDialogCancel>Cancel</AlertDialogCancel>
-                  <AlertDialogAction
-                    onClick={() => deleteApiKeyDetails(key.id)}
-                  >
-                    Confirm
-                  </AlertDialogAction>
-                </AlertDialogFooter>
-              </AlertDialogContent>
-            </AlertDialog>
-          </DropdownMenuContent>
-        </DropdownMenu>
-      );
-    },
-  },
-];
+  const columns = [
+    column.accessor("id", {
+      header: "ID",
+      cell: ({ row }) => (
+        <span className="text-muted-foreground font-mono text-sm">
+          {row.original.id.slice(0, 8)}...
+        </span>
+      ),
+      meta: {
+        className: "w-[50px]",
+      },
+    }),
+    column.accessor("name", {
+      header: "Name",
+      meta: {
+        className: "w-[160px]",
+      },
+    }),
+    column.accessor("description", {
+      header: "Description",
+      cell: ({ row }) => (
+        <span className="text-muted-foreground">
+          {row.original.description || "—"}
+        </span>
+      ),
+      meta: {
+        className: "w-[200px] hidden @2xl/keys-list:table-cell",
+      },
+    }),
+    column.accessor("expiresAt", {
+      header: () => <div className="text-right">Expires At</div>,
+      cell: ({ row }) => (
+        <div className="text-right" suppressHydrationWarning>
+          {row.original.expiresAt.toLocaleDateString()}
+        </div>
+      ),
+      meta: {
+        className: "w-[100px]",
+      },
+    }),
+    column.display({
+      id: "actions",
+      meta: {
+        className: "w-[64px]",
+      },
+      cell: ({ row }) => {
+        const apiKey = row.original;
+
+        return <CellActions apiKey={apiKey} onDeleteKey={onDeleteKey} />;
+      },
+    }),
+  ];
+
+  return columns;
+}
+
+function DeleteKeyDialog({
+  apiKey,
+  open,
+  onOpenChange,
+  onConfirm,
+}: {
+  apiKey: ApiKey;
+  open: boolean;
+  onOpenChange: (open: boolean) => void;
+  onConfirm: () => void;
+}) {
+  return (
+    <AlertDialog open={open} onOpenChange={onOpenChange}>
+      <AlertDialogContent>
+        <AlertDialogHeader>
+          <AlertDialogTitle>Delete API Key</AlertDialogTitle>
+          <AlertDialogDescription>
+            Are you sure you want to delete the API key &quot;{apiKey.name}
+            &quot;? This action cannot be undone.
+          </AlertDialogDescription>
+        </AlertDialogHeader>
+        <AlertDialogFooter>
+          <AlertDialogCancel>Cancel</AlertDialogCancel>
+          <AlertDialogAction onClick={onConfirm} className="bg-destructive">
+            Delete
+          </AlertDialogAction>
+        </AlertDialogFooter>
+      </AlertDialogContent>
+    </AlertDialog>
+  );
+}
+
+function CellActions({
+  apiKey,
+  onDeleteKey,
+}: {
+  apiKey: ApiKey;
+  onDeleteKey: (key: ApiKey) => void;
+}) {
+  const [showDeleteDialog, setShowDeleteDialog] = useState(false);
+
+  return (
+    <>
+      <DropdownMenu>
+        <DropdownMenuTrigger asChild>
+          <Button variant="ghost" size="icon" className="h-8 w-8">
+            <MoreHorizontal className="h-4 w-4" />
+            <span className="sr-only">Open menu</span>
+          </Button>
+        </DropdownMenuTrigger>
+        <DropdownMenuContent align="end">
+          <DropdownMenuItem
+            onClick={() => {
+              navigator.clipboard.writeText(apiKey.id);
+              toast.success("Key ID copied to clipboard");
+            }}
+          >
+            Copy Key ID
+          </DropdownMenuItem>
+          <DropdownMenuItem
+            className="text-destructive"
+            onClick={() => setShowDeleteDialog(true)}
+          >
+            Delete Key
+          </DropdownMenuItem>
+        </DropdownMenuContent>
+      </DropdownMenu>
+
+      {showDeleteDialog && (
+        <DeleteKeyDialog
+          apiKey={apiKey}
+          open={showDeleteDialog}
+          onOpenChange={setShowDeleteDialog}
+          onConfirm={() => {
+            onDeleteKey(apiKey);
+            setShowDeleteDialog(false);
+          }}
+        />
+      )}
+    </>
+  );
+}

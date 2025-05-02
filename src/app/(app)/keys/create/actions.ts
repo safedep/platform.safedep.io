@@ -2,6 +2,7 @@
 
 import { createApiKeyServiceClient } from "@/lib/rpc/client";
 import { getTenantAndToken } from "@/lib/session/session";
+import { Code, ConnectError } from "@connectrpc/connect";
 
 export async function createApiKey({
   name,
@@ -15,11 +16,25 @@ export async function createApiKey({
   const { tenant, accessToken } = await getTenantAndToken();
   const keyService = createApiKeyServiceClient(tenant, accessToken);
 
-  const { keyId, key } = await keyService.createApiKey({
-    name,
-    description,
-    expiryDays,
-  });
+  let keyId: string;
+  let key: string;
+  try {
+    const response = await keyService.createApiKey({
+      name,
+      description,
+      expiryDays,
+    });
+    keyId = response.keyId;
+    key = response.key;
+  } catch (error) {
+    if (error instanceof ConnectError && error.code == Code.PermissionDenied) {
+      return {
+        error: "You are not authorized to create API keys",
+      } as const;
+    }
 
-  return { keyId, key, tenant };
+    throw error;
+  }
+
+  return { keyId, key, tenant } as const;
 }

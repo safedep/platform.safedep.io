@@ -1,19 +1,21 @@
 "use client";
 
-import Loading from "@/components/Loading";
-import { LogoutLink } from "@/components/LogoutLink";
+import { useForm } from "react-hook-form";
+import { valibotResolver } from "@hookform/resolvers/valibot";
+import * as v from "valibot";
+import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import {
   Card,
   CardContent,
   CardDescription,
-  CardFooter,
   CardHeader,
   CardTitle,
 } from "@/components/ui/card";
 import {
   Form,
   FormControl,
+  FormDescription,
   FormField,
   FormItem,
   FormLabel,
@@ -21,149 +23,104 @@ import {
 } from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
 import { toast } from "sonner";
-import { valibotResolver } from "@hookform/resolvers/valibot";
-import { TimerIcon, UserIcon } from "lucide-react";
-import { useForm } from "react-hook-form";
 import { useMutation } from "@tanstack/react-query";
-import Badge from "@/components/Badge";
-import { createOnboarding } from "./actions";
-import { create } from "@bufbuild/protobuf";
-import { OnboardUserRequestSchema } from "@buf/safedep_api.bufbuild_es/safedep/services/controltower/v1/onboarding_pb";
-import * as v from "valibot";
-import { useEffect } from "react";
-import { useRouter } from "next/navigation";
 import { User } from "@auth0/nextjs-auth0/types";
+import { createOnboarding } from "./actions";
+import { useRouter } from "next/navigation";
 
-const onboardSchema = v.object({
+const DOMAIN_REGEX = /^(?!-)([a-z0-9-]{1,63}(?<!-)\.)+[a-z]{2,6}$/iu;
+
+// Define the form schema with Valibot
+const formSchema = v.object({
   name: v.pipe(
     v.string(),
-    v.trim(),
-    v.minLength(1, "Name is required"),
-    v.minLength(2, "Name must be at least 2 characters"),
+    v.minLength(1, "Name must be at least 1 characters"),
+    v.maxLength(100, "Name must be less than 100 characters"),
   ),
   organizationName: v.pipe(
-    v.string("Organization name is required"),
-    v.trim(),
-    v.minLength(1, "Organization name is required"),
+    v.string(),
+    v.minLength(1, "Organization name must be at least 1 characters"),
+    v.maxLength(100, "Organization name must be less than 100 characters"),
   ),
   organizationDomain: v.pipe(
-    v.string("Organization domain is required"),
-    v.trim(),
-    v.minLength(1, "Organization domain is required"),
+    v.string(),
+    v.regex(DOMAIN_REGEX, "Invalid domain"),
+    v.minLength(1, "Domain must be at least 1 characters"),
+    v.maxLength(100, "Domain must be less than 100 characters"),
   ),
 });
 
-type OnboardFormSchema = v.InferInput<typeof onboardSchema>;
+type FormValues = v.InferInput<typeof formSchema>;
 
-export default function OnboardClient({ user }: { user: User }) {
+export default function OnboardingForm({ user }: { user: User }) {
   const router = useRouter();
-
-  const form = useForm<OnboardFormSchema>({
-    resolver: valibotResolver(onboardSchema),
+  const form = useForm<FormValues>({
+    resolver: valibotResolver(formSchema),
     defaultValues: {
-      name: user?.name || "",
+      name: "",
       organizationName: "",
       organizationDomain: "",
     },
   });
 
-  // react-hook-form does not update the `defaultValues` if it changes.
-  // Learn more: https://stackoverflow.com/questions/62242657/how-to-change-react-hook-form-defaultvalue-with-useeffect
-  useEffect(() => {
-    form.reset({
-      name: user?.name ?? "",
-      organizationDomain: "",
-      organizationName: "",
-    });
-  }, [form, user]);
-
-  const onboardMutation = useMutation({
-    mutationKey: ["onboard"],
-    mutationFn: async (data: OnboardFormSchema) => {
-      const { name, organizationName, organizationDomain } = data;
-
-      // This should never happen in best case since we wait until we have the
-      // user object, but we raise to signify an impossible condition.
-      if (!user?.email) {
-        throw new Error("User email is required");
+  const { mutate, isPending } = useMutation({
+    mutationFn: async (data: FormValues) => {
+      const response = await createOnboarding({
+        name: data.name,
+        email: user.email,
+        organizationName: data.organizationName,
+        organizationDomain: data.organizationDomain,
+      });
+      if (response.error) {
+        throw new Error(response.error);
       }
 
-      // For security reasons, Nextjs does not pass the exact thrown error to
-      // the client. They recommend returning a custom object instead.
-      // See: https://nextjs.org/docs/app/building-your-application/routing/error-handling#handling-expected-errors-from-server-actions
-      const tenantOrError = await createOnboarding(
-        create(OnboardUserRequestSchema, {
-          name,
-          email: user?.email,
-          organizationName,
-          organizationDomain,
-        }),
-      );
-      if (tenantOrError.error) {
-        toast.error("Error", {
-          description: "You have already been onboarded",
-        });
-        router.replace("/");
-      }
-      return tenantOrError;
+      return response.tenant;
     },
     onSuccess: (tenant) => {
-      if (tenant.tenant) {
-        toast.success("Success", {
-          description: "Your organization has been created.",
-        });
-        router.replace("/");
-      }
+      toast.success("Your organization has been created", {
+        description: `You can now access ${tenant}`,
+      });
+      router.push(`/`);
     },
-    onError: () => {
-      toast.error("Error", {
-        description: "An unexpected error occurred. Please try again.",
+    onError: (error) => {
+      toast.error("Failed to create organization", {
+        description: error.message,
       });
     },
   });
 
-  async function onSubmit(data: OnboardFormSchema) {
-    await onboardMutation.mutateAsync(data);
-  }
-
-  if (onboardMutation.isPending) {
-    return (
-      <Loading message="Creating your organization..." badge={TimerIcon} />
-    );
+  function onSubmit(data: FormValues) {
+    mutate(data);
   }
 
   return (
-    <div className="flex items-center justify-center bg-gray-100 p-4">
-      <Card className="max-w-lg w-full">
-        <CardHeader className="space-y-1">
-          <div className="flex justify-center items-center">
-            <Badge
-              icon={UserIcon}
-              text={`Welcome, ${user?.name || "User"}!`}
-              bgColor="bg-blue-100"
-              textColor="text-blue-700"
-            />
-          </div>
-          <CardTitle className="text-2xl font-semibold text-center">
+    <div className="flex h-full grow flex-col items-center justify-center gap-2">
+      <Badge variant="outline" className="bg-gray-50">
+        Welcome {user?.name}
+      </Badge>
+      <Card className="w-full max-w-md shadow-lg">
+        <CardHeader className="space-y-1 text-center">
+          <CardTitle className="text-2xl font-bold">
             Create Your Organization
           </CardTitle>
-          <CardDescription className="text-center">
-            Please fill in the details to set up your organization
+          <CardDescription>
+            Set up your organization to get started with SafeDep and secure your
+            software supply chain.
           </CardDescription>
         </CardHeader>
 
         <CardContent>
           <Form {...form}>
-            <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-4">
+            <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-6">
               <FormField
                 control={form.control}
                 name="name"
-                defaultValue={user?.name || ""}
                 render={({ field }) => (
                   <FormItem>
-                    <FormLabel>Your Name</FormLabel>
+                    <FormLabel>Name</FormLabel>
                     <FormControl>
-                      <Input placeholder="John Doe" {...field} />
+                      <Input placeholder="Your name" {...field} />
                     </FormControl>
                     <FormMessage />
                   </FormItem>
@@ -177,7 +134,7 @@ export default function OnboardClient({ user }: { user: User }) {
                   <FormItem>
                     <FormLabel>Organization Name</FormLabel>
                     <FormControl>
-                      <Input placeholder="Example Inc" {...field} />
+                      <Input placeholder="Acme Inc." {...field} />
                     </FormControl>
                     <FormMessage />
                   </FormItem>
@@ -191,34 +148,22 @@ export default function OnboardClient({ user }: { user: User }) {
                   <FormItem>
                     <FormLabel>Organization Domain</FormLabel>
                     <FormControl>
-                      <Input placeholder="example.com" {...field} />
+                      <Input placeholder="acme.com" {...field} />
                     </FormControl>
+                    <FormDescription>
+                      This will be used to identify your organization.
+                    </FormDescription>
                     <FormMessage />
                   </FormItem>
                 )}
               />
 
-              <Button
-                type="submit"
-                className="w-full"
-                disabled={onboardMutation.isPending}
-              >
-                Create Organization
+              <Button type="submit" className="w-full" disabled={isPending}>
+                {isPending ? "Creating..." : "Create Organization"}
               </Button>
             </form>
           </Form>
         </CardContent>
-
-        <CardFooter className="flex justify-center">
-          <LogoutLink>
-            <Badge
-              icon={UserIcon}
-              text="Sign out"
-              bgColor="bg-blue-100"
-              textColor="text-blue-700"
-            />
-          </LogoutLink>
-        </CardFooter>
       </Card>
     </div>
   );

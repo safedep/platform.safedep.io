@@ -13,7 +13,7 @@ RUN apk add --no-cache libc6-compat
 WORKDIR /app
 
 # Copy package management files
-COPY package.json pnpm-lock.yaml .npmrc* ./
+COPY package.json pnpm-lock.yaml pnpm-workspace.yaml .npmrc* ./
 
 # Since we are using corepack, we need to modify the pnpm cache dir's path
 RUN corepack enable pnpm && \
@@ -35,8 +35,6 @@ COPY . .
 
 ENV NEXT_TELEMETRY_DISABLED=1 \
     STANDALONE_IN_PROD=true \
-    # for sentry client (see src/env.ts)
-    NEXT_PUBLIC_ENV=production \
     # we may not have all the variables readily available during docker build
     SKIP_ENV_VALIDATION=true
 
@@ -51,10 +49,6 @@ ENV NEXT_PUBLIC_POSTHOG_KEY=${NEXT_PUBLIC_POSTHOG_KEY:-''}
 # Build application with cache optimization
 RUN --mount=type=cache,id=pnpm,target=/pnpm/store \
     --mount=type=cache,id=next,target=/app/.next/cache \
-    # we need the sentry auth token only during build time to upload sourcemaps
-    # to sentry
-    # --mount=type=secret,id=sentry_auth_token,env=SENTRY_AUTH_TOKEN \
-    # mount posthog public key
     pnpm run build
 
 # --------------------------------------------

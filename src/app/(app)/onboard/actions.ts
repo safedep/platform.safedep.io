@@ -1,7 +1,11 @@
 "use server";
 
 import { auth0 } from "@/lib/auth0";
-import { createOnboardingServiceClient } from "@/lib/rpc/client";
+import {
+  createOnboardingServiceClient,
+  createUserServiceClient,
+} from "@/lib/rpc/client";
+import { sessionRequireAuth } from "@/lib/session/session";
 import { Code, ConnectError } from "@connectrpc/connect";
 import { redirect } from "next/navigation";
 
@@ -22,11 +26,11 @@ export async function createOnboarding({
     return redirect("/auth");
   }
 
-  const policyServiceClient = createOnboardingServiceClient(accessToken);
+  const client = createOnboardingServiceClient(accessToken);
 
   let response;
   try {
-    response = await policyServiceClient.onboardUser({
+    response = await client.onboardUser({
       name,
       email,
       organizationName,
@@ -37,15 +41,43 @@ export async function createOnboarding({
     // client. They recommend returning a custom object instead.
     // See: https://nextjs.org/docs/app/building-your-application/routing/error-handling#handling-expected-errors-from-server-actions
     if (error instanceof ConnectError && error.code === Code.AlreadyExists) {
-      return { error: "Tenant already exists" };
+      return { error: "Tenant already exists" } as const;
     }
     throw error;
   }
 
   if (!response.tenant) {
-    return { error: "Tenant not found" };
+    return { error: "Tenant not found" } as const;
   }
 
   // TODO: can we use golang like combo, eg `[tenant, error]`?
-  return { tenant: response.tenant?.domain };
+  return { tenant: response.tenant?.domain } as const;
+}
+
+/**
+ * Checks if the user is already onboarded or not.
+ *
+ * @throws Will throw an error if there is an issue retrieving the user
+ * information, except when the user is not found in the system.
+ */
+export async function isUserOnboarded() {
+  const session = await sessionRequireAuth();
+  const client = createUserServiceClient(session.tokenSet.accessToken);
+
+  try {
+    const userInfo = await client.getUserInfo({});
+    // If user has any tenants, they are already onboarded
+    if (userInfo.access.length > 0) {
+      return true;
+    }
+  } catch (error) {
+    // Only handle the case where user is not found in the system
+    if (error instanceof ConnectError && error.code === Code.NotFound) {
+      // Let them proceed with onboarding
+      return false;
+    }
+    throw error;
+  }
+
+  return false;
 }

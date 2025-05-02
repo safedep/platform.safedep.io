@@ -1,39 +1,36 @@
-"use client";
-
-import MalwareAnalysisReportCard from "@/components/malysis/MalwareAnalysisReportCard";
-import { AnalysisStatus } from "@buf/safedep_api.bufbuild_es/safedep/services/malysis/v1/malysis_pb";
-import { useParams } from "next/navigation";
-import MalwareAnalysisError from "@/components/malysis/MalwareAnalysisError";
-import { useQuery } from "@tanstack/react-query";
+import { Metadata } from "next";
 import { getAnalysisReport } from "./actions";
-import MalwareAnalysisCardLoading from "@/components/malysis/MalwareAnalysisReportLoading";
+import MalwareAnalysisError from "@/components/malysis/malysis-error";
+import { AnalysisStatus } from "@buf/safedep_api.bufbuild_es/safedep/services/malysis/v1/malysis_pb";
+import MalwareAnalysisReportCard from "@/components/malysis/malysis-report-card";
+import { Code, ConnectError } from "@connectrpc/connect";
 
-export default function Page() {
-  const { analysisId } = useParams<{ analysisId: string }>();
+export const metadata: Metadata = {
+  title: "Malysis",
+  description: "Malware analysis results by SafeDep",
+};
 
-  const {
-    data: response,
-    error,
-    isLoading,
-  } = useQuery({
-    queryKey: ["analysisReport", analysisId],
-    queryFn: () => getAnalysisReport(analysisId),
-  });
+export default async function Page({
+  params,
+}: {
+  params: Promise<{ analysisId: string }>;
+}) {
+  const { analysisId } = await params;
 
-  if (isLoading) {
-    return (
-      <div className="flex py-8 items-start h-dvh">
-        <MalwareAnalysisCardLoading />
-      </div>
-    );
-  }
-
-  if (response?.status === AnalysisStatus.FAILED || error) {
-    return (
-      <div className="flex py-8 items-start h-dvh">
-        <MalwareAnalysisError error={error ?? undefined} />
-      </div>
-    );
+  let response;
+  try {
+    response = await getAnalysisReport(analysisId);
+  } catch (error) {
+    if (error instanceof ConnectError && error.code === Code.NotFound) {
+      return (
+        <div className="flex h-dvh items-start py-8">
+          {/* need to use a custom message since nextjs doesn't forward error messages
+           * from the server to the client */}
+          <MalwareAnalysisError message={error.message} />
+        </div>
+      );
+    }
+    throw error;
   }
 
   // TODO: Add a loading state for the analysis report
@@ -42,7 +39,7 @@ export default function Page() {
     response?.status === AnalysisStatus.IN_PROGRESS
   ) {
     return (
-      <div className="flex bg-yellow-50 p-4 rounded-md items-center justify-center">
+      <div className="flex items-center justify-center rounded-md bg-yellow-50 p-4">
         <p className="text-yellow-800">Analysis is in progress.</p>
       </div>
     );
@@ -50,7 +47,7 @@ export default function Page() {
 
   if (response?.status === AnalysisStatus.COMPLETED && response.report) {
     return (
-      <div className="flex py-8 min-h-dvh">
+      <div className="flex min-h-dvh py-8">
         <MalwareAnalysisReportCard
           report={response.report}
           verificationRecord={response.verificationRecord}
@@ -60,7 +57,7 @@ export default function Page() {
   }
 
   return (
-    <div className="flex bg-red-50 p-4 rounded-md items-center justify-center">
+    <div className="flex items-center justify-center rounded-md bg-red-50 p-4">
       <p className="text-red-800">Failed to fetch malware analysis report.</p>
     </div>
   );
