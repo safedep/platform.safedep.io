@@ -25,22 +25,36 @@ import {
 } from "@tanstack/react-table";
 import Link from "next/link";
 import { cn } from "@/lib/utils";
+import { DataTablePagination } from "./keys-pagination";
 
 export interface ApiKeyListProps<TData, TValue> {
   className?: string;
   apiKeys: TData[];
   columns: ColumnDef<TData, TValue>[];
+  pageSize?: number;
+  onNextPage?: () => void;
+  onPrevPage?: () => void;
+  hasNextPage?: boolean;
+  hasPrevPage?: boolean;
+  onPageSizeChange?: (size: number) => void;
 }
 
 export default function ApiKeyList<TData, TValue>({
   className,
   apiKeys,
   columns,
+  pageSize = 10,
+  onNextPage,
+  onPrevPage,
+  hasNextPage,
+  hasPrevPage,
+  onPageSizeChange,
 }: ApiKeyListProps<TData, TValue>) {
   const table = useReactTable({
     data: apiKeys,
     columns,
     getCoreRowModel: getCoreRowModel(),
+    manualPagination: true,
   });
 
   return (
@@ -61,7 +75,7 @@ export default function ApiKeyList<TData, TValue>({
       </CardHeader>
 
       <CardContent>
-        <div className="overflow-hidden rounded-lg border">
+        <div className="overflow-hidden rounded-lg border p-2">
           <div className="overflow-x-auto">
             <Table>
               <TableHeader>
@@ -121,6 +135,14 @@ export default function ApiKeyList<TData, TValue>({
               </TableBody>
             </Table>
           </div>
+          <DataTablePagination
+            onNextPage={onNextPage}
+            onPrevPage={onPrevPage}
+            hasNextPage={hasNextPage}
+            hasPrevPage={hasPrevPage}
+            pageSize={pageSize}
+            onPageSizeChange={onPageSizeChange}
+          />
         </div>
       </CardContent>
     </Card>

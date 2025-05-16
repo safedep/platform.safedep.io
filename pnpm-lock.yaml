@@ -12,17 +12,17 @@ importers:
         specifier: ^4.5.1
         version: 4.5.1(next@15.3.1(@babel/core@7.26.10)(react-dom@19.1.0(react@19.1.0))(react@19.1.0))(react-dom@19.1.0(react@19.1.0))(react@19.1.0)
       '@buf/safedep_api.bufbuild_es':
-        specifier: 2.2.5-20250421115348-06862ba1eb25.1
-        version: 2.2.5-20250421115348-06862ba1eb25.1(@bufbuild/protobuf@2.2.5)
+        specifier: 2.3.0-20250505130535-49e4fdd3000a.1
+        version: 2.3.0-20250505130535-49e4fdd3000a.1(@bufbuild/protobuf@2.4.0)
       '@bufbuild/protobuf':
-        specifier: ^2.2.5
-        version: 2.2.5
+        specifier: ^2.3.0
+        version: 2.4.0
       '@connectrpc/connect':
         specifier: ^2.0.2
-        version: 2.0.2(@bufbuild/protobuf@2.2.5)
+        version: 2.0.2(@bufbuild/protobuf@2.4.0)
       '@connectrpc/connect-node':
         specifier: ^2.0.2
-        version: 2.0.2(@bufbuild/protobuf@2.2.5)(@connectrpc/connect@2.0.2(@bufbuild/protobuf@2.2.5))
+        version: 2.0.2(@bufbuild/protobuf@2.4.0)(@connectrpc/connect@2.0.2(@bufbuild/protobuf@2.4.0))
       '@hookform/resolvers':
         specifier: ^5.0.1
         version: 5.0.1(react-hook-form@7.56.1(react@19.1.0))
@@ -297,18 +297,18 @@ packages:
     resolution: {integrity: sha512-6zABk/ECA/QYSCQ1NGiVwwbQerUCZ+TQbp64Q3AgmfNvurHH0j8TtXa1qbShXA6qqkpAj4V5W8pP6mLe1mcMqA==}
     engines: {node: '>=18'}
 
-  '@buf/bufbuild_protovalidate.bufbuild_es@2.2.5-20240508200655-46a4cf4ba109.1':
-    resolution: {tarball: https://buf.build/gen/npm/v1/@buf/bufbuild_protovalidate.bufbuild_es/-/bufbuild_protovalidate.bufbuild_es-2.2.5-20240508200655-46a4cf4ba109.1.tgz}
+  '@buf/bufbuild_protovalidate.bufbuild_es@2.3.0-20240508200655-46a4cf4ba109.1':
+    resolution: {tarball: https://buf.build/gen/npm/v1/@buf/bufbuild_protovalidate.bufbuild_es/-/bufbuild_protovalidate.bufbuild_es-2.3.0-20240508200655-46a4cf4ba109.1.tgz}
     peerDependencies:
-      '@bufbuild/protobuf': ^2.2.5
+      '@bufbuild/protobuf': ^2.3.0
 
-  '@buf/safedep_api.bufbuild_es@2.2.5-20250421115348-06862ba1eb25.1':
-    resolution: {tarball: https://buf.build/gen/npm/v1/@buf/safedep_api.bufbuild_es/-/safedep_api.bufbuild_es-2.2.5-20250421115348-06862ba1eb25.1.tgz}
+  '@buf/safedep_api.bufbuild_es@2.3.0-20250505130535-49e4fdd3000a.1':
+    resolution: {tarball: https://buf.build/gen/npm/v1/@buf/safedep_api.bufbuild_es/-/safedep_api.bufbuild_es-2.3.0-20250505130535-49e4fdd3000a.1.tgz}
     peerDependencies:
-      '@bufbuild/protobuf': ^2.2.5
+      '@bufbuild/protobuf': ^2.3.0
 
-  '@bufbuild/protobuf@2.2.5':
-    resolution: {integrity: sha512-/g5EzJifw5GF8aren8wZ/G5oMuPoGeS6MQD3ca8ddcvdXR5UELUfdTZITCGNhNXynY/AYl3Z4plmxdj/tRl/hQ==}
+  '@bufbuild/protobuf@2.4.0':
+    resolution: {integrity: sha512-RN9M76x7N11QRihKovEglEjjVCQEA9PRBVnDgk9xw8JHLrcUrp4FpAVSPSH91cNbcTft3u2vpLN4GMbiKY9PJw==}
 
   '@connectrpc/connect-node@2.0.2':
     resolution: {integrity: sha512-33Ut3SRkb6SugpwVCtXXRvUrOdtiyG6z6d5+eijBOLOI75sw1tDCwcs0o/9WL3rUj1M08dLUrPmJB47fjpv6EA==}
@@ -3968,25 +3968,25 @@ snapshots:
 
   '@bcoe/v8-coverage@1.0.2': {}
 
-  '@buf/bufbuild_protovalidate.bufbuild_es@2.2.5-20240508200655-46a4cf4ba109.1(@bufbuild/protobuf@2.2.5)':
+  '@buf/bufbuild_protovalidate.bufbuild_es@2.3.0-20240508200655-46a4cf4ba109.1(@bufbuild/protobuf@2.4.0)':
     dependencies:
-      '@bufbuild/protobuf': 2.2.5
+      '@bufbuild/protobuf': 2.4.0
 
-  '@buf/safedep_api.bufbuild_es@2.2.5-20250421115348-06862ba1eb25.1(@bufbuild/protobuf@2.2.5)':
+  '@buf/safedep_api.bufbuild_es@2.3.0-20250505130535-49e4fdd3000a.1(@bufbuild/protobuf@2.4.0)':
     dependencies:
-      '@buf/bufbuild_protovalidate.bufbuild_es': 2.2.5-20240508200655-46a4cf4ba109.1(@bufbuild/protobuf@2.2.5)
-      '@bufbuild/protobuf': 2.2.5
+      '@buf/bufbuild_protovalidate.bufbuild_es': 2.3.0-20240508200655-46a4cf4ba109.1(@bufbuild/protobuf@2.4.0)
+      '@bufbuild/protobuf': 2.4.0
 
-  '@bufbuild/protobuf@2.2.5': {}
+  '@bufbuild/protobuf@2.4.0': {}
 
-  '@connectrpc/connect-node@2.0.2(@bufbuild/protobuf@2.2.5)(@connectrpc/connect@2.0.2(@bufbuild/protobuf@2.2.5))':
+  '@connectrpc/connect-node@2.0.2(@bufbuild/protobuf@2.4.0)(@connectrpc/connect@2.0.2(@bufbuild/protobuf@2.4.0))':
     dependencies:
-      '@bufbuild/protobuf': 2.2.5
-      '@connectrpc/connect': 2.0.2(@bufbuild/protobuf@2.2.5)
+      '@bufbuild/protobuf': 2.4.0
+      '@connectrpc/connect': 2.0.2(@bufbuild/protobuf@2.4.0)
 
-  '@connectrpc/connect@2.0.2(@bufbuild/protobuf@2.2.5)':
+  '@connectrpc/connect@2.0.2(@bufbuild/protobuf@2.4.0)':
     dependencies:
-      '@bufbuild/protobuf': 2.2.5
+      '@bufbuild/protobuf': 2.4.0
 
   '@edge-runtime/cookies@5.0.2': {}
 
