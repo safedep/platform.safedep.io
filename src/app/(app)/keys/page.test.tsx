@@ -78,6 +78,7 @@ describe("Keys Page", () => {
     mocks.actions.getApiKeys.mockResolvedValue({
       tenant: "some-tenant",
       apiKeys: [],
+      pagination: undefined,
     } satisfies ApiKeys);
 
     // set response for user info action
@@ -118,6 +119,7 @@ describe("Keys Page", () => {
     mocks.actions.getApiKeys.mockResolvedValue({
       tenant: "some-tenant",
       apiKeys: [],
+      pagination: undefined,
     } satisfies ApiKeys);
 
     // set response for user info action
@@ -166,6 +168,7 @@ describe("Keys Page", () => {
           name: "my-api-key-2",
         },
       ],
+      pagination: undefined,
     } satisfies ApiKeys);
     // set response for user info action
     mocks.actions.getUserInfo.mockResolvedValue({
@@ -229,6 +232,7 @@ describe("Keys Page", () => {
     mocks.actions.getApiKeys.mockResolvedValue({
       tenant: "some-tenant",
       apiKeys: [],
+      pagination: undefined,
     } satisfies ApiKeys);
     mocks.actions.getUserInfo.mockResolvedValue({
       userInfo: {
@@ -274,6 +278,7 @@ describe("Keys Page", () => {
           expiresAt: new Date("2025-05-01"),
         },
       ],
+      pagination: undefined,
     } satisfies ApiKeys);
     mocks.actions.deleteApiKey.mockResolvedValue(undefined);
     const user = userEvent.setup();
@@ -333,6 +338,7 @@ describe("Keys Page", () => {
           expiresAt: new Date("2025-05-01"),
         },
       ],
+      pagination: undefined,
     } satisfies ApiKeys);
     const user = userEvent.setup();
     vi.spyOn(navigator.clipboard, "writeText");
@@ -361,5 +367,80 @@ describe("Keys Page", () => {
     });
     await user.click(copyButton);
     expect(navigator.clipboard.writeText).toHaveBeenCalledWith("my-api-key-id");
+  });
+
+  it("handles keys pagination", async () => {
+    const user = userEvent.setup();
+
+    // Mock getUserInfo
+    mocks.actions.getUserInfo.mockResolvedValue({
+      userInfo: {
+        name: "John Doe",
+        email: "john.doe@example.com",
+        avatar: "https://example.com/avatar.png",
+      },
+      tenants: [],
+      currentTenant: "tenant-xyz",
+    } satisfies UserInfo);
+
+    mocks.session.sessionGetTenant.mockResolvedValue("tenant-xyz");
+
+    // Mock initial page data
+    mocks.actions.getApiKeys.mockResolvedValue({
+      tenant: "tenant-xyz",
+      apiKeys: [
+        {
+          id: "1",
+          name: "API Key 1",
+          description: "First API key",
+          expiresAt: new Date("2024-01-01"),
+        },
+      ],
+      pagination: {
+        nextPageToken: "next-page-token",
+      },
+    });
+
+    const { page, queryClient } = await setupPageComponent();
+    render(page);
+
+    // Wait for initial data to load
+    await waitFor(() => {
+      expect(queryClient.isFetching()).toBe(0);
+    });
+
+    // Verify first page data is displayed
+    expect(screen.getByText("API Key 1")).toBeInTheDocument();
+
+    // Mock next page data
+    mocks.actions.getApiKeys.mockResolvedValue({
+      tenant: "tenant-xyz",
+      apiKeys: [
+        {
+          id: "2",
+          name: "API Key 2",
+          description: "Second API key",
+          expiresAt: new Date("2024-02-01"),
+        },
+      ],
+      pagination: {
+        nextPageToken: null,
+      },
+    });
+
+    // Click next page button
+    const nextButton = screen.getByRole("button", { name: /next/i });
+    await user.click(nextButton);
+
+    // Verify that the next page data is fetched with correct page token
+    await waitFor(() => {
+      expect(queryClient.isFetching()).toBe(0);
+    });
+
+    expect(mocks.actions.getApiKeys).toHaveBeenCalledWith(
+      expect.objectContaining({
+        pageToken: "next-page-token",
+      }),
+    );
   });
 });
