@@ -22,11 +22,11 @@ export default function MalwareAnalysisMetadata({
       </div>
       <div className="flex gap-2">
         <span className="font-medium">Source:</span>
-        <span>{report.target?.origin ?? ""}</span>
+        <span className="break-all">{report.target?.origin ?? ""}</span>
       </div>
       <div className="flex gap-2">
         <span className="font-medium">SHA256:</span>
-        <span className="font-mono">{report.target?.sha256}</span>
+        <span className="font-mono break-all">{report.target?.sha256}</span>
       </div>
       <div className="flex items-center gap-2">
         <span className="font-medium">Confidence:</span>
