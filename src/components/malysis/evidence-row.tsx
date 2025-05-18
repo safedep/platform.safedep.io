@@ -18,14 +18,16 @@ interface EvidenceRowProps {
 export default function EvidenceRow({ evidence }: EvidenceRowProps) {
   return (
     <Collapsible className="rounded-lg border">
-      <CollapsibleTrigger className="hover:bg-muted/50 flex w-full items-center justify-between p-4">
-        <div className="flex items-center gap-4">
-          <div>{evidence.evidence?.title ?? "Unknown"}</div>
-          <div className="text-muted-foreground text-sm">
+      <CollapsibleTrigger className="hover:bg-muted/50 flex w-full flex-col items-start justify-between p-4 sm:flex-row sm:items-center">
+        <div className="flex flex-col gap-2 sm:flex-row sm:gap-4">
+          <div className="text-left">
+            {evidence.evidence?.title ?? "Unknown"}
+          </div>
+          <div className="text-muted-foreground text-left text-sm">
             {evidence?.evidence?.source ?? "Unknown Source"}
           </div>
         </div>
-        <div className="flex items-center gap-2">
+        <div className="flex items-center gap-2 pt-4 sm:pt-0">
           <ConfidenceBadge confidence={evidence.evidence?.confidence ?? 0} />
           <ChevronDown className="text-muted-foreground h-4 w-4 transition-transform duration-200 group-data-[state=open]:rotate-180" />
         </div>
