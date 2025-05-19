@@ -16,6 +16,7 @@ import MarkdownContent from "@/components/markdown-content";
 import MalysisFilesystemTable from "./malysis-filesystem-table";
 import MalysisWarningsTab from "./malysis-warnings-tab";
 import { VerificationRecord } from "@buf/safedep_api.bufbuild_es/safedep/messages/malysis/v1/verification_record_pb";
+import { SiGithub } from "@icons-pack/react-simple-icons";
 
 export type MalwareAnalysisStatus = "safe" | "possibly-malicious" | "malicious";
 
@@ -75,6 +76,17 @@ export default async function MalwareAnalysisReportCard({
           "border-l-red-500": malwareAnalysisStatus === "malicious",
         })}
       >
+        <div className="flex items-center justify-center bg-slate-100 p-2 text-sm">
+          <span className="text-slate-600">Analyze your own packages with</span>
+          <Link
+            href="https://github.com/safedep/vet"
+            target="_blank"
+            rel="noopener noreferrer"
+            className="ml-1 flex items-center font-medium text-slate-800 transition-colors hover:text-blue-600"
+          >
+            vet <SiGithub className="ml-1 h-4 w-4" />
+          </Link>
+        </div>
         <CardHeader>
           <div className="flex flex-wrap items-center justify-between">
             <h1 className="group font-mono text-2xl break-all">
@@ -82,7 +94,7 @@ export default async function MalwareAnalysisReportCard({
                 href={packageUrl}
                 target="_blank"
                 rel="noopener noreferrer"
-                className="inline-flex items-center gap-1"
+                className="inline-flex items-center gap-1 transition-colors hover:text-blue-600"
               >
                 {packageName}
                 <ArrowUpRight className="h-4 w-4" />
