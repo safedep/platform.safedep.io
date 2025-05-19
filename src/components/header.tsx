@@ -37,7 +37,7 @@ export default function Header() {
                 rel="noopener noreferrer"
                 className="inline-flex items-center gap-1"
               >
-                <SiGithub className="h-6 w-6 mr-2" />
+                <SiGithub className="mr-2 h-6 w-6" />
               </Link>
             </TooltipTrigger>
             <TooltipContent>
