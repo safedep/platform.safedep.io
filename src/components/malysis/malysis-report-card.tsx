@@ -16,12 +16,6 @@ import MarkdownContent from "@/components/markdown-content";
 import MalysisFilesystemTable from "./malysis-filesystem-table";
 import MalysisWarningsTab from "./malysis-warnings-tab";
 import { VerificationRecord } from "@buf/safedep_api.bufbuild_es/safedep/messages/malysis/v1/verification_record_pb";
-import {
-  Tooltip,
-  TooltipContent,
-  TooltipProvider,
-  TooltipTrigger,
-} from "@/components/ui/tooltip";
 import { SiGithub } from "@icons-pack/react-simple-icons";
 
 export type MalwareAnalysisStatus = "safe" | "possibly-malicious" | "malicious";

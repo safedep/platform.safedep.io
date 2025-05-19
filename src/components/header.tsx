@@ -2,12 +2,7 @@ import UserMenu from "@/components/header/user-menu";
 import Link from "next/link";
 import Image from "next/image";
 import { SiGithub } from "@icons-pack/react-simple-icons";
-import {
-  Tooltip,
-  TooltipContent,
-  TooltipProvider,
-  TooltipTrigger,
-} from "@/components/ui/tooltip";
+import { Button } from "@/components/ui/button";
 
 export default function Header() {
   return (
@@ -28,24 +23,19 @@ export default function Header() {
           </div>
         </div>
 
-        <TooltipProvider>
-          <Tooltip>
-            <TooltipTrigger asChild>
-              <Link
-                href="https://github.com/safedep/vet"
-                target="_blank"
-                rel="noopener noreferrer"
-                className="inline-flex items-center gap-1"
-              >
-                <SiGithub className="mr-2 h-6 w-6" />
-              </Link>
-            </TooltipTrigger>
-            <TooltipContent>
-              <p>Try vet</p>
-            </TooltipContent>
-          </Tooltip>
-        </TooltipProvider>
-        <UserMenu />
+        <div className="flex items-center gap-2">
+          <Link
+            href="https://github.com/safedep/vet"
+            target="_blank"
+            rel="noopener noreferrer"
+          >
+            <Button variant="outline" size="sm" className="mr-4 gap-2">
+              <span>Try vet</span>
+              <SiGithub className="h-4 w-4" />
+            </Button>
+          </Link>
+          <UserMenu />
+        </div>
       </div>
     </header>
   );
