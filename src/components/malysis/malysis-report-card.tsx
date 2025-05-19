@@ -76,7 +76,7 @@ export default async function MalwareAnalysisReportCard({
           "border-l-red-500": malwareAnalysisStatus === "malicious",
         })}
       >
-        <div className="flex items-center justify-end bg-slate-100 p-2 text-sm">
+        <div className="flex items-center justify-center bg-slate-100 p-2 text-sm">
           <span className="text-slate-600">Analyze your own packages with</span>
           <Link
             href="https://github.com/safedep/vet"
