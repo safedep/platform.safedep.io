@@ -47,7 +47,7 @@ export default async function Page({
 
   if (response?.status === AnalysisStatus.COMPLETED && response.report) {
     return (
-      <div className="flex min-h-dvh py-8">
+      <div className="flex min-h-dvh py-6">
         <MalwareAnalysisReportCard
           report={response.report}
           verificationRecord={response.verificationRecord}
