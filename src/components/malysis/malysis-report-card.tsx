@@ -49,7 +49,7 @@ function getMalwareAnalysisStatus(
   return "safe";
 }
 
-export interface MalwareAnalysisReportCardProps {
+interface MalwareAnalysisReportCardProps {
   report: Report;
   verificationRecord?: VerificationRecord;
 }

@@ -13,10 +13,16 @@ export async function sessionGetTenant() {
   return (await cookies()).get(TENANT_COOKIE)?.value;
 }
 
+/**
+ * @public
+ */
 export async function sessionClearTenant() {
   (await cookies()).delete(TENANT_COOKIE);
 }
 
+/**
+ * @public
+ */
 export async function sessionRequireTenant() {
   const tenant = await sessionGetTenant();
   if (!tenant) {

@@ -27,7 +27,7 @@ import Link from "next/link";
 import { cn } from "@/lib/utils";
 import { DataTablePagination } from "./keys-pagination";
 
-export interface ApiKeyListProps<TData, TValue> {
+interface ApiKeyListProps<TData, TValue> {
   className?: string;
   apiKeys: TData[];
   columns: ColumnDef<TData, TValue>[];

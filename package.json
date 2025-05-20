@@ -8,7 +8,8 @@
     "start": "next start",
     "lint": "next lint",
     "check": "pnpm tsc --noEmit && next lint",
-    "test": "vitest run"
+    "test": "vitest run",
+    "knip": "knip"
   },
   "dependencies": {
     "@auth0/nextjs-auth0": "^4.5.1",
@@ -25,10 +26,8 @@
     "@radix-ui/react-label": "^2.1.6",
     "@radix-ui/react-popover": "^1.1.13",
     "@radix-ui/react-select": "^2.2.4",
-    "@radix-ui/react-separator": "^1.1.6",
     "@radix-ui/react-slot": "^1.2.2",
     "@radix-ui/react-tabs": "^1.1.11",
-    "@radix-ui/react-tooltip": "^1.2.6",
     "@t3-oss/env-nextjs": "^0.13.4",
     "@tanstack/react-query": "^5.76.1",
     "@tanstack/react-table": "^8.21.3",
@@ -67,6 +66,7 @@
     "eslint": "^9.27.0",
     "eslint-config-next": "15.3.2",
     "happy-dom": "^17.4.7",
+    "knip": "^5.56.0",
     "prettier": "^3.5.3",
     "prettier-plugin-tailwindcss": "^0.6.11",
     "tailwindcss": "^4.1.7",
