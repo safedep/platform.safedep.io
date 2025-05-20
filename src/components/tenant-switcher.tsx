@@ -15,18 +15,9 @@ import { cn } from "@/lib/utils";
 import { Access } from "@buf/safedep_api.bufbuild_es/safedep/messages/controltower/v1/access_pb";
 
 /**
- * Tenant object representing a team or organization
- */
-export interface Tenant {
-  id: string;
-  name: string;
-  tier: string;
-}
-
-/**
  * Props for the TenantSwitcher component
  */
-export interface TenantSwitcherProps {
+interface TenantSwitcherProps {
   className?: string;
   initialTenant: string;
   tenants: Access[];
