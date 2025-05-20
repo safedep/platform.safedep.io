@@ -8,6 +8,8 @@ const nextConfig: NextConfig = {
     // low-risk memory optimization, see:
     // https://nextjs.org/docs/app/building-your-application/optimizing/memory-usage#try-experimentalwebpackmemoryoptimizations
     webpackMemoryOptimizations: true,
+    // put all css in the head since tailwind is O(1)
+    inlineCss: true,
   },
 
   rewrites: async () => {

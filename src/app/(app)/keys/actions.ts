@@ -11,8 +11,7 @@ import {
   sessionSetTenant,
 } from "@/lib/session/session";
 import { timestampDate } from "@bufbuild/protobuf/wkt";
-import { Code } from "@connectrpc/connect";
-import { ConnectError } from "@connectrpc/connect";
+import { Code, ConnectError } from "@connectrpc/connect";
 import { revalidatePath } from "next/cache";
 import { redirect } from "next/navigation";
 import { PaginationRequest_SortOrder } from "@buf/safedep_api.bufbuild_es/safedep/messages/controltower/v1/pagination_pb";

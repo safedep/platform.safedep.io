@@ -4,7 +4,12 @@ import ApiKeyList from "./components/api-key-list";
 import TenantSwitcher from "@/components/tenant-switcher";
 import UserInfo from "@/components/user-info";
 import { ApiKey, getColumns } from "./columns";
-import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
+import {
+  keepPreviousData,
+  useMutation,
+  useQuery,
+  useQueryClient,
+} from "@tanstack/react-query";
 import { deleteApiKey, getApiKeys, getUserInfo, switchTenant } from "./actions";
 import { toast } from "sonner";
 import UserInfoSkeleton from "@/components/user-info-skeleton";
@@ -27,13 +32,14 @@ export default function KeysClient({
   });
 
   const { data: apiKeys } = useQuery({
-    queryKey: ["api-keys", initialTenant, pageToken, pageSize, sortOrder],
+    queryKey: ["api-keys", initialTenant, pageToken ?? "", pageSize, sortOrder],
     queryFn: async () =>
       await getApiKeys({
-        pageToken: pageToken || "",
+        pageToken: pageToken ?? "",
         pageSize,
         sortOrder,
       }),
+    placeholderData: keepPreviousData,
   });
 
   const { mutate: deleteKey } = useMutation({
