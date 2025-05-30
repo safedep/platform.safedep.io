@@ -11,10 +11,10 @@ import {
   sessionSetTenant,
 } from "@/lib/session/session";
 import { timestampDate } from "@bufbuild/protobuf/wkt";
-import { Code } from "@connectrpc/connect";
-import { ConnectError } from "@connectrpc/connect";
+import { Code, ConnectError } from "@connectrpc/connect";
 import { revalidatePath } from "next/cache";
 import { redirect } from "next/navigation";
+import { PaginationRequest_SortOrder } from "@buf/safedep_api.bufbuild_es/safedep/messages/controltower/v1/pagination_pb";
 
 export async function deleteApiKey(keyId: string) {
   const { tenant, accessToken } = await getTenantAndToken();
@@ -32,10 +32,21 @@ export async function deleteApiKey(keyId: string) {
   }
 }
 
-export async function getApiKeys() {
+export async function getApiKeys(pagination?: {
+  pageToken?: string;
+  pageSize?: number;
+  sortOrder?: PaginationRequest_SortOrder;
+}) {
   const { accessToken, tenant } = await getTenantAndToken();
   const keyService = createApiKeyServiceClient(tenant, accessToken);
-  const apiKeys = await keyService.listApiKeys({});
+  const apiKeys = await keyService.listApiKeys({
+    pagination: {
+      pageSize: pagination?.pageSize ?? 10,
+      pageToken: pagination?.pageToken ?? "",
+      sortOrder:
+        pagination?.sortOrder ?? PaginationRequest_SortOrder.DESCENDING,
+    },
+  });
   return {
     tenant,
     apiKeys: apiKeys?.keys.map((key) => ({
@@ -44,6 +55,7 @@ export async function getApiKeys() {
       description: key.description,
       expiresAt: key.expiresAt ? timestampDate(key.expiresAt) : new Date(),
     })),
+    pagination: apiKeys?.pagination,
   };
 }
 
