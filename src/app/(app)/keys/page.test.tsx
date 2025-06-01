@@ -101,6 +101,25 @@ describe("Keys Page", () => {
     expect(mocks.navigation.redirect).not.toHaveBeenCalled();
   });
 
+  it("should display loading state while data is being fetched", async () => {
+    // Mock actions to never resolve (simulate loading)
+    mocks.actions.getUserInfo.mockImplementation(() => new Promise(() => {}));
+    mocks.actions.getApiKeys.mockImplementation(() => new Promise(() => {}));
+    mocks.session.sessionGetTenant.mockResolvedValue("some-tenant");
+
+    // Act
+    const { page } = await setupPageComponent();
+    render(page);
+
+    // Check that loading skeletons are displayed
+    const skeletons = document.querySelectorAll(".animate-pulse");
+    expect(skeletons.length).toBeGreaterThan(0);
+
+    // Checking for  actual content is not loaded yet
+    expect(screen.queryByRole("table")).not.toBeInTheDocument();
+    expect(screen.queryByText("John Doe")).not.toBeInTheDocument();
+  });
+
   it("should redirect to tenant selector page if no tenant is selected", async () => {
     // Arrange
     mocks.session.sessionGetTenant.mockResolvedValue(null);
