@@ -31,7 +31,7 @@ export default function KeysClient({
     queryFn: async () => await getUserInfo(),
   });
 
-  const { data: apiKeys } = useQuery({
+  const { data: apiKeys, isLoading: apiKeysLoading } = useQuery({
     queryKey: ["api-keys", initialTenant, pageToken ?? "", pageSize, sortOrder],
     queryFn: async () =>
       await getApiKeys({
@@ -109,6 +109,7 @@ export default function KeysClient({
           onPrevPage={handlePrevPage}
           pageSize={pageSize}
           onPageSizeChange={handlePageSizeChange}
+          isLoading={apiKeysLoading}
         />
       </div>
     </div>
