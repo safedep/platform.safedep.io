@@ -26,7 +26,6 @@ import {
 import Link from "next/link";
 import { cn } from "@/lib/utils";
 import { DataTablePagination } from "./keys-pagination";
-import { Skeleton } from "@/components/ui/skeleton";
 
 interface ApiKeyListProps<TData, TValue> {
   className?: string;
@@ -38,7 +37,6 @@ interface ApiKeyListProps<TData, TValue> {
   hasNextPage?: boolean;
   hasPrevPage?: boolean;
   onPageSizeChange?: (size: number) => void;
-  isLoading?: boolean;
 }
 
 export default function ApiKeyList<TData, TValue>({
@@ -51,7 +49,6 @@ export default function ApiKeyList<TData, TValue>({
   hasNextPage,
   hasPrevPage,
   onPageSizeChange,
-  isLoading = false,
 }: ApiKeyListProps<TData, TValue>) {
   const table = useReactTable({
     data: apiKeys,
@@ -78,83 +75,75 @@ export default function ApiKeyList<TData, TValue>({
       </CardHeader>
 
       <CardContent>
-        {isLoading ? (
-          <div className="flex flex-col gap-4">
-            <Skeleton className="h-10 w-full" />
-            <Skeleton className="h-10 w-full" />
-          </div>
-        ) : (
-          <div className="overflow-hidden rounded-lg border p-2">
-            <div className="overflow-x-auto">
-              <Table>
-                <TableHeader>
-                  {table.getHeaderGroups().map((headerGroup) => (
-                    <TableRow key={headerGroup.id} className="bg-muted/50">
-                      {headerGroup.headers.map((header) => (
-                        <TableHead
-                          key={header.id}
+        <div className="overflow-hidden rounded-lg border p-2">
+          <div className="overflow-x-auto">
+            <Table>
+              <TableHeader>
+                {table.getHeaderGroups().map((headerGroup) => (
+                  <TableRow key={headerGroup.id} className="bg-muted/50">
+                    {headerGroup.headers.map((header) => (
+                      <TableHead
+                        key={header.id}
+                        className={cn(
+                          "break-words whitespace-normal",
+                          header.column.columnDef.meta?.className ?? "",
+                        )}
+                      >
+                        {header.isPlaceholder
+                          ? null
+                          : flexRender(
+                              header.column.columnDef.header,
+                              header.getContext(),
+                            )}
+                      </TableHead>
+                    ))}
+                  </TableRow>
+                ))}
+              </TableHeader>
+              <TableBody>
+                {table.getRowModel().rows.length === 0 ? (
+                  <TableRow>
+                    <TableCell
+                      colSpan={columns.length}
+                      className="py-8 text-center"
+                    >
+                      <p className="text-muted-foreground">
+                        No API keys found. Create your first key to get started.
+                      </p>
+                    </TableCell>
+                  </TableRow>
+                ) : (
+                  table.getRowModel().rows.map((row) => (
+                    <TableRow key={row.id}>
+                      {row.getVisibleCells().map((cell) => (
+                        <TableCell
+                          key={cell.id}
                           className={cn(
                             "break-words whitespace-normal",
-                            header.column.columnDef.meta?.className ?? "",
+                            cell.column.columnDef.meta?.className ?? "",
                           )}
                         >
-                          {header.isPlaceholder
-                            ? null
-                            : flexRender(
-                                header.column.columnDef.header,
-                                header.getContext(),
-                              )}
-                        </TableHead>
+                          {flexRender(
+                            cell.column.columnDef.cell,
+                            cell.getContext(),
+                          )}
+                        </TableCell>
                       ))}
                     </TableRow>
-                  ))}
-                </TableHeader>
-                <TableBody>
-                  {table.getRowModel().rows.length === 0 ? (
-                    <TableRow>
-                      <TableCell
-                        colSpan={columns.length}
-                        className="py-8 text-center"
-                      >
-                        <p className="text-muted-foreground">
-                          No API keys found. Create your first key to get
-                          started.
-                        </p>
-                      </TableCell>
-                    </TableRow>
-                  ) : (
-                    table.getRowModel().rows.map((row) => (
-                      <TableRow key={row.id}>
-                        {row.getVisibleCells().map((cell) => (
-                          <TableCell
-                            key={cell.id}
-                            className={cn(
-                              "break-words whitespace-normal",
-                              cell.column.columnDef.meta?.className ?? "",
-                            )}
-                          >
-                            {flexRender(
-                              cell.column.columnDef.cell,
-                              cell.getContext(),
-                            )}
-                          </TableCell>
-                        ))}
-                      </TableRow>
-                    ))
-                  )}
-                </TableBody>
-              </Table>
-            </div>
-            <DataTablePagination
-              onNextPage={onNextPage}
-              onPrevPage={onPrevPage}
-              hasNextPage={hasNextPage}
-              hasPrevPage={hasPrevPage}
-              pageSize={pageSize}
-              onPageSizeChange={onPageSizeChange}
-            />
+                  ))
+                )}
+              </TableBody>
+            </Table>
           </div>
-        )}
+          <DataTablePagination
+            onNextPage={onNextPage}
+            onPrevPage={onPrevPage}
+            hasNextPage={hasNextPage}
+            hasPrevPage={hasPrevPage}
+            pageSize={pageSize}
+            onPageSizeChange={onPageSizeChange}
+          />
+        </div>
       </CardContent>
     </Card>
   );
