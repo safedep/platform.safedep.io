@@ -67,9 +67,20 @@ async function setupPageComponent() {
   };
 }
 
+async function sleepAndReturn(ms: number, returnValue: unknown) {
+  return new Promise((resolve) => {
+    setTimeout(() => {
+      resolve(returnValue);
+    }, ms);
+  });
+}
+
 describe("Keys Page", () => {
   afterEach(() => {
     vi.resetAllMocks();
+    // timers
+    vi.clearAllTimers();
+    vi.useRealTimers();
   });
 
   it("should render the page", async () => {
@@ -99,6 +110,74 @@ describe("Keys Page", () => {
 
     // Assert
     expect(mocks.navigation.redirect).not.toHaveBeenCalled();
+  });
+
+  it("should display loading state while data is being fetched", async () => {
+    vi.useFakeTimers();
+    // arrange
+    mocks.actions.getUserInfo.mockImplementation(
+      async () =>
+        await sleepAndReturn(3000, {
+          currentTenant: "some-tenant",
+          userInfo: {
+            avatar: "https://example.com/avatar.png",
+            email: "john.doe@example.com",
+            name: "John Doe",
+          },
+          tenants: [],
+        } as UserInfo),
+    );
+    mocks.actions.getApiKeys.mockImplementation(
+      async () =>
+        await sleepAndReturn(2000, {
+          apiKeys: [],
+          pagination: undefined,
+          tenant: "some-tenant",
+        } as ApiKeys),
+    );
+    mocks.session.sessionGetTenant.mockResolvedValue("some-tenant");
+
+    // Act
+    const { page, queryClient } = await setupPageComponent();
+    render(page);
+
+    // assert
+    // we expect two queries to be fetching: the entire app is in loading state
+    expect(queryClient.isFetching()).toBe(2);
+    expect(mocks.actions.getUserInfo).not.toHaveResolved();
+    expect(screen.getByTestId("user-info-skeleton")).toBeInTheDocument();
+    expect(mocks.actions.getApiKeys).not.toHaveResolved();
+    // since the api keys are not fetched, we expect the table to be in loading
+    const table = screen.getByRole("table");
+    expect(table.querySelector(".animate-pulse")).toBeInTheDocument();
+
+    // move time forward by 2 seconds: get api keys query should be resolved
+    vi.advanceTimersByTime(2000);
+    await waitFor(() => expect(queryClient.isFetching()).toBe(1));
+    expect(mocks.actions.getApiKeys).toHaveResolved();
+    // since the api keys are fetched, the table should not be in loading state
+    // animate-pulse comes from shadcn based skeleton component
+    expect(table.querySelector(".animate-pulse")).not.toBeInTheDocument();
+
+    // but the user info query is still fetching, so we expect the user info
+    // skeleton to be displayed
+    expect(mocks.actions.getUserInfo).not.toHaveResolved();
+    expect(screen.getByTestId("user-info-skeleton")).toBeInTheDocument();
+    expect(document.querySelectorAll(".animate-pulse").length).toBeGreaterThan(
+      0,
+    );
+
+    // move time forward by 1 second: user info query should be resolved
+    vi.advanceTimersByTime(1000);
+    await waitFor(() => expect(queryClient.isFetching()).toBe(0));
+    expect(mocks.actions.getUserInfo).toHaveResolved();
+    expect(screen.queryByTestId("user-info-skeleton")).not.toBeInTheDocument();
+    // no more pulse animations: the hallmark of the skeleton
+    expect(document.querySelectorAll(".animate-pulse").length).toBe(0);
+
+    // all queries are resolved, we expect the user info to be displayed
+    expect(screen.getByText("John Doe")).toBeInTheDocument();
+    expect(screen.getByText("john.doe@example.com")).toBeInTheDocument();
   });
 
   it("should redirect to tenant selector page if no tenant is selected", async () => {
