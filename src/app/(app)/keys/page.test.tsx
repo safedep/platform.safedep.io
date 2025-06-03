@@ -147,18 +147,17 @@ describe("Keys Page", () => {
     expect(mocks.actions.getUserInfo).not.toHaveResolved();
     expect(screen.getByTestId("user-info-skeleton")).toBeInTheDocument();
     expect(mocks.actions.getApiKeys).not.toHaveResolved();
-    expect(screen.getByTestId("api-key-list-skeleton")).toBeInTheDocument();
+    // since the api keys are not fetched, we expect the table to be in loading
+    const table = screen.getByRole("table");
+    expect(table.querySelector(".animate-pulse")).toBeInTheDocument();
 
     // move time forward by 2 seconds: get api keys query should be resolved
     vi.advanceTimersByTime(2000);
-    await waitFor(() => {
-      expect(queryClient.isFetching()).toBe(1);
-    });
+    await waitFor(() => expect(queryClient.isFetching()).toBe(1));
     expect(mocks.actions.getApiKeys).toHaveResolved();
-    expect(
-      // the data is fetched, so we expect the skeleton to be removed
-      screen.queryByTestId("api-key-list-skeleton"),
-    ).not.toBeInTheDocument();
+    // since the api keys are fetched, the table should not be in loading state
+    // animate-pulse comes from shadcn based skeleton component
+    expect(table.querySelector(".animate-pulse")).not.toBeInTheDocument();
 
     // but the user info query is still fetching, so we expect the user info
     // skeleton to be displayed
@@ -170,9 +169,7 @@ describe("Keys Page", () => {
 
     // move time forward by 1 second: user info query should be resolved
     vi.advanceTimersByTime(1000);
-    await waitFor(() => {
-      expect(queryClient.isFetching()).toBe(0);
-    });
+    await waitFor(() => expect(queryClient.isFetching()).toBe(0));
     expect(mocks.actions.getUserInfo).toHaveResolved();
     expect(screen.queryByTestId("user-info-skeleton")).not.toBeInTheDocument();
     // no more pulse animations: the hallmark of the skeleton
