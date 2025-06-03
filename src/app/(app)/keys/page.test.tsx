@@ -67,9 +67,20 @@ async function setupPageComponent() {
   };
 }
 
+async function sleepAndReturn(ms: number, returnValue: unknown) {
+  return new Promise((resolve) => {
+    setTimeout(() => {
+      resolve(returnValue);
+    }, ms);
+  });
+}
+
 describe("Keys Page", () => {
   afterEach(() => {
     vi.resetAllMocks();
+    // timers
+    vi.clearAllTimers();
+    vi.useRealTimers();
   });
 
   it("should render the page", async () => {
@@ -102,22 +113,74 @@ describe("Keys Page", () => {
   });
 
   it("should display loading state while data is being fetched", async () => {
-    // Mock actions to never resolve (simulate loading)
-    mocks.actions.getUserInfo.mockImplementation(() => new Promise(() => {}));
-    mocks.actions.getApiKeys.mockImplementation(() => new Promise(() => {}));
+    vi.useFakeTimers();
+    // arrange
+    mocks.actions.getUserInfo.mockImplementation(
+      async () =>
+        await sleepAndReturn(3000, {
+          currentTenant: "some-tenant",
+          userInfo: {
+            avatar: "https://example.com/avatar.png",
+            email: "john.doe@example.com",
+            name: "John Doe",
+          },
+          tenants: [],
+        } as UserInfo),
+    );
+    mocks.actions.getApiKeys.mockImplementation(
+      async () =>
+        await sleepAndReturn(2000, {
+          apiKeys: [],
+          pagination: undefined,
+          tenant: "some-tenant",
+        } as ApiKeys),
+    );
     mocks.session.sessionGetTenant.mockResolvedValue("some-tenant");
 
     // Act
-    const { page } = await setupPageComponent();
+    const { page, queryClient } = await setupPageComponent();
     render(page);
 
-    // Check that loading skeletons are displayed
-    const skeletons = document.querySelectorAll(".animate-pulse");
-    expect(skeletons.length).toBeGreaterThan(0);
+    // assert
+    // we expect two queries to be fetching: the entire app is in loading state
+    expect(queryClient.isFetching()).toBe(2);
+    expect(mocks.actions.getUserInfo).not.toHaveResolved();
+    expect(screen.getByTestId("user-info-skeleton")).toBeInTheDocument();
+    expect(mocks.actions.getApiKeys).not.toHaveResolved();
+    expect(screen.getByTestId("api-key-list-skeleton")).toBeInTheDocument();
 
-    // Checking for  actual content is not loaded yet
-    expect(screen.queryByRole("table")).not.toBeInTheDocument();
-    expect(screen.queryByText("John Doe")).not.toBeInTheDocument();
+    // move time forward by 2 seconds: get api keys query should be resolved
+    vi.advanceTimersByTime(2000);
+    await waitFor(() => {
+      expect(queryClient.isFetching()).toBe(1);
+    });
+    expect(mocks.actions.getApiKeys).toHaveResolved();
+    expect(
+      // the data is fetched, so we expect the skeleton to be removed
+      screen.queryByTestId("api-key-list-skeleton"),
+    ).not.toBeInTheDocument();
+
+    // but the user info query is still fetching, so we expect the user info
+    // skeleton to be displayed
+    expect(mocks.actions.getUserInfo).not.toHaveResolved();
+    expect(screen.getByTestId("user-info-skeleton")).toBeInTheDocument();
+    expect(document.querySelectorAll(".animate-pulse").length).toBeGreaterThan(
+      0,
+    );
+
+    // move time forward by 1 second: user info query should be resolved
+    vi.advanceTimersByTime(1000);
+    await waitFor(() => {
+      expect(queryClient.isFetching()).toBe(0);
+    });
+    expect(mocks.actions.getUserInfo).toHaveResolved();
+    expect(screen.queryByTestId("user-info-skeleton")).not.toBeInTheDocument();
+    // no more pulse animations: the hallmark of the skeleton
+    expect(document.querySelectorAll(".animate-pulse").length).toBe(0);
+
+    // all queries are resolved, we expect the user info to be displayed
+    expect(screen.getByText("John Doe")).toBeInTheDocument();
+    expect(screen.getByText("john.doe@example.com")).toBeInTheDocument();
   });
 
   it("should redirect to tenant selector page if no tenant is selected", async () => {

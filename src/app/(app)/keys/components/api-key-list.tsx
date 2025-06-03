@@ -79,7 +79,10 @@ export default function ApiKeyList<TData, TValue>({
 
       <CardContent>
         {isLoading ? (
-          <div className="flex flex-col gap-4">
+          <div
+            className="flex flex-col gap-4"
+            data-testid="api-key-list-skeleton"
+          >
             <Skeleton className="h-10 w-full" />
             <Skeleton className="h-10 w-full" />
           </div>
