@@ -12,7 +12,7 @@
     "knip": "knip"
   },
   "dependencies": {
-    "@auth0/nextjs-auth0": "^4.5.1",
+    "@auth0/nextjs-auth0": "^4.6.1",
     "@buf/safedep_api.bufbuild_es": "2.4.0-20250515074759-7643c000b7c6.1",
     "@bufbuild/protobuf": "^2.3.0",
     "@connectrpc/connect": "^2.0.2",
