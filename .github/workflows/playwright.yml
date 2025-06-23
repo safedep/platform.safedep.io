@@ -2,9 +2,9 @@ name: e2e-playwright
 
 on:
   push:
-    branches: [main]
+    branches: [staging, main]
   pull_request:
-    branches: [main]
+    branches: [staging, main]
   workflow_dispatch:
 
 concurrency:
