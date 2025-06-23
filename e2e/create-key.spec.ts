@@ -9,52 +9,66 @@ function generateUniqueKeyDescription() {
   return `my-test-key-description-${randomUUID().slice(0, 8)}`;
 }
 
-test("create key", async ({ page }) => {
-  // navigate to keys page
-  await page.goto("/");
-  await page.getByRole("combobox").click();
-  await page.getByRole("option", { name: /default-team.*/ }).click();
-
-  // generate unique key name and description
+test.describe.serial("API Key Management", () => {
+  // Generate unique key name and description at the describe level
   const keyName = generateUniqueKeyName();
   const keyDescription = generateUniqueKeyDescription();
 
-  // create key
-  await page.getByRole("link", { name: "Create New Key" }).click();
-  await page.getByRole("textbox", { name: "Name" }).click();
-  await page.getByRole("textbox", { name: "Name" }).fill(keyName);
-  await page.getByRole("textbox", { name: "Description" }).click();
-  await page.getByRole("textbox", { name: "Description" }).fill(keyDescription);
-  await page.getByRole("combobox", { name: "Expiry" }).click();
-  await page.getByRole("option", { name: "90 days" }).click();
-  await page.getByRole("button", { name: "Create" }).click();
+  test.beforeEach(async ({ page }) => {
+    // select tenant
+    await page.goto("/");
+    await page.getByRole("combobox").click();
+    await page.getByRole("option", { name: /default-team.*/ }).click();
+  });
 
-  // assert api key created
-  await expect(page.getByRole("main")).toContainText("API Key Created");
-  await expect(page.getByRole("code")).toContainText(/default-team.*/);
+  test("create key", async ({ page }) => {
+    // assert we are on keys page using its url
+    await expect(page).toHaveURL("/keys");
 
-  // show api key and assert api key is visible
-  await page.getByRole("button", { name: "Show API key" }).click();
-  await expect(page.getByRole("main")).toContainText(/sfd_*/);
+    // create key
+    await page.getByRole("link", { name: "Create New Key" }).click();
+    await page.getByRole("textbox", { name: "Name" }).click();
+    await page.getByRole("textbox", { name: "Name" }).fill(keyName);
+    await page.getByRole("textbox", { name: "Description" }).click();
+    await page
+      .getByRole("textbox", { name: "Description" })
+      .fill(keyDescription);
+    await page.getByRole("combobox", { name: "Expiry" }).click();
+    await page.getByRole("option", { name: "90 days" }).click();
+    await page.getByRole("button", { name: "Create" }).click();
 
-  // go back to keys page
-  await page.getByRole("button", { name: "Back" }).click();
+    // assert api key created
+    await expect(page.getByRole("main")).toContainText("API Key Created");
+    await expect(page.getByRole("code")).toContainText(/default-team.*/);
 
-  // assert key is in table
-  await expect(page.locator("tbody")).toContainText(keyName);
-  await expect(page.locator("tbody")).toContainText(keyDescription);
+    // show api key and assert api key is visible
+    await page.getByRole("button", { name: "Show API key" }).click();
+    await expect(page.getByRole("main")).toContainText(/sfd_*/);
 
-  // delete key
-  await page
-    .locator("tbody")
-    .getByRole("row")
-    .filter({ hasText: keyName })
-    .getByRole("button")
-    .click();
-  await page.getByRole("menuitem", { name: "Delete Key" }).click();
-  await page.getByRole("button", { name: "Delete" }).click();
+    // go back to keys page
+    await page.getByRole("button", { name: "Back" }).click();
 
-  // assert key is not in table
-  await expect(page.locator("tbody")).not.toContainText(keyName);
-  await expect(page.locator("tbody")).not.toContainText(keyDescription);
+    // assert key is in table
+    await expect(page.locator("tbody")).toContainText(keyName);
+    await expect(page.locator("tbody")).toContainText(keyDescription);
+  });
+
+  test("delete key", async ({ page }) => {
+    // assert we are on keys page
+    await expect(page).toHaveURL("/keys");
+
+    // delete key
+    await page
+      .locator("tbody")
+      .getByRole("row")
+      .filter({ hasText: keyName })
+      .getByRole("button")
+      .click();
+    await page.getByRole("menuitem", { name: "Delete Key" }).click();
+    await page.getByRole("button", { name: "Delete" }).click();
+
+    // assert key is not in table
+    await expect(page.locator("tbody")).not.toContainText(keyName);
+    await expect(page.locator("tbody")).not.toContainText(keyDescription);
+  });
 });
