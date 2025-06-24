@@ -1,0 +1,54 @@
+name: e2e
+
+on:
+  push:
+    branches: [staging, main]
+  pull_request:
+    branches: [staging, main]
+  workflow_dispatch:
+
+concurrency:
+  group: ${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  e2e:
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+    name: Playwright E2E Test
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: pnpm/action-setup@v4
+        with:
+          run_install: false
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: lts/*
+          cache: pnpm
+
+      - name: Install dependencies
+        run: pnpm install --frozen-lockfile
+
+      - name: Install Playwright browsers
+        run: pnpm exec playwright install --with-deps
+
+      - name: Run Playwright tests
+        run: pnpm exec playwright test
+        # see .env.e2e and e2e/config/env.ts for the environment variables used
+        # in these tests
+        env:
+          E2E_USER_EMAIL: ${{ secrets.FRONTEND_E2E_SAFEDEP_CLOUD_USER }}
+          E2E_USER_PASSWORD: ${{ secrets.FRONTEND_E2E_SAFEDEP_CLOUD_PASSWORD }}
+          # required by nextjs
+          AUTH0_SECRET: ${{ secrets.FRONTEND_E2E_AUTH0_SECRET }}
+          AUTH0_DOMAIN: ${{ secrets.FRONTEND_E2E_AUTH0_DOMAIN }}
+          AUTH0_ISSUER_BASE_URL: ${{ secrets.FRONTEND_E2E_AUTH0_DOMAIN }}
+          AUTH0_CLIENT_ID: ${{ secrets.FRONTEND_E2E_AUTH0_CLIENT_ID }}
+          AUTH0_CLIENT_SECRET: ${{ secrets.FRONTEND_E2E_AUTH0_CLIENT_SECRET }}
+          AUTH0_BASE_URL: http://localhost:3000
+          NEXT_PUBLIC_POSTHOG_KEY: "test-posthog-key"
+          COMMUNITY_API_TENANT_ID: ${{ secrets.FRONTEND_E2E_SAFEDEP_CLOUD_TENANT_ID }}
+          COMMUNITY_API_KEY: ${{ secrets.FRONTEND_E2E_SAFEDEP_CLOUD_API_KEY }}
