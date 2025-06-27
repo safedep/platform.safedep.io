@@ -5,8 +5,6 @@ import tsconfigPaths from "vite-tsconfig-paths";
 export default defineConfig({
   plugins: [tsconfigPaths(), react()],
   test: {
-    environment: "happy-dom",
-    globals: true,
     setupFiles: ["./setupFiles.ts"],
     reporters:
       process.env.GITHUB_ACTIONS === "true"
@@ -20,5 +18,20 @@ export default defineConfig({
         "src/components/ui/**/*.{ts,tsx}",
       ],
     },
+
+    // For more info on projects, see: https://vitest.dev/guide/projects
+    projects: [
+      // unit tests
+      {
+        extends: true, // inherit from the base config
+        test: {
+          environment: "happy-dom",
+          name: "unit",
+          globals: true,
+          restoreMocks: true,
+          include: ["**/*.test.{ts,tsx}"],
+        },
+      },
+    ],
   },
 });
