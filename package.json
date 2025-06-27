@@ -9,7 +9,6 @@
     "lint": "next lint",
     "check": "pnpm tsc --noEmit && next lint",
     "test": "vitest run",
-    "test:e2e": "playwright test",
     "knip": "knip"
   },
   "dependencies": {
@@ -53,7 +52,6 @@
   },
   "devDependencies": {
     "@eslint/eslintrc": "^3.3.1",
-    "@playwright/test": "^1.53.1",
     "@tailwindcss/postcss": "^4.1.7",
     "@tailwindcss/typography": "^0.5.16",
     "@tanstack/react-query-devtools": "^5.76.1",
@@ -66,7 +64,6 @@
     "@vitejs/plugin-react": "^4.4.1",
     "@vitest/coverage-v8": "^3.1.4",
     "@vitest/ui": "^3.1.4",
-    "dotenv": "^16.5.0",
     "eslint": "^9.27.0",
     "eslint-config-next": "15.3.2",
     "happy-dom": "^17.4.7",
