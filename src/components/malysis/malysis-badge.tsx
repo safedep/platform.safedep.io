@@ -13,7 +13,7 @@ const statusConfig: Record<
     icon: <Shield className="h-4 w-4" />,
   },
   "possibly-malicious": {
-    label: "Possibly Malicious",
+    label: "Suspicious",
     icon: <AlertTriangle className="h-4 w-4" />,
   },
   malicious: {
