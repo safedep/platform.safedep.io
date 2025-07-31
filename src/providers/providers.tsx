@@ -12,9 +12,7 @@ export default function Providers({ children }: { children: React.ReactNode }) {
   return (
     <Auth0Provider>
       <TanstackQueryProvider>
-        {/* <PostHogProvider> */}
-        {children}
-        {/* </PostHogProvider> */}
+        <PostHogProvider>{children}</PostHogProvider>
       </TanstackQueryProvider>
     </Auth0Provider>
   );
