@@ -8,6 +8,8 @@ export function packageRegistryUrl(p?: PackageVersion): string {
 
   const name = p.package.name;
   switch (p.package.ecosystem) {
+    case Ecosystem.UNSPECIFIED:
+      return "#";
     case Ecosystem.MAVEN:
       return `https://search.maven.org/search?q=${name}`;
     case Ecosystem.NPM:
@@ -31,7 +33,15 @@ export function packageRegistryUrl(p?: PackageVersion): string {
       return `https://registry.terraform.io/modules/${name}`;
     case Ecosystem.TERRAFORM_PROVIDER:
       return `https://registry.terraform.io/providers/${name}`;
+    case Ecosystem.VSCODE:
+      return `https://marketplace.visualstudio.com/items?itemName=${name}`;
+    case Ecosystem.GITHUB_REPOSITORY:
+      return `https://github.com/${name}`;
+    case Ecosystem.OPENVSX:
+      return `https://open-vsx.org/extension/${name.replace(/\./g, "/")}`;
     default:
+      const _exhaustiveCheck: never = p.package.ecosystem;
+      void _exhaustiveCheck;
       return "#";
   }
 }
