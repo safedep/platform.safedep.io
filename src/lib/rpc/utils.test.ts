@@ -108,6 +108,31 @@ describe("packageRegistryUrl", () => {
     );
   });
 
+  it("returns the correct URL for VSCODE packages", () => {
+    const p = create(PackageVersionSchema, {
+      package: { ecosystem: Ecosystem.VSCODE, name: "foo.bar" },
+    });
+    expect(packageRegistryUrl(p)).toBe(
+      "https://marketplace.visualstudio.com/items?itemName=foo.bar",
+    );
+  });
+
+  it("returns the correct URL for GITHUB_REPOSITORY packages", () => {
+    const p = create(PackageVersionSchema, {
+      package: { ecosystem: Ecosystem.GITHUB_REPOSITORY, name: "foo/bar" },
+    });
+    expect(packageRegistryUrl(p)).toBe("https://github.com/foo/bar");
+  });
+
+  it("returns the correct URL for OPENVSX packages", () => {
+    const p = create(PackageVersionSchema, {
+      package: { ecosystem: Ecosystem.OPENVSX, name: "foo.bar" },
+    });
+    expect(packageRegistryUrl(p)).toBe(
+      "https://open-vsx.org/extension/foo/bar",
+    );
+  });
+
   it("returns '#' for unhandled ecosystems", () => {
     // Using an ecosystem value that is not handled. Casting -1 to Ecosystem.
     const p = create(PackageVersionSchema, {
