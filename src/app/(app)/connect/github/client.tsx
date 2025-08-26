@@ -7,6 +7,7 @@ import { useMutation } from "@tanstack/react-query";
 import { toast } from "sonner";
 import { SiGithub } from "@icons-pack/react-simple-icons";
 import OauthConnect from "@/components/oauth-connector/oauth-connect";
+import { useRouter } from "next/navigation";
 
 export default function ConnectGithubClient({
   code,
@@ -25,6 +26,7 @@ export default function ConnectGithubClient({
       await connectTenantToGithub({ tenantId, code, installationId });
     },
   });
+  const router = useRouter();
 
   function handleSelectTenant(tenantId: string) {
     const toastId = toast.loading("Connecting GitHub to SafeDep...");
@@ -34,6 +36,7 @@ export default function ConnectGithubClient({
         toast.success("GitHub connected to SafeDep", {
           id: toastId,
         });
+        router.replace("/");
       },
       onError: () => {
         toast.error("Failed to connect GitHub to SafeDep", {

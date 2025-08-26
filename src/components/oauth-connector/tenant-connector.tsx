@@ -17,6 +17,7 @@ import {
 } from "@/components/ui/select";
 import { Access } from "@buf/safedep_api.bufbuild_es/safedep/messages/controltower/v1/access_pb";
 import { useState, useTransition } from "react";
+import { Badge } from "../ui/badge";
 
 interface TenantConnectorProps {
   userEmail: string;
@@ -26,11 +27,16 @@ interface TenantConnectorProps {
   cardDescription?: string;
 }
 
+/**
+ * A component that displays a list of tenants and allows the user to select
+ * one. Primarily used in the OAuth connector flow.
+ */
 export default function TenantConnector({
   tenants,
   onSelectTenant,
   cardTitle,
   cardDescription,
+  userEmail,
 }: TenantConnectorProps) {
   const [selectedTenant, setSelectedTenant] = useState<string>("");
   const [isPending, startTransition] = useTransition();
@@ -49,7 +55,9 @@ export default function TenantConnector({
   }
 
   return (
-    <div className="flex w-full max-w-md flex-col items-center">
+    <div className="flex w-full max-w-md flex-col items-center gap-2">
+      <Badge variant="outline">Connecting account for {userEmail}</Badge>
+
       <Card className="w-full shadow-md">
         <CardHeader>
           <CardTitle>{cardTitle ?? "Select tenant"}</CardTitle>

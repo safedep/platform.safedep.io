@@ -19,9 +19,7 @@ export async function connectTenantToGithub({
     code,
     installationId,
   });
-  // now that the user is logged in and connected to github, we can send them to
-  // the main app.
-  // return redirect("/");
+  await new Promise((resolve) => setTimeout(resolve, 3000));
 }
 
 /**
