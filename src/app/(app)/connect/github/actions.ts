@@ -25,6 +25,10 @@ export async function connectTenantToGithub({
 /**
  * Fetches user email and tenants that the user has access to. If the user is
  * not logged in, it redirects to the login/signup page.
+ *
+ * @param returnTo - The URL to redirect to after the user is logged in. You are
+ * responsible for encoding the URL.
+ * @returns The user's email and tenants.
  */
 export async function getUserInfoOrRedirectToAuth(returnTo: string) {
   const session = await auth0.getSession();
@@ -42,9 +46,9 @@ export async function getUserInfoOrRedirectToAuth(returnTo: string) {
   } catch (error) {
     // if the user is not onboarded, we redirect to the onboarding page. Once
     // the onboarding is complete, we bring the user back to the connect/github
-    // page.
+    // page with correct code, installationId and any other params.
     if (error instanceof ConnectError && error.code === Code.NotFound) {
-      return redirect("/onboard?returnTo=/connect/github");
+      return redirect(`/onboard?returnTo=${returnTo}`);
     }
 
     throw error;
