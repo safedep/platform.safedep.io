@@ -1,6 +1,7 @@
 import * as v from "valibot";
 import { getUserInfoOrRedirectToAuth } from "./actions";
 import ConnectGithubClient from "./client";
+import { redirect } from "next/navigation";
 
 const searchParamSchema = v.object({
   code: v.pipe(v.string(), v.nonEmpty()),
@@ -13,15 +14,15 @@ export default async function ConnectGithubPage({
 }: {
   searchParams: Promise<SearchParams>;
 }) {
-  const { success, output } = v.safeParse(
+  const { success: isParamsValid, output } = v.safeParse(
     searchParamSchema,
     await searchParams,
   );
-  if (!success) {
-    return <div>TODO: either redirect to / or show an error</div>;
+  if (!isParamsValid) {
+    return redirect("/");
   }
-  const { code, installation_id: installationId } = output;
 
+  const { code, installation_id: installationId } = output;
   const { email, tenants } = await getUserInfoOrRedirectToAuth();
 
   return (

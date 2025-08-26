@@ -45,7 +45,6 @@ export async function getUserInfoOrRedirectToAuth() {
     // if the user is not onboarded, we redirect to the onboarding page. Once
     // the onboarding is complete, we bring the user back to the connect/github
     // page.
-    // TODO: handle `returnTo` param for /onboard
     if (error instanceof ConnectError && error.code === Code.NotFound) {
       return redirect("/onboard?returnTo=/connect/github");
     }
