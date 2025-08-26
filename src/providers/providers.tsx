@@ -1,6 +1,5 @@
 import { Auth0Provider } from "@auth0/nextjs-auth0";
 import TanstackQueryProvider from "./tanstack-query-provider";
-import PostHogProvider from "./posthog-provider";
 
 /**
  * Consolidates all providers into a single component.
@@ -11,9 +10,7 @@ import PostHogProvider from "./posthog-provider";
 export default function Providers({ children }: { children: React.ReactNode }) {
   return (
     <Auth0Provider>
-      <TanstackQueryProvider>
-        <PostHogProvider>{children}</PostHogProvider>
-      </TanstackQueryProvider>
+      <TanstackQueryProvider>{children}</TanstackQueryProvider>
     </Auth0Provider>
   );
 }

@@ -5,3 +5,5 @@ onlyBuiltDependencies:
   - oxc-resolver
   - sharp
   - unrs-resolver
+publicHoistPattern:
+- "*eslint*"

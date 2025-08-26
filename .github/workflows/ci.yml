@@ -40,7 +40,9 @@ jobs:
           cache: pnpm
 
       - name: Install deps
-        run: pnpm install --frozen-lockfile
+        run: |
+          pnpm install --frozen-lockfile
+          pnpm next typegen
 
       - name: Lint & Format check
         run: |

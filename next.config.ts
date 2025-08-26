@@ -11,6 +11,8 @@ const nextConfig: NextConfig = {
     // put all css in the head since tailwind is O(1)
     inlineCss: true,
   },
+  // type check routes
+  typedRoutes: true,
 
   rewrites: async () => {
     return [
