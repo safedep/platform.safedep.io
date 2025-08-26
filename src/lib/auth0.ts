@@ -21,10 +21,12 @@ export const auth0 = new Auth0Client({
     // this error is typically triggered when the user logs in using email/password.
     // In such cases, we want to redirect the user to the verify-email page.
     if (error instanceof AuthorizationError) {
-      return NextResponse.redirect(
-        new URL("/auth/verify-email", env.AUTH0_BASE_URL),
-      );
+      const returnTo = context.returnTo
+        ? `/auth/verify-email?returnTo=${encodeURIComponent(context.returnTo)}`
+        : "/auth/verify-email";
+      return NextResponse.redirect(new URL(returnTo, env.AUTH0_BASE_URL));
     }
+
     // for any other error, we want to redirect the user to the error page to let
     // them know that something went wrong with the authn process.
     if (error instanceof SdkError) {
@@ -35,6 +37,7 @@ export const auth0 = new Auth0Client({
         ),
       );
     }
+
     // if everything went well, we redirect the user to the page they were
     // trying to access before being redirected to the login page.
     return NextResponse.redirect(
