@@ -39,6 +39,8 @@ export function packageRegistryUrl(p?: PackageVersion): string {
       return `https://github.com/${name}`;
     case Ecosystem.OPENVSX:
       return `https://open-vsx.org/extension/${name.replace(/\./g, "/")}`;
+    case Ecosystem.HOMEBREW:
+      return `https://formulae.brew.sh/formula/${name}`;
     default:
       const _exhaustiveCheck: never = p.package.ecosystem;
       void _exhaustiveCheck;

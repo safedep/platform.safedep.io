@@ -90,7 +90,7 @@ export default async function MalwareAnalysisReportCard({
         <CardHeader>
           <div className="flex flex-wrap items-center justify-between">
             <h1 className="group font-mono text-2xl break-all">
-              <Link
+              <a
                 href={packageUrl}
                 target="_blank"
                 rel="noopener noreferrer"
@@ -98,7 +98,7 @@ export default async function MalwareAnalysisReportCard({
               >
                 {packageName}
                 <ArrowUpRight className="h-4 w-4" />
-              </Link>
+              </a>
             </h1>
             <MalwareAnalysisBadge
               malwareAnalysisStatus={malwareAnalysisStatus}
