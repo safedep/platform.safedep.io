@@ -22,12 +22,16 @@ interface TenantSelectorProps {
   userEmail: string;
   tenants: Access[];
   onSelectTenant(tenant: string): Promise<void>;
+  cardTitle?: string;
+  cardDescription?: string;
 }
 
 export default function TenantSelector({
   userEmail,
   tenants,
   onSelectTenant,
+  cardTitle,
+  cardDescription,
 }: TenantSelectorProps) {
   const [, startTransition] = useTransition();
 
@@ -45,9 +49,9 @@ export default function TenantSelector({
       </div>
       <Card className="w-full shadow-md">
         <CardHeader>
-          <CardTitle>Select tenant</CardTitle>
+          <CardTitle>{cardTitle ?? "Select tenant"}</CardTitle>
           <CardDescription>
-            Select the tenant to use with the application
+            {cardDescription ?? "Select the tenant to use with the application"}
           </CardDescription>
         </CardHeader>
         <CardContent className="flex flex-col gap-4">
