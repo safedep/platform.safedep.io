@@ -26,10 +26,10 @@ export async function connectTenantToGithub({
  * Fetches user email and tenants that the user has access to. If the user is
  * not logged in, it redirects to the login/signup page.
  */
-export async function getUserInfoOrRedirectToAuth() {
+export async function getUserInfoOrRedirectToAuth(returnTo: string) {
   const session = await auth0.getSession();
   if (!session) {
-    return redirect("/auth/login?returnTo=/connect/github&screen_hint=signup");
+    return redirect(`/auth/login?returnTo=${returnTo}&screen_hint=signup`);
   }
 
   try {
