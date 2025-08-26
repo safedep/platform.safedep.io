@@ -22,7 +22,9 @@ vi.mock("next/navigation", () => ({
 }));
 
 async function setupPageComponent() {
-  const page = await Page();
+  const page = await Page({
+    searchParams: Promise.resolve({}),
+  });
   return page;
 }
 
