@@ -1,6 +1,6 @@
-import TenantSelector from "@/components/tenant-selector";
 import * as v from "valibot";
-import { connectTenantToGithub, getUserInfoOrRedirectToAuth } from "./actions";
+import { getUserInfoOrRedirectToAuth } from "./actions";
+import ConnectGithubClient from "./client";
 
 const searchParamSchema = v.object({
   code: v.pipe(v.string(), v.nonEmpty()),
@@ -25,17 +25,11 @@ export default async function ConnectGithubPage({
   const { email, tenants } = await getUserInfoOrRedirectToAuth();
 
   return (
-    <div className="flex flex-1 flex-col items-center justify-center">
-      <TenantSelector
-        onSelectTenant={async (t) => {
-          "use server";
-          await connectTenantToGithub({ tenantId: t, code, installationId });
-        }}
-        tenants={tenants}
-        userEmail={email ?? ""}
-        cardTitle="Connect GitHub to SafeDep"
-        cardDescription="Select the tenant to connect to GitHub"
-      />
-    </div>
+    <ConnectGithubClient
+      code={code}
+      installationId={installationId}
+      tenants={tenants}
+      email={email ?? ""}
+    />
   );
 }
