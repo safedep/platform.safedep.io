@@ -1,12 +1,12 @@
 "use client";
 
-import TenantSelector from "@/components/tenant-selector";
+import TenantConnector from "@/components/oauth-connector/tenant-connector";
 import { connectTenantToGithub } from "./actions";
 import { Access } from "@buf/safedep_api.bufbuild_es/safedep/messages/controltower/v1/access_pb";
 import { useMutation } from "@tanstack/react-query";
 import { toast } from "sonner";
 import { SiGithub } from "@icons-pack/react-simple-icons";
-import OauthConnect from "@/components/oauth-connect";
+import OauthConnect from "@/components/oauth-connector/oauth-connect";
 
 export default function ConnectGithubClient({
   code,
@@ -50,7 +50,7 @@ export default function ConnectGithubClient({
         title="Connect GitHub to SafeDep"
         description="Select the tenant you want to link with your GitHub installation."
       >
-        <TenantSelector
+        <TenantConnector
           onSelectTenant={async (t) => handleSelectTenant(t)}
           tenants={tenants}
           userEmail={email}

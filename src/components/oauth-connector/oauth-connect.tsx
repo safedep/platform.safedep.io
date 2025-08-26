@@ -1,5 +1,9 @@
 import { cn } from "@/lib/utils";
 
+/**
+ * A component that displays an OAuth connection flow. Provides a consistent
+ * layout for OAuth connection flows page.
+ */
 export default function OauthConnect({
   icon,
   title,
