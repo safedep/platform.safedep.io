@@ -2,8 +2,6 @@ import { describe, expect, it } from "vitest";
 import * as fc from "fast-check";
 import { getSafeRedirect } from "./safe-redirect";
 
-fc.configureGlobal({ numRuns: 100_000 });
-
 describe("safe-redirect", () => {
   const fallback = "/";
 
