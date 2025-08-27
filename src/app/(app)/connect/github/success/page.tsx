@@ -32,7 +32,15 @@ export default function ConnectSuccessPage() {
           </p>
 
           <div className="pt-2">
-            <Button size="lg">Want more? See available upgrades</Button>
+            <Button size="lg" asChild>
+              <a
+                href="https://safedep.io"
+                target="_blank"
+                rel="noopener noreferrer"
+              >
+                Want more? See available upgrades
+              </a>
+            </Button>
           </div>
           <div className="mt-2 flex items-center justify-center gap-4 text-sm lg:justify-start">
             <a
