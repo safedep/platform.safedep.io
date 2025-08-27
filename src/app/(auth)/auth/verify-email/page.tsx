@@ -8,7 +8,7 @@ import {
 } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import Link from "next/link";
-import { Metadata } from "next";
+import { Metadata, Route } from "next";
 import { auth0 } from "@/lib/auth0";
 import { redirect } from "next/navigation";
 import { getSafeRedirect } from "@/lib/safe-redirect";
@@ -33,7 +33,7 @@ export default async function Page({
 
   const returnToSafe = getSafeRedirect(returnTo, "/");
   if (session?.user?.email_verified) {
-    return redirect(returnToSafe);
+    return redirect(returnToSafe as Route);
   }
 
   return (

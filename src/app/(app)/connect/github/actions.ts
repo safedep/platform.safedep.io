@@ -3,6 +3,7 @@
 import { auth0 } from "@/lib/auth0";
 import { createUserServiceClient } from "@/lib/rpc/client";
 import { Code, ConnectError } from "@connectrpc/connect";
+import { Route } from "next";
 import { redirect } from "next/navigation";
 
 export async function connectTenantToGithub({
@@ -33,7 +34,9 @@ export async function connectTenantToGithub({
 export async function getUserInfoOrRedirectToAuth(returnTo: string) {
   const session = await auth0.getSession();
   if (!session) {
-    return redirect(`/auth/login?returnTo=${returnTo}&screen_hint=signup`);
+    return redirect(
+      `/auth/login?returnTo=${returnTo}&screen_hint=signup` as Route,
+    );
   }
 
   try {
