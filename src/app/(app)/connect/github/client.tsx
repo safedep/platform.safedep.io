@@ -34,7 +34,7 @@ export default function ConnectGithubClient({
         toast.success("GitHub connected to SafeDep", {
           id: toastId,
         });
-        router.replace("/");
+        router.replace("/connect/github/success");
       },
       onError: () => {
         toast.error("Failed to connect GitHub to SafeDep", {

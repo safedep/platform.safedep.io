@@ -1,5 +1,5 @@
 import { afterEach, describe, expect, it, vi } from "vitest";
-import { render, screen } from "@testing-library/react";
+import { render, screen, waitFor } from "@testing-library/react";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import Page from "./page";
 import { connectTenantToGithub, getUserInfoOrRedirectToAuth } from "./actions";
@@ -8,6 +8,7 @@ import {
   AccessSchema,
 } from "@buf/safedep_api.bufbuild_es/safedep/messages/controltower/v1/access_pb";
 import { create } from "@bufbuild/protobuf";
+import userEvent from "@testing-library/user-event";
 
 type UserInfoResult = Awaited<ReturnType<typeof getUserInfoOrRedirectToAuth>>;
 
@@ -18,10 +19,15 @@ const mocks = vi.hoisted(() => ({
   },
   navigation: {
     redirect: vi.fn(),
-    useRouter: () => ({
+    useRouter: {
       push: vi.fn(),
       replace: vi.fn(),
-    }),
+    },
+  },
+  toast: {
+    loading: vi.fn(),
+    success: vi.fn(),
+    error: vi.fn(),
   },
 }));
 
@@ -32,8 +38,17 @@ vi.mock("./actions", () => ({
 
 vi.mock("next/navigation", () => ({
   redirect: mocks.navigation.redirect,
-  useRouter: mocks.navigation.useRouter,
+  useRouter: () => mocks.navigation.useRouter,
 }));
+
+vi.mock("sonner", () => ({
+  toast: mocks.toast,
+}));
+
+// shadcn Select uses hasPointerCapture internally which is not supported in jsdom
+// provide a minimal stub to avoid errors during interaction
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
+(window.HTMLElement.prototype as any).hasPointerCapture = vi.fn();
 
 function createQueryClient() {
   return new QueryClient({
@@ -75,6 +90,8 @@ async function setupPageComponent({
 describe("ConnectGithubPage", () => {
   afterEach(() => {
     vi.resetAllMocks();
+    vi.useRealTimers();
+    vi.clearAllTimers();
   });
 
   it("should render with valid search params", async () => {
@@ -271,5 +288,61 @@ describe("ConnectGithubPage", () => {
     expect(mocks.navigation.redirect).not.toHaveBeenCalled();
     expect(screen.getByText("Connect GitHub to SafeDep")).toBeInTheDocument();
     // The component should still render even if email is null (converted to empty string)
+  });
+
+  it("triggers mutation and shows loading toast when connecting a tenant", async () => {
+    // Arrange
+    vi.useFakeTimers();
+    const user = userEvent.setup({ advanceTimers: vi.advanceTimersByTime });
+    mocks.actions.getUserInfoOrRedirectToAuth.mockResolvedValue({
+      email: "test@example.com",
+      tenants: [createMockAccess("tenant1.com")],
+    } satisfies UserInfoResult);
+    // delay the action so we can observe the pending mutation state
+    mocks.actions.connectTenantToGithub.mockImplementation(
+      () =>
+        new Promise((resolve) =>
+          setTimeout(() => resolve("link-1" as never), 2_000),
+        ),
+    );
+    mocks.toast.loading.mockReturnValue("toast-1");
+
+    // Act
+    const { queryClient } = await setupPageComponent({
+      searchParams: {
+        code: "github-code-123",
+        installation_id: "12345",
+        setup_action: "install",
+      },
+    });
+
+    // open tenant select and choose an option
+    const tenantSelect = screen.getByRole("combobox");
+    await user.click(tenantSelect);
+    const option = await screen.findByRole("option", { name: "tenant1.com" });
+    await user.click(option);
+
+    // click Connect
+    const connectButton = screen.getByRole("button", { name: "Connect" });
+    await user.click(connectButton);
+
+    // Assert: mutation started and loading toast shown
+    expect(queryClient.isMutating()).toBeGreaterThan(0);
+    expect(mocks.toast.loading).toHaveBeenCalledWith(
+      "Connecting GitHub to SafeDep...",
+    );
+
+    // Let the mutation complete
+    vi.advanceTimersByTime(2_000);
+    await waitFor(() => expect(queryClient.isMutating()).toBe(0));
+    expect(mocks.toast.success).toHaveBeenCalledWith(
+      "GitHub connected to SafeDep",
+      { id: "toast-1" },
+    );
+
+    // Assert: the user is redirected to the keys page
+    expect(mocks.navigation.useRouter.replace).toHaveBeenCalledWith(
+      "/connect/github/success",
+    );
   });
 });
