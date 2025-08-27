@@ -7,7 +7,12 @@ import { SiGithub } from "@icons-pack/react-simple-icons";
 
 const searchParamSchema = v.object({
   code: v.pipe(v.string(), v.nonEmpty()),
-  installation_id: v.pipe(v.string(), v.nonEmpty()),
+  installation_id: v.pipe(
+    v.string(),
+    v.nonEmpty(),
+    v.transform(Number.parseInt),
+    v.number(),
+  ),
   setup_action: v.optional(v.string()),
 });
 type SearchParams = v.InferInput<typeof searchParamSchema>;

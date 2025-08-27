@@ -14,7 +14,7 @@ export default function ConnectGithubClient({
   email,
 }: {
   code: string;
-  installationId: string;
+  installationId: number;
   tenants: Access[];
   email: string;
 }) {

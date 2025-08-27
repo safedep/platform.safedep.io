@@ -1,7 +1,10 @@
 "use server";
 
 import { auth0 } from "@/lib/auth0";
-import { createUserServiceClient } from "@/lib/rpc/client";
+import {
+  createIntegrationServiceClient,
+  createUserServiceClient,
+} from "@/lib/rpc/client";
 import { Code, ConnectError } from "@connectrpc/connect";
 import { Route } from "next";
 import { redirect } from "next/navigation";
@@ -13,14 +16,19 @@ export async function connectTenantToGithub({
 }: {
   tenantId: string;
   code: string;
-  installationId: string;
+  installationId: number;
 }) {
-  console.log("connecting tenant to github", {
+  const session = await getSessionOrRedirectToAuth("/");
+
+  const client = createIntegrationServiceClient(
     tenantId,
-    code,
-    installationId,
+    session.tokenSet.accessToken,
+  );
+  const resp = await client.createGitHubAppInstallationLink({
+    appInstallationId: BigInt(installationId),
+    userAuthorizationCode: code,
   });
-  await new Promise((resolve) => setTimeout(resolve, 3000));
+  return resp.linkId;
 }
 
 /**
@@ -32,12 +40,7 @@ export async function connectTenantToGithub({
  * @returns The user's email and tenants.
  */
 export async function getUserInfoOrRedirectToAuth(returnTo: string) {
-  const session = await auth0.getSession();
-  if (!session) {
-    return redirect(
-      `/auth/login?returnTo=${returnTo}&screen_hint=signup` as Route,
-    );
-  }
+  const session = await getSessionOrRedirectToAuth(returnTo);
 
   try {
     const client = createUserServiceClient(session.tokenSet.accessToken);
@@ -56,4 +59,22 @@ export async function getUserInfoOrRedirectToAuth(returnTo: string) {
 
     throw error;
   }
+}
+
+/**
+ * Get the session if the user is authenticated. If the user is not authenticated,
+ * redirect to the login page.
+ *
+ * @param postAuthReturnTo Where to come back to after authentication flow is done.
+ * You are responsible for encoding the URL.
+ * @returns The session if the user is authenticated.
+ */
+async function getSessionOrRedirectToAuth(postAuthReturnTo: string) {
+  const session = await auth0.getSession();
+  if (!session) {
+    return redirect(
+      `/auth/login?returnTo=${postAuthReturnTo}&screen_hint=signup` as Route,
+    );
+  }
+  return session;
 }

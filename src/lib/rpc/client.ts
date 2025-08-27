@@ -4,6 +4,7 @@ import { OnboardingService } from "@buf/safedep_api.bufbuild_es/safedep/services
 import { ApiKeyService } from "@buf/safedep_api.bufbuild_es/safedep/services/controltower/v1/api_key_pb";
 import { UserService } from "@buf/safedep_api.bufbuild_es/safedep/services/controltower/v1/user_pb";
 import { MalwareAnalysisService } from "@buf/safedep_api.bufbuild_es/safedep/services/malysis/v1/malysis_pb";
+import { IntegrationService } from "@buf/safedep_api.bufbuild_es/safedep/services/controltower/v1/integration_pb";
 import { env } from "@/env";
 import "server-only";
 
@@ -50,4 +51,9 @@ export function createMalwareAnalysisServiceClient(
 ) {
   const transport = createTransport(apiBaseUrl, tenant, token);
   return createClient(MalwareAnalysisService, transport);
+}
+
+export function createIntegrationServiceClient(tenant: string, token: string) {
+  const transport = createTransport(apiBaseUrl, tenant, token);
+  return createClient(IntegrationService, transport);
 }
