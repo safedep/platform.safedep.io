@@ -5,8 +5,6 @@ import { connectTenantToGithub } from "./actions";
 import { Access } from "@buf/safedep_api.bufbuild_es/safedep/messages/controltower/v1/access_pb";
 import { useMutation } from "@tanstack/react-query";
 import { toast } from "sonner";
-import { SiGithub } from "@icons-pack/react-simple-icons";
-import OauthConnect from "@/components/oauth-connector/oauth-connect";
 import { useRouter } from "next/navigation";
 
 export default function ConnectGithubClient({
@@ -47,20 +45,12 @@ export default function ConnectGithubClient({
   }
 
   return (
-    <div className="flex items-center justify-center md:flex-1">
-      <OauthConnect
-        icon={<SiGithub className="h-6 w-6" />}
-        title="Connect GitHub to SafeDep"
-        description="Select the tenant you want to link with your GitHub installation."
-      >
-        <TenantConnector
-          onSelectTenant={async (t) => handleSelectTenant(t)}
-          tenants={tenants}
-          userEmail={email}
-          cardTitle="Select tenant"
-          cardDescription="Choose the tenant to connect to GitHub"
-        />
-      </OauthConnect>
-    </div>
+    <TenantConnector
+      onSelectTenant={async (t) => handleSelectTenant(t)}
+      tenants={tenants}
+      userEmail={email}
+      cardTitle="Select tenant"
+      cardDescription="Choose the tenant to connect to GitHub"
+    />
   );
 }

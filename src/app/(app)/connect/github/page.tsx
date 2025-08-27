@@ -2,6 +2,8 @@ import * as v from "valibot";
 import { getUserInfoOrRedirectToAuth } from "./actions";
 import ConnectGithubClient from "./client";
 import { redirect } from "next/navigation";
+import OauthConnect from "@/components/oauth-connector/oauth-connect";
+import { SiGithub } from "@icons-pack/react-simple-icons";
 
 const searchParamSchema = v.object({
   code: v.pipe(v.string(), v.nonEmpty()),
@@ -35,11 +37,19 @@ export default async function ConnectGithubPage({
   );
 
   return (
-    <ConnectGithubClient
-      code={code}
-      installationId={installationId}
-      tenants={tenants}
-      email={email ?? ""}
-    />
+    <div className="flex items-center justify-center md:flex-1">
+      <OauthConnect
+        icon={<SiGithub className="h-6 w-6" />}
+        title="Connect GitHub to SafeDep"
+        description="Select the tenant you want to link with your GitHub installation."
+      >
+        <ConnectGithubClient
+          code={code}
+          installationId={installationId}
+          tenants={tenants}
+          email={email ?? ""}
+        />
+      </OauthConnect>
+    </div>
   );
 }
