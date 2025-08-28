@@ -27,6 +27,7 @@ import { useMutation } from "@tanstack/react-query";
 import { User } from "@auth0/nextjs-auth0/types";
 import { createOnboarding } from "./actions";
 import { useRouter } from "next/navigation";
+import { Route } from "next";
 
 const DOMAIN_REGEX = /^(?!-)([a-z0-9-]{1,63}(?<!-)\.)+[a-z]{2,6}$/iu;
 
@@ -52,7 +53,16 @@ const formSchema = v.object({
 
 type FormValues = v.InferInput<typeof formSchema>;
 
-export default function OnboardingForm({ user }: { user: User }) {
+export default function OnboardingForm({
+  user,
+  returnTo,
+}: {
+  user: User;
+  /**
+   * The URL to redirect to after onboarding is complete.
+   */
+  returnTo?: Route;
+}) {
   const router = useRouter();
   const form = useForm<FormValues>({
     resolver: valibotResolver(formSchema),
@@ -81,7 +91,7 @@ export default function OnboardingForm({ user }: { user: User }) {
       toast.success("Your organization has been created", {
         description: `You can now access ${tenant}`,
       });
-      router.push(`/`);
+      router.push(returnTo ?? "/");
     },
     onError: (error) => {
       toast.error("Failed to create organization", {

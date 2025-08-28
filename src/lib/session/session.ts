@@ -2,6 +2,7 @@ import "server-only";
 import { cookies } from "next/headers";
 import { redirect } from "next/navigation";
 import { auth0 } from "@/lib/auth0";
+import { Route } from "next";
 
 const TENANT_COOKIE = "tenant";
 
@@ -38,7 +39,7 @@ export async function sessionRequireTenant() {
  * @param redirectTo - The path to redirect to if the user is not authenticated.
  * @returns The session if the user is authenticated.
  */
-export async function sessionRequireAuth(redirectTo = "/auth") {
+export async function sessionRequireAuth(redirectTo: Route = "/auth") {
   const session = await auth0.getSession();
   if (!session) {
     return redirect(redirectTo);

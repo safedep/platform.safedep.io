@@ -1,4 +1,5 @@
 "use client";
+
 import { Button } from "@/components/ui/button";
 import {
   Card,
@@ -14,11 +15,11 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
-import { UserIcon } from "lucide-react";
 import { Access } from "@buf/safedep_api.bufbuild_es/safedep/messages/controltower/v1/access_pb";
-import { useTransition } from "react";
+import { useState, useTransition } from "react";
+import { Badge } from "../ui/badge";
 
-interface TenantSelectorProps {
+interface TenantConnectorProps {
   userEmail: string;
   tenants: Access[];
   onSelectTenant(tenant: string): Promise<void>;
@@ -26,36 +27,46 @@ interface TenantSelectorProps {
   cardDescription?: string;
 }
 
-export default function TenantSelector({
-  userEmail,
+/**
+ * A component that displays a list of tenants and allows the user to select
+ * one. Primarily used in the OAuth connector flow.
+ */
+export default function TenantConnector({
   tenants,
   onSelectTenant,
   cardTitle,
   cardDescription,
-}: TenantSelectorProps) {
-  const [, startTransition] = useTransition();
+  userEmail,
+}: TenantConnectorProps) {
+  const [selectedTenant, setSelectedTenant] = useState<string>("");
+  const [isPending, startTransition] = useTransition();
 
-  async function handleSelectTenant(tenant: string) {
+  function handleSetTenant(tenant: string) {
+    setSelectedTenant(tenant);
+  }
+
+  function handleConnect() {
+    if (!selectedTenant) {
+      return;
+    }
     startTransition(async () => {
-      await onSelectTenant(tenant);
+      await onSelectTenant(selectedTenant);
     });
   }
 
   return (
-    <div className="flex w-full max-w-md flex-col items-center">
-      <div className="text-muted-foreground mb-3 flex items-center justify-center gap-1.5 text-sm">
-        <UserIcon className="h-3.5 w-3.5" />
-        <span>Welcome {userEmail}</span>
-      </div>
+    <div className="flex w-full max-w-md flex-col items-center gap-2">
+      <Badge variant="outline">Connecting account for {userEmail}</Badge>
+
       <Card className="w-full shadow-md">
         <CardHeader>
           <CardTitle>{cardTitle ?? "Select tenant"}</CardTitle>
           <CardDescription>
-            {cardDescription ?? "Select the tenant to use with the application"}
+            {cardDescription ?? "Select the tenant to use with this connection"}
           </CardDescription>
         </CardHeader>
         <CardContent className="flex flex-col gap-4">
-          <Select onValueChange={handleSelectTenant}>
+          <Select onValueChange={handleSetTenant} value={selectedTenant}>
             <SelectTrigger className="w-full">
               <SelectValue placeholder="Select a tenant" />
             </SelectTrigger>
@@ -71,9 +82,14 @@ export default function TenantSelector({
             </SelectContent>
           </Select>
 
-          <div>
-            <Button variant="outline" className="w-full sm:w-auto" asChild>
-              <a href="/auth/logout">Logout</a>
+          <div className="flex w-full">
+            <Button
+              className="w-full md:w-auto"
+              onClick={handleConnect}
+              disabled={!selectedTenant || isPending}
+              size="lg"
+            >
+              {isPending ? "Connecting..." : "Connect"}
             </Button>
           </div>
         </CardContent>
