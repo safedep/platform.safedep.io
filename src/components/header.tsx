@@ -14,9 +14,8 @@ export default function Header() {
               <Image
                 src="/safedep-logo.svg"
                 alt="SafeDep Logo"
-                width={160}
-                height={50}
-                className="h-10 w-auto"
+                width={25}
+                height={25}
                 priority
               />
             </Link>

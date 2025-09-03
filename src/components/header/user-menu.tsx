@@ -32,7 +32,7 @@ export default function UserMenu() {
         <div className="flex items-center gap-2 border-b p-3">
           <Avatar className="h-8 w-8">
             <AvatarImage src={user?.picture} />
-            <AvatarFallback>U</AvatarFallback>
+            <AvatarFallback>{user.name?.charAt(0) ?? "U"}</AvatarFallback>
           </Avatar>
           <div className="flex flex-col">
             <span className="text-sm font-medium">{user?.name}</span>
