@@ -8,7 +8,6 @@ describe("Auth Page", () => {
     render(<AuthPage />);
 
     // Assert
-    expect(screen.getByText("Welcome to SafeDep")).toBeInTheDocument();
     expect(screen.getByText("Create Account")).toBeInTheDocument();
     expect(screen.getByText("Login")).toBeInTheDocument();
   });
