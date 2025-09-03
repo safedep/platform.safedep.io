@@ -28,6 +28,7 @@ export default function AuthCard({
               className="transition-transform hover:scale-105"
               priority
               width={150}
+              height={34}
             />
           </div>
 
