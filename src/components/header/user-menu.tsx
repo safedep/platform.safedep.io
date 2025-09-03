@@ -22,7 +22,7 @@ export default function UserMenu() {
         <button className="hover:bg-muted flex items-center gap-2 rounded-md p-2">
           <Avatar className="h-8 w-8">
             <AvatarImage src={user?.picture} />
-            <AvatarFallback>U</AvatarFallback>
+            <AvatarFallback>{user.name?.charAt(0) ?? "U"}</AvatarFallback>
           </Avatar>
           <span className="sr-only">User menu</span>
         </button>
