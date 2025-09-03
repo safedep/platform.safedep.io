@@ -4,6 +4,7 @@ import Badge from "@/components/auth/auth-badge";
 import { CheckCircle, Shield } from "lucide-react";
 import { Card, CardContent } from "@/components/ui/card";
 import { cn } from "@/lib/utils";
+import safedepLogoWordmark from "@/assets/safedep-logo-wordmark.png";
 
 interface AuthCardProps {
   children: React.ReactNode;
@@ -20,14 +21,14 @@ export default function AuthCard({
     <Card className="mx-auto w-full max-w-md overflow-hidden rounded-xl border border-gray-200 shadow-lg shadow-blue-600/10">
       <CardContent className="p-0">
         <div className="flex flex-col gap-6 p-6 sm:p-8">
-          <div className="flex justify-center">
+          <div className="relative flex justify-center">
             <Image
-              src="/safedep-logo.svg"
+              src={safedepLogoWordmark}
               alt="SafeDep Logo"
-              width={80}
-              height={80}
               className="transition-transform hover:scale-105"
               priority
+              width={150}
+              height={34}
             />
           </div>
 

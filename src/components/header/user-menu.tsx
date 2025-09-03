@@ -12,13 +12,17 @@ import { useUser } from "@auth0/nextjs-auth0";
 export default function UserMenu() {
   const { user } = useUser();
 
+  if (!user) {
+    return null;
+  }
+
   return (
     <Popover>
       <PopoverTrigger asChild>
         <button className="hover:bg-muted flex items-center gap-2 rounded-md p-2">
           <Avatar className="h-8 w-8">
             <AvatarImage src={user?.picture} />
-            <AvatarFallback>U</AvatarFallback>
+            <AvatarFallback>{user.name?.charAt(0) ?? "U"}</AvatarFallback>
           </Avatar>
           <span className="sr-only">User menu</span>
         </button>
@@ -28,7 +32,7 @@ export default function UserMenu() {
         <div className="flex items-center gap-2 border-b p-3">
           <Avatar className="h-8 w-8">
             <AvatarImage src={user?.picture} />
-            <AvatarFallback>U</AvatarFallback>
+            <AvatarFallback>{user.name?.charAt(0) ?? "U"}</AvatarFallback>
           </Avatar>
           <div className="flex flex-col">
             <span className="text-sm font-medium">{user?.name}</span>
