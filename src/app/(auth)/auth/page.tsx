@@ -16,7 +16,7 @@ export default function AuthPage() {
         className="w-full max-w-md"
       >
         <AuthCard
-          title="Welcome to SafeDep"
+          title=""
           description="Get access to SafeDep Cloud APIs to integrate open-source component analysis and risk assessment into your CI/CD pipeline or custom workflow."
         >
           <div className="flex flex-col gap-6">
