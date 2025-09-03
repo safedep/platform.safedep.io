@@ -12,6 +12,10 @@ import { useUser } from "@auth0/nextjs-auth0";
 export default function UserMenu() {
   const { user } = useUser();
 
+  if (!user) {
+    return null;
+  }
+
   return (
     <Popover>
       <PopoverTrigger asChild>
