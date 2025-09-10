@@ -2,7 +2,7 @@
 
 import {
   createInsightsServiceClient,
-//   createMalwareAnalysisServiceClient,
+  //   createMalwareAnalysisServiceClient,
 } from "@/lib/rpc/client";
 import { PackageVersionInsight } from "@buf/safedep_api.bufbuild_es/safedep/messages/package/v1/package_version_insight_pb";
 import { env } from "@/env";
