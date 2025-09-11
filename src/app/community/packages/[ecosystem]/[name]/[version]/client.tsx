@@ -16,7 +16,6 @@ import LicenseStatsCard from "./components/license-stats-card";
 import VulnerabilityStatsCard from "./components/vulnerability-stats-card";
 import { PackageSafetyStatus } from "./components/package-safety-badge";
 import { getPackageSafetyStatus } from "./utils/package-safety";
-import { QueryPackageAnalysisResponse } from "@buf/safedep_api.bufbuild_es/safedep/services/malysis/v1/malysis_pb";
 
 export default function PackageVersionInfoClient({
   ecosystem,
