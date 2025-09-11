@@ -45,6 +45,13 @@ vi.mock("sonner", () => ({
   toast: mocks.toast,
 }));
 
+vi.mock("@/env", () => ({
+  env: {
+    GITHUB_APP_INTEGRATION_CLIENT_ID: "github-app-integration-client-id",
+    APP_BASE_URL: "https://platform.safedep.io",
+  },
+}));
+
 // shadcn Select uses hasPointerCapture internally which is not supported in jsdom
 // provide a minimal stub to avoid errors during interaction
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
@@ -126,6 +133,11 @@ describe("ConnectGithubPage", () => {
   });
 
   it("should redirect to home page when code is missing", async () => {
+    vi.stubEnv(
+      "GITHUB_APP_INTEGRATION_CLIENT_ID",
+      "github-app-integration-client-id",
+    );
+
     // Act
     await setupPageComponent({
       searchParams: {
@@ -136,7 +148,11 @@ describe("ConnectGithubPage", () => {
     });
 
     // Assert
-    expect(mocks.navigation.redirect).toHaveBeenCalledWith("/");
+    expect(mocks.navigation.redirect).toHaveBeenCalledWith(
+      expect.stringMatching(
+        /^https:\/\/github\.com\/login\/oauth\/authorize.+\bgithub-app-integration-client-id\b.+$/,
+      ),
+    );
     expect(mocks.actions.getUserInfoOrRedirectToAuth).not.toHaveBeenCalled();
   });
 
