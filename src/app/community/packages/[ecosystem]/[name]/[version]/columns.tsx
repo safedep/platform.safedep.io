@@ -4,13 +4,13 @@ import { ColumnDef } from "@tanstack/react-table";
 import { Vulnerability } from "@buf/safedep_api.bufbuild_es/safedep/messages/vulnerability/v1/vulnerability_pb";
 import { Severity_Risk } from "@buf/safedep_api.bufbuild_es/safedep/messages/vulnerability/v1/severity_pb";
 import { PackageAvailableVersion } from "@buf/safedep_api.bufbuild_es/safedep/messages/package/v1/package_version_insight_pb";
+import { LicenseMeta } from "@buf/safedep_api.bufbuild_es/safedep/messages/package/v1/license_meta_pb";
 import { riskLevelToBadgeColor, riskLevelToName } from "@/utils/severity";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
-import { ExternalLink } from "lucide-react";
+import { ExternalLink, CheckCircle, XCircle } from "lucide-react";
 import { timestampDate } from "@bufbuild/protobuf/wkt";
 import { cn } from "@/lib/utils";
-import Link from "next/link";
 
 // Columns for Vulnerability table
 export const PackageVulnerabilityColumns: ColumnDef<Vulnerability>[] = [
@@ -178,13 +178,111 @@ export const createAvailableVersionsColumns = (
             </Badge>
           ) : (
             <Button variant="outline" size="sm" className="h-8 px-3" asChild>
-              <Link href={reportUrl}>
+              <a href={reportUrl} className="inline-flex items-center gap-1">
                 <ExternalLink className="mr-1 h-3 w-3" />
                 View Report
-              </Link>
+              </a>
             </Button>
           )}
         </div>
+      );
+    },
+  },
+];
+
+// Columns for License Details table
+export const createLicenseDetailsColumns = (): ColumnDef<LicenseMeta>[] => [
+  {
+    accessorKey: "licenseId",
+    header: "License ID",
+    cell: ({ row }) => {
+      const licenseId = row.original.licenseId;
+      const isDeprecated = row.original.deprecatedLicenseId;
+
+      return (
+        <div className="flex items-center gap-2">
+          <span className="font-mono text-sm font-medium">{licenseId}</span>
+          {isDeprecated && (
+            <Badge variant="destructive" className="text-xs">
+              Deprecated
+            </Badge>
+          )}
+        </div>
+      );
+    },
+  },
+  {
+    accessorKey: "name",
+    header: "License Name",
+    cell: ({ row }) => {
+      const name = row.original.name;
+      return <span className="text-sm">{name || "Unknown"}</span>;
+    },
+  },
+  {
+    accessorKey: "osiApproved",
+    header: "OSI Approved",
+    cell: ({ row }) => {
+      const osiApproved = row.original.osiApproved;
+      return (
+        <div className="flex items-center gap-1">
+          {osiApproved ? (
+            <>
+              <CheckCircle className="h-4 w-4 text-green-600" />
+              <span className="text-sm text-green-700">Yes</span>
+            </>
+          ) : (
+            <>
+              <XCircle className="h-4 w-4 text-red-600" />
+              <span className="text-sm text-red-700">No</span>
+            </>
+          )}
+        </div>
+      );
+    },
+  },
+  {
+    accessorKey: "commercialUseAllowed",
+    header: "Commercial Use",
+    cell: ({ row }) => {
+      const commercialUse = row.original.commercialUseAllowed;
+      return (
+        <div className="flex items-center gap-1">
+          {commercialUse ? (
+            <>
+              <CheckCircle className="h-4 w-4 text-green-600" />
+              <span className="text-sm text-green-700">Allowed</span>
+            </>
+          ) : (
+            <>
+              <XCircle className="h-4 w-4 text-red-600" />
+              <span className="text-sm text-red-700">Restricted</span>
+            </>
+          )}
+        </div>
+      );
+    },
+  },
+  {
+    id: "actions",
+    header: "Reference",
+    cell: ({ row }) => {
+      const referenceUrl = row.original.referenceUrl;
+      const detailsUrl = row.original.detailsUrl;
+
+      if (!referenceUrl && !detailsUrl) {
+        return <span className="text-muted-foreground text-sm">-</span>;
+      }
+
+      const linkUrl = referenceUrl || detailsUrl;
+
+      return (
+        <Button variant="outline" size="sm" className="h-8 px-3" asChild>
+          <a href={linkUrl} target="_blank" rel="noopener noreferrer" className="inline-flex items-center gap-1">
+            <ExternalLink className="mr-1 h-3 w-3" />
+            View Details
+          </a>
+        </Button>
       );
     },
   },

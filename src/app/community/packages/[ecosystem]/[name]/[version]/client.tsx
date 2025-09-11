@@ -15,6 +15,7 @@ import ScorecardStatsCard from "./components/scorecard-stats-card";
 import LicenseStatsCard from "./components/license-stats-card";
 import VulnerabilityStatsCard from "./components/vulnerability-stats-card";
 import AvailableVersionsTable from "./components/available-versions-table";
+import LicenseDetailsTable from "./components/license-details-table";
 import { PackageSafetyStatus } from "./components/package-safety-badge";
 import { getPackageSafetyStatus } from "./utils/package-safety";
 
@@ -191,16 +192,7 @@ export default function PackageVersionInfoClient({
             </TabsContent>
 
             <TabsContent value="license" className="mt-6">
-              <Card>
-                <CardHeader>
-                  <CardTitle>License Details</CardTitle>
-                </CardHeader>
-                <CardContent>
-                  <div className="text-muted-foreground flex h-32 items-center justify-center">
-                    Coming soon...
-                  </div>
-                </CardContent>
-              </Card>
+              <LicenseDetailsTable licenses={data.licenses} />
             </TabsContent>
           </Tabs>
         </div>
