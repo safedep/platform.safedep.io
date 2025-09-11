@@ -38,6 +38,13 @@ export const env = createEnv({
     AUTH0_ISSUER_BASE_URL: v.string(),
     AUTH0_CLIENT_ID: v.string(),
     AUTH0_CLIENT_SECRET: v.string(),
+
+    // github
+    APP_BASE_URL: v.optional(
+      v.pipe(v.string(), v.url()),
+      "http://platform.safedep.io",
+    ),
+    GITHUB_CLIENT_ID: v.string(),
   },
 
   /**
