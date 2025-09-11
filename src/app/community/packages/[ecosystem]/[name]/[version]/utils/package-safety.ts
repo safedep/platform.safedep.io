@@ -3,6 +3,9 @@ import {
   QueryPackageAnalysisResponse,
 } from "@buf/safedep_api.bufbuild_es/safedep/services/malysis/v1/malysis_pb";
 import { PackageSafetyStatus } from "../components/package-safety-badge";
+import { PackageVersionInsight } from "@buf/safedep_api.bufbuild_es/safedep/messages/package/v1/package_version_insight_pb";
+import { Vulnerability } from "@buf/safedep_api.bufbuild_es/safedep/messages/vulnerability/v1/vulnerability_pb";
+import { Severity } from "@buf/safedep_api.bufbuild_es/safedep/messages/vulnerability/v1/severity_pb";
 
 export enum MalwareStatus {
   Unknown = "unknown",
@@ -38,7 +41,7 @@ export function getMalwareAnalysisStatus(
 }
 
 export function getPackageSafetyStatus(
-  data: any,
+  data: PackageVersionInsight,
   malwareAnalysis: QueryPackageAnalysisResponse | null,
 ): PackageSafetyStatus {
   // Check malware analysis first
@@ -51,12 +54,12 @@ export function getPackageSafetyStatus(
   }
 
   // Check for vulnerabilities
-  const vulnerabilities = data?.vulnerabilities || [];
+  const vulnerabilities: Vulnerability[] = data?.vulnerabilities || [];
   const criticalVulns = vulnerabilities.filter(
-    (v: any) => v.severities?.some((s: any) => s.risk === 4), // CRITICAL = 4
+    (v: Vulnerability) => v.severities?.some((s: Severity) => s.risk === 4), // CRITICAL = 4
   );
   const highVulns = vulnerabilities.filter(
-    (v: any) => v.severities?.some((s: any) => s.risk === 3), // HIGH = 3
+    (v: Vulnerability) => v.severities?.some((s: Severity) => s.risk === 3), // HIGH = 3
   );
 
   if (criticalVulns.length > 0 || highVulns.length > 5) {
