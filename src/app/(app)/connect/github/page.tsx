@@ -52,7 +52,7 @@ export default async function ConnectGithubPage({
   // we assume if the code is absent, it represents the fact that user has not yet finished linking
   // the app to a tenant. For that to happen, we need the code to act on behalf of the user.
   if (!code) {
-    const redirectUrl = buildRedirectUrl(env.GITHUB_CLIENT_ID);
+    const redirectUrl = buildRedirectUrl(env.GITHUB_APP_INTEGRATION_CLIENT_ID);
     return redirect(redirectUrl as Route);
   }
 
