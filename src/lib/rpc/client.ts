@@ -54,6 +54,6 @@ export function createMalwareAnalysisServiceClient(
 }
 
 export function createIntegrationServiceClient(tenant: string, token: string) {
-  const transport = createTransport(apiBaseUrl, tenant, token);
+  const transport = createTransport(cloudApiBaseUrl, tenant, token);
   return createClient(IntegrationService, transport);
 }
