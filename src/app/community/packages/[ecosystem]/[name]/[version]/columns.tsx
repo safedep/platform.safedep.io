@@ -278,7 +278,12 @@ export const createLicenseDetailsColumns = (): ColumnDef<LicenseMeta>[] => [
 
       return (
         <Button variant="outline" size="sm" className="h-8 px-3" asChild>
-          <a href={linkUrl} target="_blank" rel="noopener noreferrer" className="inline-flex items-center gap-1">
+          <a
+            href={linkUrl}
+            target="_blank"
+            rel="noopener noreferrer"
+            className="inline-flex items-center gap-1"
+          >
             <ExternalLink className="mr-1 h-3 w-3" />
             View Details
           </a>
