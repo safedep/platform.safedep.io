@@ -1,126 +1,21 @@
 "use client";
 
 import { ColumnDef } from "@tanstack/react-table";
-import { VulnerabilityWithAttributes } from "@buf/safedep_api.bufbuild_es/safedep/services/controltower/v1/vulnerability_pb";
 import { Vulnerability } from "@buf/safedep_api.bufbuild_es/safedep/messages/vulnerability/v1/vulnerability_pb";
 import { Severity_Risk } from "@buf/safedep_api.bufbuild_es/safedep/messages/vulnerability/v1/severity_pb";
 import { riskLevelToBadgeColor, riskLevelToName } from "@/utils/severity";
 import { Badge } from "@/components/ui/badge";
 import { timestampDate } from "@bufbuild/protobuf/wkt";
-import {
-  Tooltip,
-  TooltipContent,
-  TooltipTrigger,
-} from "@/components/ui/tooltip";
-import Link from "next/link";
 import { cn } from "@/lib/utils";
 
-export const VulnerabilityColumns: ColumnDef<VulnerabilityWithAttributes>[] = [
-  {
-    accessorKey: "vulnerability.id",
-    header: "ID",
-    cell: ({ row }) => {
-      const id = row.original.vulnerability?.id?.value;
-      return (
-        <Tooltip>
-          <TooltipTrigger asChild>
-            <Link
-              href={`/inventory/vulnerability/${id}/components`}
-              className="inline-flex items-center gap-1 font-mono text-xs hover:underline"
-            >
-              {id}
-            </Link>
-          </TooltipTrigger>
-          <TooltipContent>
-            <p>Click to view components affected by this vulnerability</p>
-          </TooltipContent>
-        </Tooltip>
-      );
-    },
-  },
-  {
-    accessorKey: "vulnerability.summary",
-    header: "Summary",
-    cell: ({ row }) => {
-      if (row.original.vulnerability?.summary) {
-        return <span>{row.original.vulnerability?.summary}</span>;
-      }
-
-      if (row.original.details) {
-        return <span>{row.original.details.slice(0, 120)}...</span>;
-      }
-
-      return (
-        <span className="text-muted-foreground">no summary available</span>
-      );
-    },
-  },
-  {
-    accessorKey: "risk",
-    header: "Risk",
-    cell: ({ row }) => {
-      const risk = row.original.risk;
-      return (
-        <Badge
-          variant="outline"
-          className={cn(
-            riskLevelToBadgeColor(risk),
-            "px-2 py-0.5 text-xs whitespace-nowrap",
-          )}
-        >
-          {riskLevelToName(risk)}
-        </Badge>
-      );
-    },
-  },
-  {
-    accessorKey: "vulnerability.publishedAt",
-    header: "Published",
-    cell: ({ row }) => {
-      const publishedAt = row.original.vulnerability?.publishedAt;
-      return (
-        <span>
-          {publishedAt ? timestampDate(publishedAt).toLocaleDateString() : "-"}
-        </span>
-      );
-    },
-  },
-  {
-    accessorKey: "vulnerability.modifiedAt",
-    header: "Modified",
-    cell: ({ row }) => {
-      const modifiedAt = row.original.vulnerability?.modifiedAt;
-      return (
-        <span>
-          {modifiedAt ? timestampDate(modifiedAt).toLocaleDateString() : "-"}
-        </span>
-      );
-    },
-  },
-];
-
-// Columns for Vulnerability type (used in PackageVersionInsight)
+// Columns for Vulnerability table
 export const PackageVulnerabilityColumns: ColumnDef<Vulnerability>[] = [
   {
     accessorKey: "id.value",
     header: "ID",
     cell: ({ row }) => {
       const id = row.original.id?.value;
-      return (
-        <Tooltip>
-          <TooltipTrigger asChild>
-            <Link
-              href={`/inventory/vulnerability/${id}/components`}
-              className="inline-flex items-center gap-1 font-mono text-xs hover:underline"
-            >
-              {id}
-            </Link>
-          </TooltipTrigger>
-          <TooltipContent>
-            <p>Click to view components affected by this vulnerability</p>
-          </TooltipContent>
-        </Tooltip>
-      );
+      return <span>{id}</span>;
     },
   },
   {
