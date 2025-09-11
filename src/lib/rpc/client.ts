@@ -5,6 +5,7 @@ import { ApiKeyService } from "@buf/safedep_api.bufbuild_es/safedep/services/con
 import { UserService } from "@buf/safedep_api.bufbuild_es/safedep/services/controltower/v1/user_pb";
 import { MalwareAnalysisService } from "@buf/safedep_api.bufbuild_es/safedep/services/malysis/v1/malysis_pb";
 import { IntegrationService } from "@buf/safedep_api.bufbuild_es/safedep/services/controltower/v1/integration_pb";
+import { InsightService } from "@buf/safedep_api.bufbuild_es/safedep/services/insights/v2/insights_pb";
 import { env } from "@/env";
 import "server-only";
 
@@ -56,4 +57,9 @@ export function createMalwareAnalysisServiceClient(
 export function createIntegrationServiceClient(tenant: string, token: string) {
   const transport = createTransport(cloudApiBaseUrl, tenant, token);
   return createClient(IntegrationService, transport);
+}
+
+export function createInsightsServiceClient(tenant: string, token: string) {
+  const transport = createTransport(apiBaseUrl, tenant, token);
+  return createClient(InsightService, transport);
 }
