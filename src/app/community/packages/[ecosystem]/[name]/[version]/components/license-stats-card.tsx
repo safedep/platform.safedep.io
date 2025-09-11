@@ -43,9 +43,7 @@ export default function LicenseStatsCard({ licenses }: LicenseStatsCardProps) {
       </CardHeader>
       <CardContent className="space-y-4">
         <div className="text-center">
-          <div className="text-3xl font-bold text-blue-600">
-            {primaryLicense.licenseId}
-          </div>
+          <div className="text-3xl font-bold">{primaryLicense.licenseId}</div>
           <p className="text-muted-foreground text-sm">{primaryLicense.name}</p>
           {additionalLicenses > 0 && (
             <p className="text-muted-foreground mt-1 text-xs">

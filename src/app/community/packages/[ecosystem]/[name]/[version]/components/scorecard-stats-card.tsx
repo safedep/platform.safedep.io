@@ -52,9 +52,7 @@ export default function ScorecardStatsCard({
       <CardContent className="space-y-4">
         {/* Main score */}
         <div className="text-center">
-          <div className={`text-3xl font-bold ${getScoreColor(overallScore)}`}>
-            {overallScore.toFixed(1)}
-          </div>
+          <div className={`font-bold} text-3xl`}>{overallScore.toFixed(1)}</div>
           <p className="text-muted-foreground text-sm">
             Overall security score out of 10
           </p>

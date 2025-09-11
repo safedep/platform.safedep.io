@@ -1,44 +1,31 @@
 "use client";
 
-import { getPackageVersionInfo } from "./action";
+import { getPackageVersionInfo, queryMalwareAnalysis } from "./action";
 import { useQuery } from "@tanstack/react-query";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
-import { Badge } from "@/components/ui/badge";
 import { Skeleton } from "@/components/ui/skeleton";
-import {
-  ExternalLink,
-  Package,
-  Star,
-  GitFork,
-  Github,
-  Loader2,
-} from "lucide-react";
-import { getEcosystemIcon } from "@/utils/ecosystem";
-
+import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
+import { DataTable } from "@/components/ui/data-table";
+import { Package, Loader2 } from "lucide-react";
+import React, { useEffect, useState } from "react";
+import PackageHeader from "./components/package-header";
+import MalwareAnalysisDisplay from "./components/malware-analysis-display";
+import { PackageVulnerabilityColumns } from "./columns";
 import ScorecardStatsCard from "./components/scorecard-stats-card";
 import LicenseStatsCard from "./components/license-stats-card";
 import VulnerabilityStatsCard from "./components/vulnerability-stats-card";
-// import MalwareAnalysisBadge from "@/components/malysis/malysis-badge";
-// import {
-//     Report_Evidence_Confidence,
-//     type Report,
-//   } from "@buf/safedep_api.bufbuild_es/safedep/messages/malysis/v1/report_pb";
-//   import { VerificationRecord } from "@buf/safedep_api.bufbuild_es/safedep/messages/malysis/v1/verification_record_pb";
-
-export type MalwareAnalysisStatus = "safe" | "possibly-malicious" | "malicious";
+import { PackageSafetyStatus } from "./components/package-safety-badge";
+import { getPackageSafetyStatus } from "./utils/package-safety";
+import { QueryPackageAnalysisResponse } from "@buf/safedep_api.bufbuild_es/safedep/services/malysis/v1/malysis_pb";
 
 export default function PackageVersionInfoClient({
   ecosystem,
   name,
   version,
-  //   report,
-  //   verificationRecord,
 }: {
   ecosystem: string;
   name: string;
   version: string;
-  //   report: Report | null;
-  //   verificationRecord: VerificationRecord | null;
 }) {
   const { data, isLoading, error } = useQuery({
     queryKey: ["package-version-info", ecosystem, name, version],
@@ -46,45 +33,27 @@ export default function PackageVersionInfoClient({
     retry: 2,
   });
 
-  //   function getMalwareAnalysisStatus(
-  //     report: Report | null,
-  //     vr?: VerificationRecord | null,
-  //   ): MalwareAnalysisStatus {
-  //     // If no report exists, assume safe
-  //     if (!report) {
-  //       return "safe";
-  //     }
+  const { data: malwareAnalysis, isLoading: isMalwareLoading } = useQuery({
+    queryKey: ["malware-analysis", ecosystem, name, version],
+    queryFn: () => queryMalwareAnalysis(ecosystem, name, version),
+    retry: 1,
+    enabled: !!data, // Only run after package data is loaded
+  });
 
-  //     // We will always trust the verification record if it exists
-  //     if (vr && vr.isMalware) {
-  //       return "malicious";
-  //     }
+  const [packageSafetyStatus, setPackageSafetyStatus] =
+    useState<PackageSafetyStatus>(PackageSafetyStatus.Unknown);
 
-  //     if (vr && vr.isSafe) {
-  //       return "safe";
-  //     }
-
-  //     // Fallback to heuristic when a verification record is not available
-  //     const isMalware = report?.inference?.isMalware ?? false;
-  //     const confidence = report.inference?.confidence ?? 0;
-  //     const isPossiblyMalicious =
-  //       isMalware && confidence !== Report_Evidence_Confidence.HIGH;
-
-  //     if (isPossiblyMalicious) {
-  //       return "possibly-malicious";
-  //     }
-
-  //     if (isMalware) {
-  //       return "malicious";
-  //     }
-
-  //     return "safe";
-  //   }
-
-  //   const malwareAnalysisStatus = getMalwareAnalysisStatus(
-  //     report,
-  //     verificationRecord,
-  //   );
+  useEffect(() => {
+    if (data) {
+      if (isMalwareLoading) {
+        setPackageSafetyStatus(getPackageSafetyStatus(data, null));
+      } else {
+        setPackageSafetyStatus(
+          getPackageSafetyStatus(data, malwareAnalysis || null),
+        );
+      }
+    }
+  }, [data, malwareAnalysis, isMalwareLoading]);
 
   if (isLoading) {
     return <PackageReportSkeleton />;
@@ -131,96 +100,20 @@ export default function PackageVersionInfoClient({
   }
 
   const projectInsight = data.projectInsights?.[0];
-  const EcosystemIcon = getEcosystemIcon(ecosystem);
 
   return (
     <div className="container mx-auto max-w-6xl py-8">
       <div className="space-y-6">
-        {/* Main Package Card */}
-        <Card>
-          <CardHeader>
-            <div className="flex items-start justify-between">
-              <div className="space-y-4">
-                {/* Package Name */}
-                <div className="flex items-center gap-3">
-                  <Package className="h-8 w-8 text-blue-600" />
-                  <h1 className="text-4xl font-bold tracking-tight text-gray-900">
-                    {name}
-                  </h1>
-                </div>
-
-                <div className="flex flex-wrap items-center gap-2">
-                  <Badge
-                    variant="outline"
-                    className="flex items-center justify-center px-3 py-1 [&>svg]:!h-6 [&>svg]:!w-6"
-                  >
-                    <EcosystemIcon className="h-6 w-6" />
-                  </Badge>
-
-                  <Badge variant="outline" className="px-3 py-1 text-sm">
-                    v{version}
-                  </Badge>
-
-                  {projectInsight?.stars !== undefined &&
-                    projectInsight.stars > 0 && (
-                      <Badge
-                        variant="outline"
-                        className="flex items-center gap-1 px-3 py-1 text-sm"
-                      >
-                        <Star className="h-3 w-3" />
-                        {projectInsight.stars.toLocaleString()}
-                      </Badge>
-                    )}
-
-                  {projectInsight?.forks !== undefined &&
-                    projectInsight.forks > 0 && (
-                      <Badge
-                        variant="outline"
-                        className="flex items-center gap-1 px-3 py-1 text-sm"
-                      >
-                        <GitFork className="h-3 w-3" />
-                        {projectInsight.forks.toLocaleString()}
-                      </Badge>
-                    )}
-
-                  {projectInsight?.project?.url && (
-                    <a
-                      href={projectInsight.project.url}
-                      target="_blank"
-                      rel="noopener noreferrer"
-                      className="inline-flex"
-                    >
-                      <Badge
-                        variant="default"
-                        className="flex cursor-pointer items-center gap-1 bg-gray-900 px-3 py-1 text-sm transition-colors hover:bg-gray-800"
-                      >
-                        <Github className="h-3 w-3" />
-                        Source
-                        <ExternalLink className="h-3 w-3" />
-                      </Badge>
-                    </a>
-                  )}
-
-                  {data.defaultVersion &&
-                    typeof data.defaultVersion === "string" &&
-                    data.defaultVersion !== version && (
-                      <Badge variant="secondary" className="px-3 py-1 text-sm">
-                        Latest: {data.defaultVersion}
-                      </Badge>
-                    )}
-                </div>
-              </div>
-
-              {/* Malware Analysis Badge  */}
-              {/* <div className="flex items-center">
-                  <MalwareAnalysisBadge
-                    malwareAnalysisStatus={malwareAnalysisStatus}
-                    verified={!!verificationRecord}
-                  />
-                </div> */}
-            </div>
-          </CardHeader>
-        </Card>
+        {/* Package Header */}
+        <PackageHeader
+          ecosystem={ecosystem}
+          name={name}
+          version={version}
+          defaultVersion={data.defaultVersion}
+          projectInsight={projectInsight}
+          safetyStatus={packageSafetyStatus}
+          isSafetyLoading={isMalwareLoading}
+        />
 
         {/* Statistics Cards */}
         <div className="grid gap-6 md:grid-cols-3">
@@ -229,6 +122,91 @@ export default function PackageVersionInfoClient({
           />
           <ScorecardStatsCard projectInsights={data.projectInsights || []} />
           <LicenseStatsCard licenses={data.licenses} />
+        </div>
+
+        {/* Package Tabs */}
+        <div className="w-full">
+          <Tabs defaultValue="analysis" className="w-full">
+            <div className="flex justify-center">
+              <TabsList className="h-12 w-auto gap-1 p-2">
+                <TabsTrigger
+                  value="analysis"
+                  className="px-6 py-2 data-[state=active]:font-semibold"
+                >
+                  Package Analysis
+                </TabsTrigger>
+                <TabsTrigger
+                  value="vulnerabilities"
+                  className="px-6 py-2 data-[state=active]:font-semibold"
+                >
+                  Vulnerabilities
+                </TabsTrigger>
+                <TabsTrigger
+                  value="versions"
+                  className="px-6 py-2 data-[state=active]:font-semibold"
+                >
+                  Versions
+                </TabsTrigger>
+                <TabsTrigger
+                  value="license"
+                  className="px-6 py-2 data-[state=active]:font-semibold"
+                >
+                  License
+                </TabsTrigger>
+              </TabsList>
+            </div>
+
+            <TabsContent value="analysis" className="mt-6">
+              <MalwareAnalysisDisplay
+                malwareAnalysis={malwareAnalysis}
+                isLoading={isMalwareLoading}
+              />
+            </TabsContent>
+
+            <TabsContent value="vulnerabilities" className="mt-6">
+              <Card>
+                <CardHeader>
+                  <CardTitle className="flex items-center gap-2">
+                    <Package className="h-5 w-5" />
+                    Vulnerabilities
+                  </CardTitle>
+                </CardHeader>
+                <CardContent>
+                  <DataTable
+                    columns={PackageVulnerabilityColumns}
+                    data={data.vulnerabilities || []}
+                    emptyMessage="No vulnerabilities found for this package version."
+                  />
+                </CardContent>
+              </Card>
+            </TabsContent>
+
+            <TabsContent value="versions" className="mt-6">
+              <Card>
+                <CardHeader>
+                  <CardTitle>Available Versions</CardTitle>
+                </CardHeader>
+                <CardContent>
+                  <div className="text-muted-foreground flex h-32 items-center justify-center">
+                    Coming soon...
+                  </div>
+                </CardContent>
+              </Card>
+            </TabsContent>
+
+            <TabsContent value="license" className="mt-6">
+              <Card>
+                <CardHeader>
+                  <CardTitle>License Details</CardTitle>
+                </CardHeader>
+                <CardContent>
+                  <div className="text-muted-foreground flex h-32 items-center justify-center">
+                    Coming soon...
+                  </div>
+                </CardContent>
+              </Card>
+            </TabsContent>
+          </Tabs>
         </div>
       </div>
     </div>
