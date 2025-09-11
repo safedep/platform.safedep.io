@@ -52,3 +52,4 @@ jobs:
           NEXT_PUBLIC_POSTHOG_KEY: "test-posthog-key"
           COMMUNITY_API_TENANT_ID: ${{ secrets.FRONTEND_E2E_SAFEDEP_CLOUD_TENANT_ID }}
           COMMUNITY_API_KEY: ${{ secrets.FRONTEND_E2E_SAFEDEP_CLOUD_API_KEY }}
+          GITHUB_APP_INTEGRATION_CLIENT_ID: "can-be-unused-safely"
