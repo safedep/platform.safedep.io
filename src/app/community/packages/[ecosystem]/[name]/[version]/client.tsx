@@ -1,6 +1,6 @@
 "use client";
 
-import { getPackageVersionInfo, queryMalwareAnalysis } from "./action";
+import { getPackageVersionInfo, queryMalwareAnalysis } from "./actions";
 import { useQuery } from "@tanstack/react-query";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Skeleton } from "@/components/ui/skeleton";
@@ -14,6 +14,7 @@ import { PackageVulnerabilityColumns } from "./columns";
 import ScorecardStatsCard from "./components/scorecard-stats-card";
 import LicenseStatsCard from "./components/license-stats-card";
 import VulnerabilityStatsCard from "./components/vulnerability-stats-card";
+import AvailableVersionsTable from "./components/available-versions-table";
 import { PackageSafetyStatus } from "./components/package-safety-badge";
 import { getPackageSafetyStatus } from "./utils/package-safety";
 
@@ -181,16 +182,12 @@ export default function PackageVersionInfoClient({
             </TabsContent>
 
             <TabsContent value="versions" className="mt-6">
-              <Card>
-                <CardHeader>
-                  <CardTitle>Available Versions</CardTitle>
-                </CardHeader>
-                <CardContent>
-                  <div className="text-muted-foreground flex h-32 items-center justify-center">
-                    Coming soon...
-                  </div>
-                </CardContent>
-              </Card>
+              <AvailableVersionsTable
+                versions={data.availableVersions || []}
+                ecosystem={ecosystem}
+                name={name}
+                currentVersion={version}
+              />
             </TabsContent>
 
             <TabsContent value="license" className="mt-6">
