@@ -20,11 +20,21 @@ const searchParamSchema = v.object({
 });
 type SearchParams = v.InferInput<typeof searchParamSchema>;
 
-function buildRedirectUrl(clientId: string) {
+function buildRedirectUrl(
+  clientId: string,
+  installationId: number,
+  setupAction?: string,
+) {
+  const returnToUrl = new URL("/connect/github", env.APP_BASE_URL);
+  returnToUrl.searchParams.set("installation_id", installationId.toString());
+  if (setupAction) {
+    returnToUrl.searchParams.set("setup_action", setupAction);
+  }
+
   const url = oauthAuthorizationUrl({
     clientType: "oauth-app",
     clientId,
-    redirectUrl: new URL("/connect/github", env.APP_BASE_URL).toString(),
+    redirectUrl: returnToUrl.toString(),
     scopes: ["user:email"], // only for OAuth Apps
   });
   return url.url;
@@ -52,7 +62,11 @@ export default async function ConnectGithubPage({
   // we assume if the code is absent, it represents the fact that user has not yet finished linking
   // the app to a tenant. For that to happen, we need the code to act on behalf of the user.
   if (!code) {
-    const redirectUrl = buildRedirectUrl(env.GITHUB_APP_INTEGRATION_CLIENT_ID);
+    const redirectUrl = buildRedirectUrl(
+      env.GITHUB_APP_INTEGRATION_CLIENT_ID,
+      installationId,
+      setupAction,
+    );
     return redirect(redirectUrl as Route);
   }
 
