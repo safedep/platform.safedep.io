@@ -46,9 +46,9 @@ export default function PackageHeader({
   name: string;
   version: string;
   ecosystem: Ecosystem;
-  forks: number;
-  stars: number;
-  source: URL;
+  forks?: number;
+  stars?: number;
+  source?: string;
 }) {
   const EcosystemIcon = getEcosystemIconByEcosystem(ecosystem);
 
@@ -70,27 +70,32 @@ export default function PackageHeader({
             <HeaderBadge>
               <span className="text-sm">v{version}</span>
             </HeaderBadge>
-            <HeaderBadge>
-              <Star className="size-3" />
-              <span className="text-sm">{stars}</span>
-            </HeaderBadge>
-            <HeaderBadge>
-              <GitFork className="size-3" />
-              <span className="text-sm">{forks}</span>
-            </HeaderBadge>
-
-            <HeaderBadge variant="default">
-              <SiGithub className="size-3!" />
-              <a
-                href={source.toString()}
-                target="_blank"
-                rel="noopener noreferrer"
-                className="flex items-center gap-1 text-sm"
-              >
-                <span>Source</span>
-                <ExternalLink className="size-3" />
-              </a>
-            </HeaderBadge>
+            {stars && (
+              <HeaderBadge>
+                <Star className="size-3" />
+                <span className="text-sm">{stars.toLocaleString()}</span>
+              </HeaderBadge>
+            )}
+            {forks && (
+              <HeaderBadge>
+                <GitFork className="size-3" />
+                <span className="text-sm">{forks.toLocaleString()}</span>
+              </HeaderBadge>
+            )}
+            {source && (
+              <HeaderBadge variant="default">
+                <SiGithub className="size-3!" />
+                <a
+                  href={source}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="flex items-center gap-1 text-sm"
+                >
+                  <span>Source</span>
+                  <ExternalLink className="size-3" />
+                </a>
+              </HeaderBadge>
+            )}
           </div>
         </CardContent>
       </Card>

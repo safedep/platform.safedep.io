@@ -1,6 +1,6 @@
 import { notFound } from "next/navigation";
 import { parseSchema, type ParamSchema } from "./schema";
-import { queryPackageAnalysis } from "./actions";
+import { getPackageVersionInsight, queryPackageAnalysis } from "./actions";
 import { Metadata } from "next";
 import { Tabs, TabsList, TabsTrigger, TabsContent } from "@/components/ui/tabs";
 import PackageHeader from "./_components/package-header";
@@ -34,25 +34,31 @@ export default async function Page({
   if (!output) {
     return notFound();
   }
+
   const {
     ecosystem,
     nameAndVersion: { name, version },
   } = output;
 
-  // const insight = await queryPackageAnalysis(ecosystem, name, version);
-  // if (!insight) {
-  //   return notFound();
-  // }
+  const [insight, packageInfo] = await Promise.all([
+    queryPackageAnalysis(ecosystem, name, version),
+    getPackageVersionInsight(ecosystem, name, version),
+  ]);
+  if (!insight || !packageInfo) {
+    return notFound();
+  }
+
+  const projectInsight = packageInfo.projectInsights.at(0);
 
   return (
-    <div className="mx-auto flex w-full max-w-4xl flex-col gap-4">
+    <div className="mx-auto flex w-full max-w-4xl flex-col gap-4 p-2 sm:p-4">
       <PackageHeader
         ecosystem={ecosystem}
         name={name}
         version={version}
-        forks={100}
-        stars={120}
-        source={new URL("https://github.com/safedep/safedep")}
+        forks={Number(projectInsight?.forks)}
+        stars={Number(projectInsight?.stars)}
+        source={projectInsight?.project?.url}
       />
 
       {/* Package Tabs */}
