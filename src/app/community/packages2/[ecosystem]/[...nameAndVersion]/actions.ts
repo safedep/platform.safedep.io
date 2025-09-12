@@ -52,6 +52,16 @@ export async function getPackageInfo(
   };
 }
 
+export async function getAvailableVersions(
+  ecosystem: Ecosystem,
+  name: string,
+  version: string,
+) {
+  "use cache";
+  const insight = await getPackageVersionInsight(ecosystem, name, version);
+  return insight?.availableVersions;
+}
+
 export async function queryPackageAnalysis(
   ecosystem: Ecosystem,
   name: string,
