@@ -1,9 +1,8 @@
 import { notFound } from "next/navigation";
 import { parseSchema, type ParamSchema } from "./schema";
 import { queryPackageAnalysis } from "./actions";
-import { toJsonString } from "@bufbuild/protobuf";
-import { QueryPackageAnalysisResponseSchema } from "@buf/safedep_api.bufbuild_es/safedep/services/malysis/v1/malysis_pb";
 import { Metadata } from "next";
+import { Tabs, TabsList, TabsTrigger, TabsContent } from "@/components/ui/tabs";
 
 export async function generateMetadata({
   params,
@@ -45,13 +44,24 @@ export default async function Page({
   }
 
   return (
-    <div className="flex flex-col gap-4">
-      page {ecosystem} nameversion={name} version={version}
-      <pre>
-        {toJsonString(QueryPackageAnalysisResponseSchema, insight, {
-          prettySpaces: 2,
-        })}
-      </pre>
+    <div className="mx-auto flex w-full max-w-4xl flex-col gap-4">
+      {/* Package Tabs */}
+      <Tabs defaultValue="analysis" className="w-full">
+        <TabsList className="w-full">
+          <TabsTrigger value="analysis">Package Analysis</TabsTrigger>
+          <TabsTrigger value="vulnerabilities">Vulnerabilities</TabsTrigger>
+          <TabsTrigger value="versions">Versions</TabsTrigger>
+          <TabsTrigger value="license">License</TabsTrigger>
+        </TabsList>
+
+        <TabsContent value="analysis">analysis</TabsContent>
+
+        <TabsContent value="vulnerabilities">vulnerabilities</TabsContent>
+
+        <TabsContent value="versions">versions</TabsContent>
+
+        <TabsContent value="license">license</TabsContent>
+      </Tabs>
     </div>
   );
 }
