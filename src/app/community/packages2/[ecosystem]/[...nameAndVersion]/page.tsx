@@ -1,10 +1,12 @@
 import { notFound } from "next/navigation";
 import { parseSchema, type ParamSchema } from "./schema";
-import { getPackageInfo } from "./actions";
+import { getPackageInfo, getTestValue } from "./actions";
 import { Metadata } from "next";
 import { Tabs, TabsList, TabsTrigger, TabsContent } from "@/components/ui/tabs";
 import PackageHeader from "./_components/package-header";
 import StatsCards from "./_components/stats-cards";
+import AnalysisTab from "./_components/analysis-tab";
+import { Suspense } from "react";
 
 export async function generateMetadata({
   params,
@@ -46,6 +48,8 @@ export default async function Page({
     return notFound();
   }
 
+  const testValue = getTestValue();
+
   return (
     <div className="mx-auto flex w-full max-w-5xl flex-col gap-4 p-2 sm:p-4">
       <PackageHeader
@@ -72,7 +76,11 @@ export default async function Page({
           <TabsTrigger value="license">License</TabsTrigger>
         </TabsList>
 
-        <TabsContent value="analysis">analysis</TabsContent>
+        <TabsContent value="analysis">
+          <Suspense fallback={<div>Loading...</div>}>
+            <AnalysisTab value={testValue} />
+          </Suspense>
+        </TabsContent>
 
         <TabsContent value="vulnerabilities">vulnerabilities</TabsContent>
 

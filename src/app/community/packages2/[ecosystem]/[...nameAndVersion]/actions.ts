@@ -77,3 +77,8 @@ export async function queryPackageAnalysis(
     throw error;
   }
 }
+
+export async function getTestValue() {
+  await new Promise((resolve) => setTimeout(resolve, 3000));
+  return "test";
+}
