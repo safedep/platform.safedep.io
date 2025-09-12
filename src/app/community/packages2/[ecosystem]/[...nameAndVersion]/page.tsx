@@ -60,7 +60,10 @@ export default async function Page({
         source={packageInfo.source}
       />
 
-      <StatsCards openSSFScore={packageInfo.score ?? 0} />
+      <StatsCards
+        openSSFScore={packageInfo.score ?? 0}
+        licenses={packageInfo.licenses ?? []}
+      />
 
       {/* Package Tabs */}
       <Tabs defaultValue="analysis" className="w-full">

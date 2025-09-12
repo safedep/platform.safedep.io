@@ -13,17 +13,18 @@ function VulnerabilityStatsCard() {
   );
 }
 
-// function LicenseStatsCard() {
-//   return (
-//   );
-// }
-
-export default function StatsCards({ openSSFScore }: { openSSFScore: number }) {
+export default function StatsCards({
+  openSSFScore,
+  licenses,
+}: {
+  openSSFScore: number;
+  licenses: string[];
+}) {
   return (
     <div className="grid grid-cols-3 gap-6">
       <VulnerabilityStatsCard />
       <OpenSSFScorecardCard score={openSSFScore} />
-      <LicenseStatsCard />
+      <LicenseStatsCard licenses={licenses} />
     </div>
   );
 }
