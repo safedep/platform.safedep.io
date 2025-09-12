@@ -46,11 +46,18 @@ export default async function Page({
 
   return (
     <div className="mx-auto flex w-full max-w-4xl flex-col gap-4">
-      <PackageHeader ecosystem={ecosystem} name={name} version={version} />
+      <PackageHeader
+        ecosystem={ecosystem}
+        name={name}
+        version={version}
+        forks={100}
+        stars={120}
+        source={new URL("https://github.com/safedep/safedep")}
+      />
 
       {/* Package Tabs */}
       <Tabs defaultValue="analysis" className="w-full">
-        <TabsList className="w-full">
+        <TabsList className="flex h-auto w-full flex-wrap items-center justify-start gap-1">
           <TabsTrigger value="analysis">Package Analysis</TabsTrigger>
           <TabsTrigger value="vulnerabilities">Vulnerabilities</TabsTrigger>
           <TabsTrigger value="versions">Versions</TabsTrigger>
