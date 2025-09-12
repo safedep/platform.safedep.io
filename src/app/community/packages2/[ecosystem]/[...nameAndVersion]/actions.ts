@@ -45,7 +45,7 @@ export async function getPackageInfo(
     forks: projectInsight.forks,
     stars: projectInsight.stars,
     source: projectInsight?.project?.url,
-    scorecard: projectInsight.scorecard,
+    score: projectInsight.scorecard?.score,
   };
 }
 
