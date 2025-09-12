@@ -3,6 +3,7 @@ import { parseSchema, type ParamSchema } from "./schema";
 import { queryPackageAnalysis } from "./actions";
 import { Metadata } from "next";
 import { Tabs, TabsList, TabsTrigger, TabsContent } from "@/components/ui/tabs";
+import PackageHeader from "./_components/package-header";
 
 export async function generateMetadata({
   params,
@@ -45,6 +46,8 @@ export default async function Page({
 
   return (
     <div className="mx-auto flex w-full max-w-4xl flex-col gap-4">
+      <PackageHeader ecosystem={ecosystem} name={name} version={version} />
+
       {/* Package Tabs */}
       <Tabs defaultValue="analysis" className="w-full">
         <TabsList className="w-full">
