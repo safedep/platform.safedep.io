@@ -50,7 +50,7 @@ export default async function Page({
   }
 
   return (
-    <div className="mx-auto flex w-full max-w-4xl flex-col gap-4 p-2 sm:p-4">
+    <div className="mx-auto flex w-full max-w-5xl flex-col gap-4 p-2 sm:p-4">
       <PackageHeader
         ecosystem={ecosystem}
         name={name}

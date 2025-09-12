@@ -1,5 +1,6 @@
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import OpenSSFScorecardCard from "./openssf-score-card";
+import LicenseStatsCard from "./license-stats-card";
 
 function VulnerabilityStatsCard() {
   return (
@@ -12,16 +13,10 @@ function VulnerabilityStatsCard() {
   );
 }
 
-function LicenseStatsCard() {
-  return (
-    <Card className="shrink-0">
-      <CardHeader>
-        <CardTitle>License Stats</CardTitle>
-      </CardHeader>
-      <CardContent>hello</CardContent>
-    </Card>
-  );
-}
+// function LicenseStatsCard() {
+//   return (
+//   );
+// }
 
 export default function StatsCards({ openSSFScore }: { openSSFScore: number }) {
   return (

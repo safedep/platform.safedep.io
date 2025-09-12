@@ -1,4 +1,4 @@
-import { Card, CardHeader } from "@/components/ui/card";
+import { Card, CardFooter, CardHeader } from "@/components/ui/card";
 import { CardTitle } from "@/components/ui/card";
 import { CardContent } from "@/components/ui/card";
 import { cn } from "@/lib/utils";
@@ -22,16 +22,16 @@ export default function OpenSSFScorecardCard({ score }: { score: number }) {
       <CardHeader>
         <CardTitle>OpenSSF Scorecard</CardTitle>
       </CardHeader>
-      <CardContent>
+      <CardContent className="flex-1">
         <div className="text-center">
           <div className={cn("text-3xl font-bold", getScoreColor(score))}>
             {score.toFixed(1)}
           </div>
-          <p className="text-muted-foreground text-sm">
-            Overall security score out of 10
-          </p>
         </div>
       </CardContent>
+      <CardFooter className="text-muted-foreground justify-center text-sm">
+        <span>Overall security score out of 10</span>
+      </CardFooter>
     </Card>
   );
 }
