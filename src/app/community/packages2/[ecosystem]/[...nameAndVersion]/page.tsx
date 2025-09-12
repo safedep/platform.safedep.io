@@ -1,9 +1,10 @@
 import { notFound } from "next/navigation";
 import { parseSchema, type ParamSchema } from "./schema";
-import { getPackageStats, queryPackageAnalysis } from "./actions";
+import { getPackageInfo, queryPackageAnalysis } from "./actions";
 import { Metadata } from "next";
 import { Tabs, TabsList, TabsTrigger, TabsContent } from "@/components/ui/tabs";
 import PackageHeader from "./_components/package-header";
+import StatsCards from "./_components/stats-cards";
 
 export async function generateMetadata({
   params,
@@ -42,7 +43,7 @@ export default async function Page({
 
   const [insight, packageInfo] = await Promise.all([
     queryPackageAnalysis(ecosystem, name, version),
-    getPackageStats(ecosystem, name, version),
+    getPackageInfo(ecosystem, name, version),
   ]);
   if (!insight || !packageInfo) {
     return notFound();
@@ -58,6 +59,8 @@ export default async function Page({
         stars={Number(packageInfo.stars)}
         source={packageInfo.source}
       />
+
+      <StatsCards />
 
       {/* Package Tabs */}
       <Tabs defaultValue="analysis" className="w-full">

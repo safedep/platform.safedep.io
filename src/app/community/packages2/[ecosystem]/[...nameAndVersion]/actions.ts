@@ -30,7 +30,7 @@ export async function getPackageVersionInsight(
  * that we avoid sending too much data to the client all while being able to
  * call the cached `getPackageVersionInsight` function multiple times.
  */
-export async function getPackageStats(
+export async function getPackageInfo(
   ecosystem: Ecosystem,
   name: string,
   version: string,
@@ -45,6 +45,7 @@ export async function getPackageStats(
     forks: projectInsight.forks,
     stars: projectInsight.stars,
     source: projectInsight?.project?.url,
+    scorecard: projectInsight.scorecard,
   };
 }
 
