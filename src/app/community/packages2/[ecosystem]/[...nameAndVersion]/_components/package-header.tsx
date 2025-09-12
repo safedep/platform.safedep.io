@@ -4,6 +4,7 @@ import { cn } from "@/lib/utils";
 import { getEcosystemIconByEcosystem } from "@/utils/ecosystem";
 import { Ecosystem } from "@buf/safedep_api.bufbuild_es/safedep/messages/package/v1/ecosystem_pb";
 import { Package } from "lucide-react";
+import PackageSafetyBadge from "./package-safety-badge";
 
 function HeaderBadge({
   children,
@@ -22,10 +23,6 @@ function HeaderBadge({
       {children}
     </Badge>
   );
-}
-
-function SafetyDeterminerBadge() {
-  return <span className="text-base">safety determiner badge</span>;
 }
 
 function PackageName({ name }: { name: string }) {
@@ -54,7 +51,7 @@ export default function PackageHeader({
         <CardHeader>
           <CardTitle className="flex items-center justify-between gap-2">
             <PackageName name={name} />
-            <SafetyDeterminerBadge />
+            <PackageSafetyBadge safety="safe" />
           </CardTitle>
         </CardHeader>
 

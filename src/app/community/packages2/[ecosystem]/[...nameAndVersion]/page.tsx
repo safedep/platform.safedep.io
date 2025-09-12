@@ -39,10 +39,10 @@ export default async function Page({
     nameAndVersion: { name, version },
   } = output;
 
-  const insight = await queryPackageAnalysis(ecosystem, name, version);
-  if (!insight) {
-    return notFound();
-  }
+  // const insight = await queryPackageAnalysis(ecosystem, name, version);
+  // if (!insight) {
+  //   return notFound();
+  // }
 
   return (
     <div className="mx-auto flex w-full max-w-4xl flex-col gap-4">
