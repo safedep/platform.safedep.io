@@ -35,6 +35,7 @@ export async function getPackageInfo(
   name: string,
   version: string,
 ) {
+  "use cache";
   const insight = await getPackageVersionInsight(ecosystem, name, version);
   const projectInsight = insight?.projectInsights.at(0);
   if (!projectInsight) {
@@ -47,6 +48,7 @@ export async function getPackageInfo(
     source: projectInsight?.project?.url,
     score: projectInsight.scorecard?.score,
     licenses: insight?.licenses?.licenses.map((license) => license.licenseId),
+    vulnerabilities: insight?.vulnerabilities,
   };
 }
 

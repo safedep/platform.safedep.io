@@ -1,6 +1,6 @@
 import { notFound } from "next/navigation";
 import { parseSchema, type ParamSchema } from "./schema";
-import { getPackageInfo, queryPackageAnalysis } from "./actions";
+import { getPackageInfo } from "./actions";
 import { Metadata } from "next";
 import { Tabs, TabsList, TabsTrigger, TabsContent } from "@/components/ui/tabs";
 import PackageHeader from "./_components/package-header";
@@ -41,11 +41,8 @@ export default async function Page({
     nameAndVersion: { name, version },
   } = output;
 
-  const [insight, packageInfo] = await Promise.all([
-    queryPackageAnalysis(ecosystem, name, version),
-    getPackageInfo(ecosystem, name, version),
-  ]);
-  if (!insight || !packageInfo) {
+  const packageInfo = await getPackageInfo(ecosystem, name, version);
+  if (!packageInfo) {
     return notFound();
   }
 
@@ -63,6 +60,7 @@ export default async function Page({
       <StatsCards
         openSSFScore={packageInfo.score ?? 0}
         licenses={packageInfo.licenses ?? []}
+        vulnerabilities={packageInfo.vulnerabilities ?? []}
       />
 
       {/* Package Tabs */}
