@@ -7,6 +7,7 @@ import PackageHeader from "./_components/package-header";
 import StatsCards from "./_components/stats-cards";
 import AnalysisTab from "./_components/analysis-tab";
 import { Suspense } from "react";
+import VulnerabilitiesTab from "./_components/vulnerabilities-tab";
 
 export async function generateMetadata({
   params,
@@ -82,7 +83,9 @@ export default async function Page({
           </Suspense>
         </TabsContent>
 
-        <TabsContent value="vulnerabilities">vulnerabilities</TabsContent>
+        <TabsContent value="vulnerabilities">
+          <VulnerabilitiesTab value={packageInfo.vulnerabilities ?? []} />
+        </TabsContent>
 
         <TabsContent value="versions">versions</TabsContent>
 
