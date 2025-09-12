@@ -10,6 +10,8 @@ const nextConfig: NextConfig = {
     webpackMemoryOptimizations: true,
     // put all css in the head since tailwind is O(1)
     inlineCss: true,
+    // allow using cache in server actions
+    useCache: true,
   },
   // type check routes
   typedRoutes: true,
