@@ -13,6 +13,7 @@ export async function getPackageVersionInsight(
   name: string,
   version: string,
 ) {
+  "use cache";
   const service = createInsightsServiceClient(
     env.COMMUNITY_API_TENANT_ID,
     env.COMMUNITY_API_KEY,
@@ -29,6 +30,7 @@ export async function queryPackageAnalysis(
   name: string,
   version: string,
 ) {
+  "use cache";
   const service = createMalwareAnalysisServiceClient(
     env.COMMUNITY_API_TENANT_ID,
     env.COMMUNITY_API_KEY,

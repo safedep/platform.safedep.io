@@ -3,6 +3,27 @@ import { parseSchema, type ParamSchema } from "./schema";
 import { queryPackageAnalysis } from "./actions";
 import { toJsonString } from "@bufbuild/protobuf";
 import { QueryPackageAnalysisResponseSchema } from "@buf/safedep_api.bufbuild_es/safedep/services/malysis/v1/malysis_pb";
+import { Metadata } from "next";
+
+export async function generateMetadata({
+  params,
+}: {
+  params: Promise<ParamSchema>;
+}): Promise<Metadata> {
+  const output = parseSchema(await params);
+  if (!output) {
+    return notFound();
+  }
+  const {
+    nameAndVersion: { name, version },
+  } = output;
+
+  return {
+    title: `${name}@${version} - Package Report`,
+    description: `Security and package information report for package ${name} of version ${version}.`,
+    keywords: [name, "package", "security", "report", "safedep"],
+  };
+}
 
 export default async function Page({
   params,
