@@ -25,6 +25,29 @@ export async function getPackageVersionInsight(
   return response.insight;
 }
 
+/**
+ * This function calls the cached `getPackageVersionInsight` function. This is so
+ * that we avoid sending too much data to the client all while being able to
+ * call the cached `getPackageVersionInsight` function multiple times.
+ */
+export async function getPackageStats(
+  ecosystem: Ecosystem,
+  name: string,
+  version: string,
+) {
+  const insight = await getPackageVersionInsight(ecosystem, name, version);
+  const projectInsight = insight?.projectInsights.at(0);
+  if (!projectInsight) {
+    return undefined;
+  }
+
+  return {
+    forks: projectInsight.forks,
+    stars: projectInsight.stars,
+    source: projectInsight?.project?.url,
+  };
+}
+
 export async function queryPackageAnalysis(
   ecosystem: Ecosystem,
   name: string,

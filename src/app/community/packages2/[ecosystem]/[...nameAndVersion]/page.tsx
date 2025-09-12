@@ -1,6 +1,6 @@
 import { notFound } from "next/navigation";
 import { parseSchema, type ParamSchema } from "./schema";
-import { getPackageVersionInsight, queryPackageAnalysis } from "./actions";
+import { getPackageStats, queryPackageAnalysis } from "./actions";
 import { Metadata } from "next";
 import { Tabs, TabsList, TabsTrigger, TabsContent } from "@/components/ui/tabs";
 import PackageHeader from "./_components/package-header";
@@ -42,13 +42,11 @@ export default async function Page({
 
   const [insight, packageInfo] = await Promise.all([
     queryPackageAnalysis(ecosystem, name, version),
-    getPackageVersionInsight(ecosystem, name, version),
+    getPackageStats(ecosystem, name, version),
   ]);
   if (!insight || !packageInfo) {
     return notFound();
   }
-
-  const projectInsight = packageInfo.projectInsights.at(0);
 
   return (
     <div className="mx-auto flex w-full max-w-4xl flex-col gap-4 p-2 sm:p-4">
@@ -56,9 +54,9 @@ export default async function Page({
         ecosystem={ecosystem}
         name={name}
         version={version}
-        forks={Number(projectInsight?.forks)}
-        stars={Number(projectInsight?.stars)}
-        source={projectInsight?.project?.url}
+        forks={Number(packageInfo.forks)}
+        stars={Number(packageInfo.stars)}
+        source={packageInfo.source}
       />
 
       {/* Package Tabs */}
