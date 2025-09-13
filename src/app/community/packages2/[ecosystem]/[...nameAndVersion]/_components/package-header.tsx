@@ -3,7 +3,7 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { cn } from "@/lib/utils";
 import { getEcosystemIconByEcosystem } from "@/utils/ecosystem";
 import { Ecosystem } from "@buf/safedep_api.bufbuild_es/safedep/messages/package/v1/ecosystem_pb";
-import { Package, Star, GitFork, ExternalLink } from "lucide-react";
+import { Package, Star, GitFork, ExternalLink, Tag } from "lucide-react";
 import PackageSafetyBadge from "./package-safety-badge";
 import { SiGithub } from "react-icons/si";
 
@@ -68,21 +68,22 @@ export default function PackageHeader({
               <EcosystemIcon className="size-6!" />
             </HeaderBadge>
             <HeaderBadge>
-              <span className="text-sm">v{version}</span>
+              <Tag className="size-3" />
+              <span className="text-sm">{version}</span>
             </HeaderBadge>
-            {stars && (
+            {stars ? (
               <HeaderBadge>
                 <Star className="size-3" />
                 <span className="text-sm">{stars.toLocaleString()}</span>
               </HeaderBadge>
-            )}
-            {forks && (
+            ) : null}
+            {forks ? (
               <HeaderBadge>
                 <GitFork className="size-3" />
                 <span className="text-sm">{forks.toLocaleString()}</span>
               </HeaderBadge>
-            )}
-            {source && (
+            ) : null}
+            {source ? (
               <HeaderBadge variant="default">
                 <SiGithub className="size-3!" />
                 <a
@@ -95,7 +96,7 @@ export default function PackageHeader({
                   <ExternalLink className="size-3" />
                 </a>
               </HeaderBadge>
-            )}
+            ) : null}
           </div>
         </CardContent>
       </Card>
