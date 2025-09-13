@@ -2,8 +2,11 @@
 import { Badge } from "@/components/ui/badge";
 import { DataTable } from "@/components/ui/data-table";
 import { cn } from "@/lib/utils";
-import { riskLevelToBadgeColor, riskLevelToName } from "@/utils/severity";
-import { Severity_Risk } from "@buf/safedep_api.bufbuild_es/safedep/messages/vulnerability/v1/severity_pb";
+import {
+  getHighestSeverityRisk,
+  riskLevelToBadgeColor,
+  riskLevelToName,
+} from "@/utils/severity";
 import { Vulnerability } from "@buf/safedep_api.bufbuild_es/safedep/messages/vulnerability/v1/vulnerability_pb";
 import { timestampDate } from "@bufbuild/protobuf/wkt";
 import { ColumnDef } from "@tanstack/react-table";
@@ -35,10 +38,7 @@ const columns: ColumnDef<Vulnerability>[] = [
     header: "Risk",
     cell: ({ row }) => {
       const severities = row.original.severities;
-      const highestRisk = severities.reduce(
-        (maxRisk, severity) => Math.max(severity.risk, maxRisk),
-        Severity_Risk.UNSPECIFIED,
-      );
+      const highestRisk = getHighestSeverityRisk(severities);
       const riskLevelName = riskLevelToName(highestRisk);
 
       return (
