@@ -51,7 +51,7 @@ export function riskLevelToName(riskLevel: Severity_Risk) {
 /**
  * Get the highest risk from a list of severities.
  * @param severities - The severities to get the highest risk from.
- * @returns
+ * @returns The highest risk level found in the severities array.
  */
 export function getHighestSeverityRisk(severities: Severity[]) {
   return severities.reduce(
