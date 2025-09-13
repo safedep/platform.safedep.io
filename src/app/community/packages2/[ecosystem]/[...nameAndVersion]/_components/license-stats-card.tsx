@@ -18,7 +18,9 @@ export default function LicenseStatsCard({ licenses }: { licenses: string[] }) {
       <CardContent className="flex-1">
         <div className="flex justify-center">
           {primaryLicense ? (
-            <span className="text-3xl font-bold">{primaryLicense}</span>
+            <span className="line-clamp-4 text-center text-[clamp(1rem,1.8vw,1.5rem)] font-bold md:line-clamp-3">
+              {primaryLicense}
+            </span>
           ) : (
             <span className="text-3xl font-bold">Unknown</span>
           )}
