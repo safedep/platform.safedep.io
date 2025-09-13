@@ -62,6 +62,16 @@ export async function getAvailableVersions(
   return insight?.availableVersions;
 }
 
+export async function getLicenseInfo(
+  ecosystem: Ecosystem,
+  name: string,
+  version: string,
+) {
+  "use cache";
+  const insight = await getPackageVersionInsight(ecosystem, name, version);
+  return insight?.licenses?.licenses;
+}
+
 export async function queryPackageAnalysis(
   ecosystem: Ecosystem,
   name: string,

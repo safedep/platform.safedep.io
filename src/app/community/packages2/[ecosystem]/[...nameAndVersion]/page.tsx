@@ -1,6 +1,11 @@
 import { notFound } from "next/navigation";
 import { parseSchema, type ParamSchema } from "./schema";
-import { getAvailableVersions, getPackageInfo, getTestValue } from "./actions";
+import {
+  getAvailableVersions,
+  getLicenseInfo,
+  getPackageInfo,
+  getTestValue,
+} from "./actions";
 import { Metadata } from "next";
 import { Tabs, TabsList, TabsTrigger, TabsContent } from "@/components/ui/tabs";
 import PackageHeader from "./_components/package-header";
@@ -9,6 +14,7 @@ import AnalysisTab from "./_components/tabs/analysis-tab";
 import { Suspense } from "react";
 import VulnerabilitiesTab from "./_components/tabs/vulnerabilities-tab";
 import VersionsTab from "./_components/tabs/versions-tab";
+import LicensesTab from "./_components/tabs/licenses-tab";
 
 export async function generateMetadata({
   params,
@@ -52,6 +58,7 @@ export default async function Page({
 
   const testValue = getTestValue();
   const availableVersions = getAvailableVersions(ecosystem, name, version);
+  const licenses = getLicenseInfo(ecosystem, name, version);
 
   return (
     <div className="mx-auto flex w-full max-w-5xl flex-col gap-4 p-2 sm:p-4">
@@ -95,7 +102,11 @@ export default async function Page({
           </Suspense>
         </TabsContent>
 
-        <TabsContent value="license">license</TabsContent>
+        <TabsContent value="license">
+          <Suspense fallback={<div>Loading...</div>}>
+            <LicensesTab licenses={licenses.then((v) => v ?? [])} />
+          </Suspense>
+        </TabsContent>
       </Tabs>
     </div>
   );
