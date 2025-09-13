@@ -11,7 +11,7 @@ export default function LicenseStatsCard({ licenses }: { licenses: string[] }) {
   const additionalLicensesCount = licenses.length - 1;
 
   return (
-    <Card>
+    <Card className="w-full">
       <CardHeader>
         <CardTitle>License</CardTitle>
       </CardHeader>

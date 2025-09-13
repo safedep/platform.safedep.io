@@ -18,7 +18,7 @@ export function getScoreColor(score: number) {
 
 export default function OpenSSFScorecardCard({ score }: { score: number }) {
   return (
-    <Card>
+    <Card className="w-full">
       <CardHeader>
         <CardTitle>OpenSSF Scorecard</CardTitle>
       </CardHeader>

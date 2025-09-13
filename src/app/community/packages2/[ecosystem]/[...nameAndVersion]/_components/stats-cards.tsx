@@ -13,10 +13,12 @@ export default function StatsCards({
   vulnerabilities: Vulnerability[];
 }) {
   return (
-    <div className="grid grid-cols-3 gap-6">
-      <VulnerabilityStatsCard vulnerabilities={vulnerabilities} />
-      <OpenSSFScorecardCard score={openSSFScore} />
-      <LicenseStatsCard licenses={licenses} />
+    <div className="@container/cards">
+      <div className="grid auto-rows-fr grid-cols-2 gap-6 @xl/cards:grid-cols-3">
+        <VulnerabilityStatsCard vulnerabilities={vulnerabilities} />
+        <OpenSSFScorecardCard score={openSSFScore} />
+        <LicenseStatsCard licenses={licenses} />
+      </div>
     </div>
   );
 }
