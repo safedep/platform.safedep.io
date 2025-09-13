@@ -1,3 +1,4 @@
+"use server";
 import { Badge } from "@/components/ui/badge";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { cn } from "@/lib/utils";
@@ -11,6 +12,7 @@ import {
   Report_Evidence_Confidence,
   Report_Inference,
 } from "@buf/safedep_api.bufbuild_es/safedep/messages/malysis/v1/report_pb";
+import { Vulnerability } from "@buf/safedep_api.bufbuild_es/safedep/messages/vulnerability/v1/vulnerability_pb";
 
 function HeaderBadge({
   children,
@@ -40,7 +42,7 @@ function PackageName({ name }: { name: string }) {
   );
 }
 
-export default function PackageHeader({
+export default async function PackageHeader({
   ecosystem,
   name,
   version,
@@ -49,6 +51,7 @@ export default function PackageHeader({
   source,
   inference,
   verificationRecord,
+  vulnerabilities,
 }: {
   name: string;
   version: string;
@@ -58,9 +61,14 @@ export default function PackageHeader({
   source?: string;
   inference?: Report_Inference;
   verificationRecord?: VerificationRecord;
+  vulnerabilities?: Vulnerability[];
 }) {
   const EcosystemIcon = getEcosystemIconByEcosystem(ecosystem);
-  const safety = getMalwareAnalysisStatus(inference, verificationRecord);
+  const safety = getMalwareAnalysisStatus(
+    inference,
+    verificationRecord,
+    vulnerabilities,
+  );
 
   return (
     <div>
@@ -117,29 +125,38 @@ export default function PackageHeader({
 function getMalwareAnalysisStatus(
   inference?: Report_Inference,
   vr?: VerificationRecord,
+  vulns?: Vulnerability[],
 ): PackageSafety {
-  // We will always trust the verification record if it exists
-  if (vr && vr.isMalware) {
+  // Always trust verification record for malware identification
+  if (vr?.isMalware) {
     return "malicious" as const;
   }
 
-  if (vr && vr.isSafe) {
+  // Inference-based heuristic when a verification record is not available
+  const isMalware = inference?.isMalware ?? false;
+  const confidence = inference?.confidence ?? 0;
+  const isHighConfidence = confidence === Report_Evidence_Confidence.HIGH;
+
+  // High-confidence malware inference → malicious
+  if (isMalware && isHighConfidence) {
+    return "malicious" as const;
+  }
+
+  // Low/medium confidence malware inference → suspicious
+  if (isMalware && !isHighConfidence) {
+    return "suspicious" as const;
+  }
+
+  // Presence of vulnerabilities → suspicious (not malware, but unsafe)
+  if ((vulns?.length ?? 0) > 0) {
+    return "suspicious" as const;
+  }
+
+  // Explicit safe verification record → safe
+  if (vr?.isSafe) {
     return "safe" as const;
   }
 
-  // Fallback to heuristic when a verification record is not available
-  const isMalware = inference?.isMalware ?? false;
-  const confidence = inference?.confidence ?? 0;
-  const isPossiblyMalicious =
-    isMalware && confidence !== Report_Evidence_Confidence.HIGH;
-
-  if (isPossiblyMalicious) {
-    return "suspicious";
-  }
-
-  if (isMalware) {
-    return "malicious";
-  }
-
-  return "safe";
+  // Default safe if no signals
+  return "safe" as const;
 }

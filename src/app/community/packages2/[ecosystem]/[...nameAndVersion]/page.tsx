@@ -77,6 +77,7 @@ export default async function Page({
         source={packageInfo.source}
         inference={inference}
         verificationRecord={verificationRecord}
+        vulnerabilities={packageInfo.vulnerabilities ?? []}
       />
 
       <StatsCards
