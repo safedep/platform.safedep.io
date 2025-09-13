@@ -61,7 +61,7 @@ function makeColumns({
         return (
           <Button asChild size="sm" variant="link">
             <Link
-              href={`/community/packages2/${ecosystemName}/${name}/${row.original.version}`}
+              href={`/community/packages/${ecosystemName}/${name}/${row.original.version}`}
             >
               View Version
             </Link>
