@@ -4,7 +4,7 @@ import {
   getAvailableVersions,
   getLicenseInfo,
   getPackageInfo,
-  getTestValue,
+  queryPackageAnalysis,
 } from "./actions";
 import { Metadata } from "next";
 import { Tabs, TabsList, TabsTrigger, TabsContent } from "@/components/ui/tabs";
@@ -56,7 +56,7 @@ export default async function Page({
     return notFound();
   }
 
-  const testValue = getTestValue();
+  const analysis = queryPackageAnalysis(ecosystem, name, version);
   const availableVersions = getAvailableVersions(ecosystem, name, version);
   const licenses = getLicenseInfo(ecosystem, name, version);
 
@@ -88,7 +88,7 @@ export default async function Page({
 
         <TabsContent value="analysis">
           <Suspense fallback={<div>Loading...</div>}>
-            <AnalysisTab value={testValue} />
+            <AnalysisTab value={analysis} />
           </Suspense>
         </TabsContent>
 
