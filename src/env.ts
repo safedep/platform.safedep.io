@@ -42,7 +42,7 @@ export const env = createEnv({
     // github
     APP_BASE_URL: v.optional(
       v.pipe(v.string(), v.url()),
-      "http://platform.safedep.io",
+      "https://platform.safedep.io",
     ),
     GITHUB_APP_INTEGRATION_CLIENT_ID: v.string(),
   },
