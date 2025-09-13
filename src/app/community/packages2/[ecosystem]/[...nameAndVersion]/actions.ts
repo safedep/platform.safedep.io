@@ -72,7 +72,7 @@ export async function getLicenseInfo(
   return insight?.licenses?.licenses;
 }
 
-export async function queryPackageAnalysis(
+export async function queryPackageAnalysisForReport(
   ecosystem: Ecosystem,
   name: string,
   version: string,
@@ -89,7 +89,7 @@ export async function queryPackageAnalysis(
         packageVersion: { package: { ecosystem, name }, version },
       },
     });
-    return response;
+    return response.report;
   } catch (error) {
     if (error instanceof ConnectError && error.code === Code.NotFound) {
       return undefined;
