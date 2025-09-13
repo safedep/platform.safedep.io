@@ -1,16 +1,35 @@
 "use client";
+import { Badge } from "@/components/ui/badge";
 import { DataTable } from "@/components/ui/data-table";
-import { ScrollArea } from "@/components/ui/scroll-area";
 import { PackageAvailableVersion } from "@buf/safedep_api.bufbuild_es/safedep/messages/package/v1/package_version_insight_pb";
-import { timestampDate } from "@bufbuild/protobuf/wkt";
+import { Timestamp, timestampDate } from "@bufbuild/protobuf/wkt";
 import { ColumnDef, createColumnHelper } from "@tanstack/react-table";
 import { use } from "react";
 
-function makeColumns() {
+function makeColumns({
+  latestVersionPublishedAt,
+}: {
+  latestVersionPublishedAt?: Timestamp;
+}) {
   const columnHelper = createColumnHelper<PackageAvailableVersion>();
   return [
     columnHelper.accessor("version", {
       header: "Version",
+      cell: ({ row }) => {
+        const version = row.original.version;
+        const isLatestVersion =
+          row.original.publishedAt === latestVersionPublishedAt;
+        return (
+          <div className="flex items-center gap-2">
+            <span className="font-mono">{version}</span>
+            {isLatestVersion && (
+              <Badge variant="outline" className="text-xs">
+                Latest
+              </Badge>
+            )}
+          </div>
+        );
+      },
     }),
     columnHelper.accessor("publishedAt", {
       header: "Published",
@@ -22,12 +41,6 @@ function makeColumns() {
         return <span>{timestampDate(publishedAt).toLocaleDateString()}</span>;
       },
     }),
-    columnHelper.accessor("defaultVersion", {
-      header: "Default Version",
-    }),
-    columnHelper.accessor("deprecated", {
-      header: "Deprecated",
-    }),
   ] as ColumnDef<PackageAvailableVersion>[];
 }
 
@@ -36,14 +49,29 @@ export default function VersionsTab({
 }: {
   value: Promise<PackageAvailableVersion[]>;
 }) {
-  const availableVersions = use(value);
-  const columns = makeColumns();
+  // sort versions by published at (newest first)
+  const availableVersions = use(value).sort((a, b) => {
+    const aPublishedAt = a.publishedAt;
+    const bPublishedAt = b.publishedAt;
+    if (!aPublishedAt || !bPublishedAt) {
+      return b.version.localeCompare(a.version, undefined, { numeric: true });
+    }
+    return (
+      timestampDate(bPublishedAt).getTime() -
+      timestampDate(aPublishedAt).getTime()
+    );
+  });
+
+  const latestVersionPublishedAt = availableVersions.at(0)?.publishedAt;
+  const columns = makeColumns({ latestVersionPublishedAt });
 
   return (
     <div>
-      <ScrollArea className="h-96">
-        <DataTable columns={columns} data={availableVersions} />
-      </ScrollArea>
+      <DataTable
+        columns={columns}
+        data={availableVersions}
+        className="max-h-96 overflow-auto rounded-md"
+      />
     </div>
   );
 }
