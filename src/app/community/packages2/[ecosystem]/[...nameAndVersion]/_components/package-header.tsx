@@ -4,8 +4,13 @@ import { cn } from "@/lib/utils";
 import { getEcosystemIconByEcosystem } from "@/utils/ecosystem";
 import { Ecosystem } from "@buf/safedep_api.bufbuild_es/safedep/messages/package/v1/ecosystem_pb";
 import { Package, Star, GitFork, ExternalLink, Tag } from "lucide-react";
-import PackageSafetyBadge from "./package-safety-badge";
+import PackageSafetyBadge, { PackageSafety } from "./package-safety-badge";
 import { SiGithub } from "react-icons/si";
+import { VerificationRecord } from "@buf/safedep_api.bufbuild_es/safedep/messages/malysis/v1/verification_record_pb";
+import {
+  Report_Evidence_Confidence,
+  Report_Inference,
+} from "@buf/safedep_api.bufbuild_es/safedep/messages/malysis/v1/report_pb";
 
 function HeaderBadge({
   children,
@@ -42,6 +47,8 @@ export default function PackageHeader({
   forks,
   stars,
   source,
+  inference,
+  verificationRecord,
 }: {
   name: string;
   version: string;
@@ -49,8 +56,11 @@ export default function PackageHeader({
   forks?: number;
   stars?: number;
   source?: string;
+  inference?: Report_Inference;
+  verificationRecord?: VerificationRecord;
 }) {
   const EcosystemIcon = getEcosystemIconByEcosystem(ecosystem);
+  const safety = getMalwareAnalysisStatus(inference, verificationRecord);
 
   return (
     <div>
@@ -58,7 +68,7 @@ export default function PackageHeader({
         <CardHeader>
           <CardTitle className="flex flex-wrap items-center justify-between gap-2">
             <PackageName name={name} />
-            <PackageSafetyBadge safety="safe" />
+            <PackageSafetyBadge safety={safety} />
           </CardTitle>
         </CardHeader>
 
@@ -102,4 +112,34 @@ export default function PackageHeader({
       </Card>
     </div>
   );
+}
+
+function getMalwareAnalysisStatus(
+  inference?: Report_Inference,
+  vr?: VerificationRecord,
+): PackageSafety {
+  // We will always trust the verification record if it exists
+  if (vr && vr.isMalware) {
+    return "malicious" as const;
+  }
+
+  if (vr && vr.isSafe) {
+    return "safe" as const;
+  }
+
+  // Fallback to heuristic when a verification record is not available
+  const isMalware = inference?.isMalware ?? false;
+  const confidence = inference?.confidence ?? 0;
+  const isPossiblyMalicious =
+    isMalware && confidence !== Report_Evidence_Confidence.HIGH;
+
+  if (isPossiblyMalicious) {
+    return "suspicious";
+  }
+
+  if (isMalware) {
+    return "malicious";
+  }
+
+  return "safe";
 }

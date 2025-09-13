@@ -4,6 +4,7 @@ import { parseSchema, type ParamSchema } from "./schema";
 import {
   getAvailableVersions,
   getLicenseInfo,
+  getMalwareAnalysisVerificationRecord,
   getPackageInfo,
   queryPackageAnalysisForReport,
 } from "./actions";
@@ -52,7 +53,10 @@ export default async function Page({
     nameAndVersion: { name, version },
   } = output;
 
-  const packageInfo = await getPackageInfo(ecosystem, name, version);
+  const [packageInfo, { inference, verificationRecord }] = await Promise.all([
+    getPackageInfo(ecosystem, name, version),
+    getMalwareAnalysisVerificationRecord(ecosystem, name, version),
+  ]);
   if (!packageInfo) {
     return notFound();
   }
@@ -70,6 +74,8 @@ export default async function Page({
         forks={Number(packageInfo.forks)}
         stars={Number(packageInfo.stars)}
         source={packageInfo.source}
+        inference={inference}
+        verificationRecord={verificationRecord}
       />
 
       <StatsCards
@@ -89,7 +95,7 @@ export default async function Page({
 
         <TabsContent value="analysis">
           <Suspense fallback={<div>Loading...</div>}>
-            <AnalysisTab report={report} />
+            <AnalysisTab report={report.then((v) => v?.report)} />
           </Suspense>
         </TabsContent>
 

@@ -2,7 +2,7 @@ import { Badge } from "@/components/ui/badge";
 import { cn } from "@/lib/utils";
 import { AlertTriangle, ShieldCheck, XOctagon } from "lucide-react";
 
-type PackageSafety = "safe" | "suspicious" | "malicious";
+export type PackageSafety = "safe" | "suspicious" | "malicious";
 
 function getBadgeColor(safety: PackageSafety) {
   switch (safety) {

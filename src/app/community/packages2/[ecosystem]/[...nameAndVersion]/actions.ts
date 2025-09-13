@@ -25,6 +25,35 @@ export async function getPackageVersionInsight(
   return response.insight;
 }
 
+export async function queryPackageAnalysisForReport(
+  ecosystem: Ecosystem,
+  name: string,
+  version: string,
+) {
+  "use cache";
+  const service = createMalwareAnalysisServiceClient(
+    env.COMMUNITY_API_TENANT_ID,
+    env.COMMUNITY_API_KEY,
+  );
+
+  try {
+    const response = await service.queryPackageAnalysis({
+      target: {
+        packageVersion: { package: { ecosystem, name }, version },
+      },
+    });
+    return {
+      report: response.report,
+      verificationRecord: response.verificationRecord,
+    };
+  } catch (error) {
+    if (error instanceof ConnectError && error.code === Code.NotFound) {
+      return undefined;
+    }
+    throw error;
+  }
+}
+
 /**
  * This function calls the cached `getPackageVersionInsight` function. This is so
  * that we avoid sending too much data to the client all while being able to
@@ -72,28 +101,15 @@ export async function getLicenseInfo(
   return insight?.licenses?.licenses;
 }
 
-export async function queryPackageAnalysisForReport(
+export async function getMalwareAnalysisVerificationRecord(
   ecosystem: Ecosystem,
   name: string,
   version: string,
 ) {
   "use cache";
-  const service = createMalwareAnalysisServiceClient(
-    env.COMMUNITY_API_TENANT_ID,
-    env.COMMUNITY_API_KEY,
-  );
-
-  try {
-    const response = await service.queryPackageAnalysis({
-      target: {
-        packageVersion: { package: { ecosystem, name }, version },
-      },
-    });
-    return response.report;
-  } catch (error) {
-    if (error instanceof ConnectError && error.code === Code.NotFound) {
-      return undefined;
-    }
-    throw error;
-  }
+  const report = await queryPackageAnalysisForReport(ecosystem, name, version);
+  return {
+    inference: report?.report?.inference,
+    verificationRecord: report?.verificationRecord,
+  };
 }
