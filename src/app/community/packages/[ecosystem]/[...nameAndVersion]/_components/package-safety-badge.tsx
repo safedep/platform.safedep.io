@@ -7,7 +7,7 @@ export type PackageSafety = "safe" | "suspicious" | "malicious";
 function getBadgeColor(safety: PackageSafety) {
   switch (safety) {
     case "safe":
-      return "bg-green-100 text-green-800 bor";
+      return "bg-green-100 text-green-800";
     case "suspicious":
       return "bg-yellow-100 text-yellow-800";
     case "malicious":
