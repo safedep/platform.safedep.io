@@ -11,7 +11,7 @@ import {
 import { Metadata } from "next";
 import { Tabs, TabsList, TabsTrigger, TabsContent } from "@/components/ui/tabs";
 import PackageHeader from "./_components/package-header";
-import StatsCards from "./_components/stats-cards";
+import StatsCards from "./_components/stats-cards/stats-cards";
 import AnalysisTab from "./_components/tabs/analysis-tab";
 import { Suspense } from "react";
 import VulnerabilitiesTab from "./_components/tabs/vulnerabilities-tab";
