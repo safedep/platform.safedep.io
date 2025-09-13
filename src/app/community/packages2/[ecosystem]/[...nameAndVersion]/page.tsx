@@ -1,3 +1,4 @@
+"use server";
 import { notFound } from "next/navigation";
 import { parseSchema, type ParamSchema } from "./schema";
 import {

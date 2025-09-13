@@ -33,7 +33,7 @@ export default async function AnalysisTab({
             <h2 className="text-base font-semibold">Summary</h2>
             <MarkdownContent
               content={analysis.report?.inference?.summary ?? ""}
-              className="text-sm/6 text-balance"
+              className="text-sm/6"
             />
           </div>
 

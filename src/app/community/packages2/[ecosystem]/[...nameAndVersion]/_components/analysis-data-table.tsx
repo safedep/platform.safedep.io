@@ -1,5 +1,4 @@
 "use client";
-
 import ConfidenceBadge from "@/components/malysis/confidence-badge";
 import MarkdownContent from "@/components/markdown-content";
 import { Button } from "@/components/ui/button";
@@ -59,24 +58,7 @@ function getColumns() {
     columnHelper.accessor("evidence.details", {
       header: "",
       cell: ({ row }) => {
-        return (
-          <Sheet>
-            <SheetTrigger asChild>
-              <Button variant="outline">View Details</Button>
-            </SheetTrigger>
-            <SheetContent>
-              <SheetHeader>
-                <SheetTitle>Details</SheetTitle>
-                <SheetDescription asChild>
-                  <MarkdownContent
-                    content={row.original.evidence?.details ?? ""}
-                    className="text-sm/6 text-balance break-words"
-                  />
-                </SheetDescription>
-              </SheetHeader>
-            </SheetContent>
-          </Sheet>
-        );
+        return <EvidenceDetailsSheet evidence={row.original} />;
       },
     }),
   ] as ColumnDef<Report_FileEvidence>[];
@@ -89,4 +71,27 @@ export default function AnalysisDataTable({
 }) {
   const columns = getColumns();
   return <DataTable columns={columns} data={evidences} />;
+}
+
+function EvidenceDetailsSheet({ evidence }: { evidence: Report_FileEvidence }) {
+  return (
+    <Sheet>
+      <SheetTrigger asChild>
+        <Button variant="outline">View Details</Button>
+      </SheetTrigger>
+      <SheetContent>
+        <SheetHeader>
+          <SheetTitle>Details</SheetTitle>
+          <SheetDescription className="sr-only">
+            Details for {evidence.evidence?.title}
+          </SheetDescription>
+
+          <MarkdownContent
+            content={evidence.evidence?.details ?? ""}
+            className="text-sm/6 text-balance break-words"
+          />
+        </SheetHeader>
+      </SheetContent>
+    </Sheet>
+  );
 }
