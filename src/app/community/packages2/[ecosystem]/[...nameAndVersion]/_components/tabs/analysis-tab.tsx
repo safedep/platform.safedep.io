@@ -1,8 +1,17 @@
+"use server";
 import MarkdownContent from "@/components/markdown-content";
-import { Card, CardContent, CardFooter } from "@/components/ui/card";
+import {
+  Card,
+  CardAction,
+  CardContent,
+  CardFooter,
+  CardHeader,
+} from "@/components/ui/card";
 import { timestampDate } from "@bufbuild/protobuf/wkt";
 import AnalysisDataTable from "../analysis-data-table";
 import { Report } from "@buf/safedep_api.bufbuild_es/safedep/messages/malysis/v1/report_pb";
+import Link from "next/link";
+import { Button } from "@/components/ui/button";
 
 export default async function AnalysisTab({
   report: reportValue,
@@ -18,9 +27,15 @@ export default async function AnalysisTab({
   return (
     <div>
       <Card>
-        {/* <CardHeader>
-          <CardTitle>Analysis Summary</CardTitle>
-        </CardHeader> */}
+        <CardHeader>
+          <CardAction>
+            <Button asChild size="sm" variant="link">
+              <Link href={`/community/malysis/${report.reportId}`}>
+                View full analysis
+              </Link>
+            </Button>
+          </CardAction>
+        </CardHeader>
 
         <CardContent className="flex flex-col gap-4">
           <div className="flex flex-col gap-2">
