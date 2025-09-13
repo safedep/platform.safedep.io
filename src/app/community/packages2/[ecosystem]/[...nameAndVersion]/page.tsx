@@ -106,7 +106,11 @@ export default async function Page({
 
         <TabsContent value="versions">
           <Suspense fallback={<div>Loading...</div>}>
-            <VersionsTab value={availableVersions.then((v) => v ?? [])} />
+            <VersionsTab
+              value={availableVersions.then((v) => v ?? [])}
+              name={name}
+              ecosystem={ecosystem}
+            />
           </Suspense>
         </TabsContent>
 
