@@ -17,6 +17,7 @@ import { Suspense } from "react";
 import VulnerabilitiesTab from "./_components/tabs/vulnerabilities-tab";
 import VersionsTab from "./_components/tabs/versions-tab";
 import LicensesTab from "./_components/tabs/licenses-tab";
+import AnalysisTabSkeleton from "./_components/tabs/analysis-tab-skeleton";
 
 export async function generateMetadata({
   params,
@@ -94,7 +95,7 @@ export default async function Page({
         </TabsList>
 
         <TabsContent value="analysis">
-          <Suspense fallback={<div>Loading...</div>}>
+          <Suspense fallback={<AnalysisTabSkeleton />}>
             <AnalysisTab report={report.then((v) => v?.report)} />
           </Suspense>
         </TabsContent>
