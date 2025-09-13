@@ -12,6 +12,7 @@ import AnalysisDataTable from "../analysis-data-table";
 import { Report } from "@buf/safedep_api.bufbuild_es/safedep/messages/malysis/v1/report_pb";
 import Link from "next/link";
 import { Button } from "@/components/ui/button";
+import AnalysisNotFound from "./analysis-not-found";
 
 export default async function AnalysisTab({
   report: reportValue,
@@ -21,7 +22,7 @@ export default async function AnalysisTab({
   const report = await reportValue;
 
   if (!report) {
-    return <div>AnalysisTab No analysis found</div>;
+    return <AnalysisNotFound />;
   }
 
   return (
