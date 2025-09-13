@@ -1,11 +1,5 @@
 import MarkdownContent from "@/components/markdown-content";
-import {
-  Card,
-  CardContent,
-  CardFooter,
-  CardHeader,
-  CardTitle,
-} from "@/components/ui/card";
+import { Card, CardContent, CardFooter } from "@/components/ui/card";
 import { QueryPackageAnalysisResponse } from "@buf/safedep_api.bufbuild_es/safedep/services/malysis/v1/malysis_pb";
 import { timestampDate } from "@bufbuild/protobuf/wkt";
 import AnalysisDataTable from "../analysis-data-table";
@@ -24,9 +18,9 @@ export default async function AnalysisTab({
   return (
     <div>
       <Card>
-        <CardHeader>
+        {/* <CardHeader>
           <CardTitle>Analysis Summary</CardTitle>
-        </CardHeader>
+        </CardHeader> */}
 
         <CardContent className="flex flex-col gap-4">
           <div className="flex flex-col gap-2">
