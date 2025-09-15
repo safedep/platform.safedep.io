@@ -13,6 +13,8 @@ import { Report } from "@buf/safedep_api.bufbuild_es/safedep/messages/malysis/v1
 import Link from "next/link";
 import { Button } from "@/components/ui/button";
 import AnalysisNotFound from "./analysis-not-found";
+import Image from "next/image";
+import safedepLogo from "@/assets/safedep-logo-wordmark.png";
 
 export default async function AnalysisTab({
   report: reportValue,
@@ -63,17 +65,23 @@ export default async function AnalysisTab({
           </div>
         </CardContent>
 
-        {report.analyzedAt && (
-          <CardFooter className="text-muted-foreground text-sm">
-            <span>
-              Analysis performed at{" "}
-              {timestampDate(report.analyzedAt).toLocaleString(undefined, {
-                dateStyle: "medium",
-                timeStyle: "short",
-              })}
-            </span>
-          </CardFooter>
-        )}
+        <CardFooter className="text-muted-foreground w-full text-sm">
+          {report.analyzedAt && (
+            <div className="flex w-full justify-between">
+              <span>
+                Analysis performed at{" "}
+                {timestampDate(report.analyzedAt).toLocaleString(undefined, {
+                  dateStyle: "medium",
+                  timeStyle: "short",
+                })}
+              </span>
+              <span className="flex items-center gap-1">
+                <span>Analysis by</span>
+                <Image src={safedepLogo} alt="SafeDep" height={20} />
+              </span>
+            </div>
+          )}
+        </CardFooter>
       </Card>
     </div>
   );
