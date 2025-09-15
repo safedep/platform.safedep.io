@@ -1,4 +1,5 @@
 import { Badge } from "@/components/ui/badge";
+import { PackageSafety } from "@/lib/inference";
 import { cn } from "@/lib/utils";
 import {
   AlertTriangle,
@@ -11,16 +12,6 @@ import {
   ThumbsDown,
 } from "lucide-react";
 
-export type PackageSafety =
-  | "malicious"
-  | "suspicious"
-  | "vulnerable"
-  | "risky_license"
-  | "unmaintained"
-  | "unpopular"
-  | "poor security hygiene"
-  | "safe";
-
 function getBadgeColor(safety: PackageSafety) {
   switch (safety) {
     case "safe":
@@ -31,7 +22,7 @@ function getBadgeColor(safety: PackageSafety) {
       return "bg-red-100 text-red-800";
     case "vulnerable":
       return "bg-orange-100 text-orange-800";
-    case "risky_license":
+    case "risky license":
       return "bg-amber-100 text-amber-800";
     case "unmaintained":
       return "bg-slate-200 text-slate-800";
@@ -52,7 +43,7 @@ function getIcon(safety: PackageSafety) {
       return XOctagon;
     case "vulnerable":
       return AlertCircle;
-    case "risky_license":
+    case "risky license":
       return FileWarning;
     case "unmaintained":
       return Wrench;
