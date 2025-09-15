@@ -22,22 +22,6 @@ const columns: ColumnDef<LicenseMeta>[] = [
     },
   },
   {
-    accessorKey: "osiApproved",
-    header: "OSI Approved",
-    cell: ({ row }) => {
-      const osiApproved = row.original.osiApproved;
-      return <span>{osiApproved ? "Yes" : "No"}</span>;
-    },
-  },
-  {
-    accessorKey: "commercialUseAllowed",
-    header: "Commercial Use",
-    cell: ({ row }) => {
-      const commercialUseAllowed = row.original.commercialUseAllowed;
-      return <span>{commercialUseAllowed ? "Yes" : "No"}</span>;
-    },
-  },
-  {
     accessorKey: "referenceUrl",
     header: "Reference URL",
     cell: ({ row }) => {
