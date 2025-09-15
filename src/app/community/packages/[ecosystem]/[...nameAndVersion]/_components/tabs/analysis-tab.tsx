@@ -63,17 +63,17 @@ export default async function AnalysisTab({
           </div>
         </CardContent>
 
-        <CardFooter className="text-muted-foreground text-sm">
-          <span>
-            Analysis performed at{" "}
-            {report.analyzedAt
-              ? timestampDate(report.analyzedAt).toLocaleString(undefined, {
-                  dateStyle: "medium",
-                  timeStyle: "short",
-                })
-              : "unknown"}
-          </span>
-        </CardFooter>
+        {report.analyzedAt && (
+          <CardFooter className="text-muted-foreground text-sm">
+            <span>
+              Analysis performed at{" "}
+              {timestampDate(report.analyzedAt).toLocaleString(undefined, {
+                dateStyle: "medium",
+                timeStyle: "short",
+              })}
+            </span>
+          </CardFooter>
+        )}
       </Card>
     </div>
   );
