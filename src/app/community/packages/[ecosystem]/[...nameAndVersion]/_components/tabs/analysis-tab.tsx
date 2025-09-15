@@ -63,17 +63,35 @@ export default async function AnalysisTab({
           </div>
         </CardContent>
 
-        {report.analyzedAt && (
-          <CardFooter className="text-muted-foreground text-sm">
-            <span>
-              Analysis performed at{" "}
-              {timestampDate(report.analyzedAt).toLocaleString(undefined, {
-                dateStyle: "medium",
-                timeStyle: "short",
-              })}
-            </span>
-          </CardFooter>
-        )}
+        <CardFooter className="text-muted-foreground text-sm">
+          <div className="flex w-full flex-col gap-2 sm:flex-row sm:items-center sm:justify-between">
+            {report.analyzedAt && (
+              <span className="text-xs sm:text-sm">
+                Analysis performed at{" "}
+                {timestampDate(report.analyzedAt).toLocaleString(undefined, {
+                  dateStyle: "medium",
+                  timeStyle: "short",
+                })}
+              </span>
+            )}
+            <div className="flex items-center gap-2 self-end sm:self-auto">
+              <span className="text-xs sm:text-sm">Analysis performed by</span>
+              <a
+                href="https://safedep.io"
+                target="_blank"
+                rel="noopener noreferrer"
+                className="text-muted-foreground hover:text-foreground flex items-center gap-1 transition-colors"
+              >
+                <img
+                  src="/safedep-logo.svg"
+                  alt="SafeDep"
+                  className="h-4 w-auto sm:h-5"
+                />
+                <span className="text-xs font-medium sm:text-sm">SafeDep</span>
+              </a>
+            </div>
+          </div>
+        </CardFooter>
       </Card>
     </div>
   );
