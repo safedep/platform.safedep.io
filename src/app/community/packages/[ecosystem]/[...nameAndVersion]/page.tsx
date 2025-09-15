@@ -32,8 +32,8 @@ export async function generateMetadata({
   } = output;
 
   return {
-    title: `${name}@${version} - Package Report`,
-    description: `Security and package information report for package ${name} of version ${version}.`,
+    title: `${name}@${version} - Package Insights`,
+    description: `Security and package information insights for package ${name} of version ${version}.`,
     keywords: [name, "package", "security", "report", "safedep"],
   };
 }
@@ -57,9 +57,10 @@ export default async function Page({
     getPackageInfo(ecosystem, name, version),
     getMalwareAnalysisVerificationRecord(ecosystem, name, version),
   ]);
-  if (!packageInfo) {
-    return notFound();
-  }
+
+  // TODO(arunanshub): While we have removed the `!packageInfo` check, this means
+  // even if the package does not exist, we still show the page. Ideally, there
+  // should be a check done to see if the package exists.
 
   const report = queryPackageAnalysisForReport(ecosystem, name, version);
   const availableVersions = getAvailableVersions(ecosystem, name, version);

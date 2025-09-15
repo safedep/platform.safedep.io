@@ -67,17 +67,15 @@ export async function getPackageInfo(
   "use cache";
   const insight = await getPackageVersionInsight(ecosystem, name, version);
   const projectInsight = insight?.projectInsights.at(0);
-  if (!projectInsight) {
-    return undefined;
-  }
 
   return {
-    forks: projectInsight.forks,
-    stars: projectInsight.stars,
+    forks: projectInsight?.forks,
+    stars: projectInsight?.stars,
     source: projectInsight?.project?.url,
-    score: projectInsight.scorecard?.score,
+    score: projectInsight?.scorecard?.score,
     licenses: insight?.licenses?.licenses.map((license) => license.licenseId),
     vulnerabilities: insight?.vulnerabilities,
+    downloadCount: insight?.downloadCount,
   };
 }
 
