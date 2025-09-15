@@ -73,6 +73,7 @@ export async function getPackageInfo(
     stars: projectInsight?.stars,
     source: projectInsight?.project?.url,
     score: projectInsight?.scorecard?.score,
+    scorecardChecks: projectInsight?.scorecard?.checks,
     licenses: insight?.licenses?.licenses.map((license) => license.licenseId),
     vulnerabilities: insight?.vulnerabilities,
     downloadCount: insight?.downloadCount,

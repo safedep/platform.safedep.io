@@ -78,6 +78,9 @@ export default async function Page({
         inference={inference}
         verificationRecord={verificationRecord}
         vulnerabilities={packageInfo.vulnerabilities ?? []}
+        licenses={packageInfo.licenses ?? []}
+        openSSFScore={packageInfo.score ?? 0}
+        scorecardChecks={packageInfo.scorecardChecks ?? []}
       />
 
       <StatsCards

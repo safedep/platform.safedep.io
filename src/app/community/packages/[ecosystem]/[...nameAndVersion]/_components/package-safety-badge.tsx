@@ -1,8 +1,25 @@
 import { Badge } from "@/components/ui/badge";
 import { cn } from "@/lib/utils";
-import { AlertTriangle, ShieldCheck, XOctagon } from "lucide-react";
+import {
+  AlertTriangle,
+  ShieldCheck,
+  XOctagon,
+  AlertCircle,
+  FileWarning,
+  Wrench,
+  Users,
+  ThumbsDown,
+} from "lucide-react";
 
-export type PackageSafety = "safe" | "suspicious" | "malicious";
+export type PackageSafety =
+  | "malicious"
+  | "suspicious"
+  | "vulnerable"
+  | "risky_license"
+  | "unmaintained"
+  | "unpopular"
+  | "poor security hygiene"
+  | "safe";
 
 function getBadgeColor(safety: PackageSafety) {
   switch (safety) {
@@ -12,6 +29,16 @@ function getBadgeColor(safety: PackageSafety) {
       return "bg-yellow-100 text-yellow-800";
     case "malicious":
       return "bg-red-100 text-red-800";
+    case "vulnerable":
+      return "bg-orange-100 text-orange-800";
+    case "risky_license":
+      return "bg-amber-100 text-amber-800";
+    case "unmaintained":
+      return "bg-slate-200 text-slate-800";
+    case "unpopular":
+      return "bg-blue-100 text-blue-800";
+    case "poor security hygiene":
+      return "bg-rose-100 text-rose-800";
   }
 }
 
@@ -23,6 +50,16 @@ function getIcon(safety: PackageSafety) {
       return AlertTriangle;
     case "malicious":
       return XOctagon;
+    case "vulnerable":
+      return AlertCircle;
+    case "risky_license":
+      return FileWarning;
+    case "unmaintained":
+      return Wrench;
+    case "unpopular":
+      return Users;
+    case "poor security hygiene":
+      return ThumbsDown;
   }
 }
 
@@ -39,7 +76,7 @@ export default function PackageSafetyBadge({
       className={cn("text-md flex items-center gap-2 px-4 py-2", badgeColor)}
     >
       <SafetyIcon className="size-4!" />
-      <span className="capitalize">{safety}</span>
+      <span className="capitalize">{safety.replaceAll("_", " ")}</span>
     </Badge>
   );
 }
