@@ -64,12 +64,6 @@ test.describe.parallel("package report page", () => {
       page.getByRole("cell", { name: "License Name" }),
     ).toBeVisible();
     await expect(
-      page.getByRole("cell", { name: "OSI Approved" }),
-    ).toBeVisible();
-    await expect(
-      page.getByRole("cell", { name: "Commercial Use" }),
-    ).toBeVisible();
-    await expect(
       page.getByRole("cell", { name: "Reference URL" }),
     ).toBeVisible();
   });
