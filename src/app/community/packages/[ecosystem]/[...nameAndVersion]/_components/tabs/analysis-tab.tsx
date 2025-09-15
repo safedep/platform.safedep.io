@@ -29,20 +29,22 @@ export default async function AnalysisTab({
     <div>
       <Card>
         <CardHeader>
-          <CardAction>
-            <Button asChild size="sm" variant="link">
-              <Link href={`/community/malysis/${report.reportId}`}>
-                View full analysis
-              </Link>
-            </Button>
-          </CardAction>
+          {report.reportId && (
+            <CardAction>
+              <Button asChild size="sm" variant="link">
+                <Link href={`/community/malysis/${report.reportId}`}>
+                  View full analysis
+                </Link>
+              </Button>
+            </CardAction>
+          )}
         </CardHeader>
 
         <CardContent className="flex flex-col gap-4">
           <div className="flex flex-col gap-2">
             <h2 className="text-base font-semibold">Summary</h2>
             <MarkdownContent
-              content={report.inference?.summary ?? ""}
+              content={report.inference?.summary ?? "No summary available."}
               className="text-sm/6"
             />
           </div>
@@ -50,7 +52,7 @@ export default async function AnalysisTab({
           <div className="flex w-full flex-col gap-2">
             <h2 className="text-base font-semibold">Details</h2>
             <MarkdownContent
-              content={report.inference?.details ?? ""}
+              content={report.inference?.details ?? "No details available."}
               className="text-sm/6 text-balance"
             />
           </div>
