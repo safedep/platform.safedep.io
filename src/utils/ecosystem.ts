@@ -12,71 +12,43 @@ import {
 } from "react-icons/si";
 import { VscVscode } from "react-icons/vsc";
 import { IconType } from "react-icons";
+import { SiHomebrew } from "react-icons/si";
 
-/**
- * Parse the ecosystem name to the corresponding enum value.
- *
- * @param {string} ecosystem - The ecosystem name
- * @returns {Ecosystem} The corresponding enum value
- */
-export function parseEcosystem(ecosystem: string): Ecosystem {
-  switch (ecosystem.toLowerCase()) {
-    case "npm":
-      return Ecosystem.NPM;
-    case "rubygems":
-      return Ecosystem.RUBYGEMS;
-    case "rubygem":
-      return Ecosystem.RUBYGEMS;
-    case "go":
-      return Ecosystem.GO;
-    case "maven":
-      return Ecosystem.MAVEN;
-    case "pypi":
-      return Ecosystem.PYPI;
-    case "packagist":
-      return Ecosystem.PACKAGIST;
-    default:
-      throw new Error(`Unsupported ecosystem: ${ecosystem}`);
-  }
-}
-
-/**
- * Get the icon component for a given ecosystem.
- *
- * @param {string} ecosystem - The ecosystem name
- * @returns {IconType} The corresponding React icon component
- */
-export function getEcosystemIcon(ecosystem: string): IconType {
-  switch (ecosystem.toLowerCase()) {
-    case "npm":
+export function getEcosystemIconByEcosystem(ecosystem: Ecosystem): IconType {
+  switch (ecosystem) {
+    case Ecosystem.NPM:
       return FaNpm;
-    case "rubygems":
-    case "rubygem":
+    case Ecosystem.RUBYGEMS:
       return SiRubygems;
-    case "go":
+    case Ecosystem.GO:
       return SiGo;
-    case "maven":
+    case Ecosystem.MAVEN:
       return SiApachemaven;
-    case "pypi":
+    case Ecosystem.PYPI:
       return FaPython;
-    case "packagist":
+    case Ecosystem.PACKAGIST:
       return SiPackagist;
-    case "nuget":
+    case Ecosystem.NUGET:
       return SiNuget;
-    case "cargo":
-    case "rust":
+    case Ecosystem.CARGO:
       return SiRust;
-    case "terraform":
-    case "terraform_module":
-    case "terraform_provider":
+    case Ecosystem.TERRAFORM:
+    case Ecosystem.TERRAFORM_MODULE:
+    case Ecosystem.TERRAFORM_PROVIDER:
       return SiTerraform;
-    case "vscode":
-    case "openvsx":
+    case Ecosystem.VSCODE:
+    case Ecosystem.OPENVSX:
       return VscVscode;
-    case "github_actions":
-    case "github_repository":
+    case Ecosystem.GITHUB_ACTIONS:
+    case Ecosystem.GITHUB_REPOSITORY:
       return SiGithub;
-    default:
+    case Ecosystem.HOMEBREW:
+      return SiHomebrew;
+    case Ecosystem.UNSPECIFIED:
       return FaQuestion;
+    default:
+      // type exhaustive check
+      const exhaustiveCheck: never = ecosystem;
+      throw new Error(`Unsupported ecosystem: ${exhaustiveCheck}`);
   }
 }

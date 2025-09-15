@@ -1,4 +1,7 @@
-import { Severity_Risk } from "@buf/safedep_api.bufbuild_es/safedep/messages/vulnerability/v1/severity_pb";
+import {
+  Severity,
+  Severity_Risk,
+} from "@buf/safedep_api.bufbuild_es/safedep/messages/vulnerability/v1/severity_pb";
 
 /**
  * Convert a risk level to a badge color.
@@ -43,4 +46,16 @@ export function riskLevelToName(riskLevel: Severity_Risk) {
       const val: never = riskLevel;
       throw new Error(`Unknown risk level: ${val}`);
   }
+}
+
+/**
+ * Get the highest risk from a list of severities.
+ * @param severities - The severities to get the highest risk from.
+ * @returns The highest risk level found in the severities array.
+ */
+export function getHighestSeverityRisk(severities: Severity[]) {
+  return severities.reduce(
+    (maxRisk, severity) => Math.max(maxRisk, severity.risk) as Severity_Risk,
+    Severity_Risk.UNSPECIFIED,
+  );
 }
