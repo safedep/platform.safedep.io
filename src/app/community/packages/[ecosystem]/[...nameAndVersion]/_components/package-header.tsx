@@ -8,7 +8,10 @@ import { Package, Star, GitFork, ExternalLink, Tag } from "lucide-react";
 import PackageSafetyBadge, { PackageSafety } from "./package-safety-badge";
 import { SiGithub } from "react-icons/si";
 import { VerificationRecord } from "@buf/safedep_api.bufbuild_es/safedep/messages/malysis/v1/verification_record_pb";
-import { Report_Inference } from "@buf/safedep_api.bufbuild_es/safedep/messages/malysis/v1/report_pb";
+import {
+  Report_Evidence_Confidence,
+  Report_Inference,
+} from "@buf/safedep_api.bufbuild_es/safedep/messages/malysis/v1/report_pb";
 import { Vulnerability } from "@buf/safedep_api.bufbuild_es/safedep/messages/vulnerability/v1/vulnerability_pb";
 import { Severity_Risk } from "@buf/safedep_api.bufbuild_es/safedep/messages/vulnerability/v1/severity_pb";
 import { ScorecardCheck } from "@buf/safedep_api.bufbuild_es/safedep/messages/scorecard/v1/scorecard_pb";
@@ -146,8 +149,8 @@ function getMalwareAnalysisStatus(
     return "malicious" as const;
   }
 
-  // 2) Malysis: unverified malware inference -> SUSPICIOUS
-  if (inference?.isMalware) {
+  // 2) Malysis: suspicious inference -> SUSPICIOUS
+  if (isInferenceSuspicious(inference)) {
     return "suspicious" as const;
   }
 
@@ -229,4 +232,15 @@ function getScorecardCheckScore(
     (c) => c.name === name || c.name?.toLowerCase() === name.toLowerCase(),
   );
   return found?.score;
+}
+
+function isInferenceSuspicious(inference?: Report_Inference) {
+  // NOTE: this "malicious" is NOT the same as verification record. This is our
+  // analysis of what we think as malicious.
+  const isMalicious = inference?.isMalware ?? false;
+  const confidence =
+    inference?.confidence ?? Report_Evidence_Confidence.UNSPECIFIED;
+  const isPossiblyMalicious =
+    isMalicious && confidence !== Report_Evidence_Confidence.HIGH;
+  return isPossiblyMalicious;
 }
