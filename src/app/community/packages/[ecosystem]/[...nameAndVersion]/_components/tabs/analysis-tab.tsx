@@ -85,7 +85,13 @@ export default async function AnalysisTab({
               </span>
               <span className="flex items-center gap-1">
                 <span>Analysis by</span>
-                <Image src={safedepLogo} alt="SafeDep" height={20} />
+                <a
+                  href="https://safedep.io"
+                  target="_blank"
+                  rel="noopener noreferrer"
+                >
+                  <Image src={safedepLogo} alt="SafeDep" height={20} />
+                </a>
               </span>
             </div>
           )}
