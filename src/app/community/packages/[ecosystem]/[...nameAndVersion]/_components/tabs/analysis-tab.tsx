@@ -27,6 +27,8 @@ export default async function AnalysisTab({
     return <AnalysisNotFound />;
   }
 
+  const analyzedAt = report.analyzedAt && timestampDate(report.analyzedAt);
+
   return (
     <div>
       <Card>
@@ -66,14 +68,20 @@ export default async function AnalysisTab({
         </CardContent>
 
         <CardFooter className="text-muted-foreground w-full text-sm">
-          {report.analyzedAt && (
+          {analyzedAt && (
             <div className="flex w-full justify-between">
               <span>
                 Analysis performed at{" "}
-                {timestampDate(report.analyzedAt).toLocaleString(undefined, {
+                {/* {timestampDate(report.analyzedAt).toLocaleString(undefined, {
                   dateStyle: "medium",
                   timeStyle: "short",
-                })}
+                })} */}
+                <time dateTime={analyzedAt?.toISOString()}>
+                  {analyzedAt?.toLocaleString(undefined, {
+                    dateStyle: "medium",
+                    timeStyle: "short",
+                  })}
+                </time>
               </span>
               <span className="flex items-center gap-1">
                 <span>Analysis by</span>
