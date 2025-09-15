@@ -11,7 +11,7 @@ import { VerificationRecord } from "@buf/safedep_api.bufbuild_es/safedep/message
 import { Report_Inference } from "@buf/safedep_api.bufbuild_es/safedep/messages/malysis/v1/report_pb";
 import { Vulnerability } from "@buf/safedep_api.bufbuild_es/safedep/messages/vulnerability/v1/vulnerability_pb";
 import { ScorecardCheck } from "@buf/safedep_api.bufbuild_es/safedep/messages/scorecard/v1/scorecard_pb";
-import { getMalwareAnalysisStatus } from "@/lib/inference";
+import { getPackageSafetyStatus } from "@/lib/inference";
 
 function HeaderBadge({
   children,
@@ -69,7 +69,7 @@ export default async function PackageHeader({
   scorecardChecks?: ScorecardCheck[];
 }) {
   const EcosystemIcon = getEcosystemIconByEcosystem(ecosystem);
-  const safety = getMalwareAnalysisStatus(
+  const safety = getPackageSafetyStatus(
     inference,
     verificationRecord,
     vulnerabilities,
