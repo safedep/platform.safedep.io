@@ -72,10 +72,6 @@ export default async function AnalysisTab({
             <div className="flex w-full justify-between">
               <span>
                 Analysis performed at{" "}
-                {/* {timestampDate(report.analyzedAt).toLocaleString(undefined, {
-                  dateStyle: "medium",
-                  timeStyle: "short",
-                })} */}
                 <time dateTime={analyzedAt?.toISOString()}>
                   {analyzedAt?.toLocaleString(undefined, {
                     dateStyle: "medium",
