@@ -81,6 +81,11 @@ export default async function Page({
         licenses={packageInfo.licenses ?? []}
         openSSFScore={packageInfo.score ?? 0}
         scorecardChecks={packageInfo.scorecardChecks ?? []}
+        downloadCount={
+          packageInfo.downloadCount
+            ? Number(packageInfo.downloadCount)
+            : undefined
+        }
       />
 
       <StatsCards

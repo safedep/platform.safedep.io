@@ -4,7 +4,14 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { cn } from "@/lib/utils";
 import { getEcosystemIconByEcosystem } from "@/utils/ecosystem";
 import { Ecosystem } from "@buf/safedep_api.bufbuild_es/safedep/messages/package/v1/ecosystem_pb";
-import { Package, Star, GitFork, ExternalLink, Tag } from "lucide-react";
+import {
+  Package,
+  Star,
+  GitFork,
+  ExternalLink,
+  Tag,
+  Download,
+} from "lucide-react";
 import PackageSafetyBadge from "./package-safety-badge";
 import { SiGithub } from "react-icons/si";
 import { VerificationRecord } from "@buf/safedep_api.bufbuild_es/safedep/messages/malysis/v1/verification_record_pb";
@@ -54,6 +61,7 @@ export default async function PackageHeader({
   licenses,
   openSSFScore,
   scorecardChecks,
+  downloadCount,
 }: {
   name: string;
   version: string;
@@ -67,6 +75,7 @@ export default async function PackageHeader({
   licenses?: string[];
   openSSFScore?: number;
   scorecardChecks?: ScorecardCheck[];
+  downloadCount?: number;
 }) {
   const EcosystemIcon = getEcosystemIconByEcosystem(ecosystem);
   const safety = getPackageSafetyStatus(
@@ -108,6 +117,14 @@ export default async function PackageHeader({
               <HeaderBadge>
                 <GitFork className="size-3" />
                 <span className="text-sm">{forks.toLocaleString()}</span>
+              </HeaderBadge>
+            ) : null}
+            {downloadCount ? (
+              <HeaderBadge>
+                <Download className="size-3" />
+                <span className="text-sm">
+                  {downloadCount.toLocaleString()}
+                </span>
               </HeaderBadge>
             ) : null}
             {source ? (
