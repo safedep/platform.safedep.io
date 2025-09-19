@@ -14,6 +14,7 @@ import Link from "next/link";
 import { use, useRef } from "react";
 import { useState } from "react";
 import { useVirtualizer } from "@tanstack/react-virtual";
+import { ScrollArea } from "@/components/ui/scroll-area";
 
 /**
  * Rationale: We render a "View Version" button for each version in the versions
@@ -150,7 +151,7 @@ export default function VersionsTab({
   });
 
   return (
-    <div ref={scrollAreaRef} className="h-96 overflow-auto">
+    <ScrollArea className="h-96" ref={scrollAreaRef}>
       {/* The large inner element to hold all of the items */}
       <div
         style={{
@@ -162,7 +163,7 @@ export default function VersionsTab({
         {virtual.getVirtualItems().map((virtualItem) => (
           <div
             key={virtualItem.key}
-            className="absolute top-0 left-0 w-full"
+            className="absolute top-0 left-0 w-full rounded-2xl border bg-green-300 p-4"
             style={{
               height: `${virtualItem.size}px`,
               transform: `translateY(${virtualItem.start}px)`,
@@ -172,6 +173,6 @@ export default function VersionsTab({
           </div>
         ))}
       </div>
-    </div>
+    </ScrollArea>
   );
 }
