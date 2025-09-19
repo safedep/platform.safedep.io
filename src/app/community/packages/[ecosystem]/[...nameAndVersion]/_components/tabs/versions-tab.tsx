@@ -11,10 +11,9 @@ import { Timestamp, timestampDate } from "@bufbuild/protobuf/wkt";
 import { ColumnDef, createColumnHelper } from "@tanstack/react-table";
 import { Route } from "next";
 import Link from "next/link";
-import { use, useRef } from "react";
+import { use } from "react";
 import { useState } from "react";
-import { useVirtualizer } from "@tanstack/react-virtual";
-import { ScrollArea } from "@/components/ui/scroll-area";
+import VirtualizedDataTable from "./virtualized-data-table";
 
 /**
  * Rationale: We render a "View Version" button for each version in the versions
@@ -142,37 +141,13 @@ export default function VersionsTab({
     ecosystem,
   });
 
-  const scrollAreaRef = useRef<HTMLDivElement>(null);
-
-  const virtual = useVirtualizer({
-    count: availableVersions.length,
-    getScrollElement: () => scrollAreaRef.current,
-    estimateSize: () => 50,
-  });
-
   return (
-    <ScrollArea className="h-96" ref={scrollAreaRef}>
-      {/* The large inner element to hold all of the items */}
-      <div
-        style={{
-          height: `${virtual.getTotalSize()}px`,
-        }}
-        className="relative w-full"
-      >
-        {/* Only the visible items in the virtualizer, manually positioned to be in view */}
-        {virtual.getVirtualItems().map((virtualItem) => (
-          <div
-            key={virtualItem.key}
-            className="absolute top-0 left-0 w-full rounded-2xl border bg-green-300 p-4"
-            style={{
-              height: `${virtualItem.size}px`,
-              transform: `translateY(${virtualItem.start}px)`,
-            }}
-          >
-            Row {virtualItem.key}
-          </div>
-        ))}
-      </div>
-    </ScrollArea>
+    <VirtualizedDataTable
+      data={availableVersions}
+      columns={columns}
+      height={560}
+      rowEstimate={40}
+      overscan={12}
+    />
   );
 }
