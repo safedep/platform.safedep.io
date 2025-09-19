@@ -19,6 +19,7 @@ import { Report_Inference } from "@buf/safedep_api.bufbuild_es/safedep/messages/
 import { Vulnerability } from "@buf/safedep_api.bufbuild_es/safedep/messages/vulnerability/v1/vulnerability_pb";
 import { ScorecardCheck } from "@buf/safedep_api.bufbuild_es/safedep/messages/scorecard/v1/scorecard_pb";
 import { getPackageSafetyStatus } from "@/lib/inference";
+import { sanitizeUrl } from "@braintree/sanitize-url";
 
 function HeaderBadge({
   children,
@@ -88,6 +89,8 @@ export default async function PackageHeader({
     stars,
   );
 
+  const sanitizedSource = source ? sanitizeUrl(source) : undefined;
+
   return (
     <div>
       <Card>
@@ -127,11 +130,11 @@ export default async function PackageHeader({
                 </span>
               </HeaderBadge>
             ) : null}
-            {source ? (
+            {sanitizedSource ? (
               <HeaderBadge variant="default">
                 <SiGithub className="size-3!" />
                 <a
-                  href={source}
+                  href={sanitizedSource}
                   target="_blank"
                   rel="noopener noreferrer"
                   className="flex items-center gap-1 text-sm"

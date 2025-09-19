@@ -11,6 +11,9 @@ importers:
       '@auth0/nextjs-auth0':
         specifier: ^4.9.0
         version: 4.9.0(next@15.5.3(@babel/core@7.28.4)(@playwright/test@1.55.0)(react-dom@19.1.1(react@19.1.1))(react@19.1.1))(react-dom@19.1.1(react@19.1.1))(react@19.1.1)
+      '@braintree/sanitize-url':
+        specifier: ^7.1.1
+        version: 7.1.1
       '@buf/safedep_api.bufbuild_es':
         specifier: 2.8.0-20250826071937-38b8e85e5bad.1
         version: 2.8.0-20250826071937-38b8e85e5bad.1(@bufbuild/protobuf@2.8.0)
@@ -330,6 +333,9 @@ packages:
   '@bcoe/v8-coverage@1.0.2':
     resolution: {integrity: sha512-6zABk/ECA/QYSCQ1NGiVwwbQerUCZ+TQbp64Q3AgmfNvurHH0j8TtXa1qbShXA6qqkpAj4V5W8pP6mLe1mcMqA==}
     engines: {node: '>=18'}
+
+  '@braintree/sanitize-url@7.1.1':
+    resolution: {integrity: sha512-i1L7noDNxtFyL5DmZafWy1wRVhGehQmzZaz1HiN5e7iylJMSZR7ekOV7NsIqa5qBldlLrsKv4HbgFUVlQrz8Mw==}
 
   '@buf/bufbuild_protovalidate.bufbuild_es@2.8.0-20240508200655-46a4cf4ba109.1':
     resolution: {tarball: https://buf.build/gen/npm/v1/@buf/bufbuild_protovalidate.bufbuild_es/-/bufbuild_protovalidate.bufbuild_es-2.8.0-20240508200655-46a4cf4ba109.1.tgz}
@@ -4252,6 +4258,8 @@ snapshots:
       '@babel/helper-validator-identifier': 7.27.1
 
   '@bcoe/v8-coverage@1.0.2': {}
+
+  '@braintree/sanitize-url@7.1.1': {}
 
   '@buf/bufbuild_protovalidate.bufbuild_es@2.8.0-20240508200655-46a4cf4ba109.1(@bufbuild/protobuf@2.8.0)':
     dependencies:
