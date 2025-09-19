@@ -66,9 +66,9 @@ export default function VirtualizedDataTable<TData, TValue>({
         ref={parentRef}
         className={cn("h-96 w-full overflow-auto", className)}
       >
-        <Table className="w-full table-fixed">
+        <Table className="w-full md:table-fixed">
           {/* Keep header inside the scroller and make it sticky */}
-          <TableHeader className="bg-background sticky top-0 z-10">
+          <TableHeader>
             {table.getHeaderGroups().map((hg) => (
               <TableRow key={hg.id}>
                 {hg.headers.map((header) => (
@@ -77,6 +77,7 @@ export default function VirtualizedDataTable<TData, TValue>({
                     style={{
                       width: header.getSize ? header.getSize() : undefined,
                     }}
+                    className={header.column.columnDef.meta?.className ?? ""}
                   >
                     {header.isPlaceholder
                       ? null
@@ -105,8 +106,6 @@ export default function VirtualizedDataTable<TData, TValue>({
                   key={row.id}
                   // measureElement enables dynamic row heights if rows vary
                   ref={rowVirtualizer.measureElement}
-                  data-index={vi.index}
-                  className="hover:bg-muted/40"
                 >
                   {row.getVisibleCells().map((cell) => (
                     <TableCell

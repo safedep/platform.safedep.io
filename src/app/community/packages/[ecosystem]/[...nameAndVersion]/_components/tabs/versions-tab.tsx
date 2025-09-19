@@ -89,6 +89,9 @@ function makeColumns({
         }
         return <span>{timestampDate(publishedAt).toLocaleDateString()}</span>;
       },
+      meta: {
+        className: "max-w-30",
+      },
     }),
     columnHelper.display({
       header: "",
@@ -107,6 +110,9 @@ function makeColumns({
             </OnlyHoverPrefetchLink>
           </Button>
         );
+      },
+      meta: {
+        className: "max-w-20",
       },
     }),
   ] as ColumnDef<PackageAvailableVersion>[];
