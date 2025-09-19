@@ -13,7 +13,7 @@ import { Route } from "next";
 import Link from "next/link";
 import { use } from "react";
 import { useState } from "react";
-import VirtualizedDataTable from "./virtualized-data-table";
+import VirtualizedDataTable from "../virtualized-data-table";
 
 /**
  * Rationale: We render a "View Version" button for each version in the versions
