@@ -57,6 +57,15 @@ test.describe.parallel("package report page", () => {
     await expect(page.getByRole("cell", { name: "Modified" })).toBeVisible();
   });
 
+  test("versions tab", async ({ page }) => {
+    await page.getByRole("tab", { name: "Versions" }).click();
+    await expect(
+      page.getByRole("cell", { name: "Version", exact: true }),
+    ).toBeVisible();
+    await expect(page.getByRole("cell", { name: "Published" })).toBeVisible();
+    await expect(page.getByText("Latest")).toBeVisible();
+  });
+
   test("license tab", async ({ page }) => {
     await page.getByRole("tab", { name: "License" }).click();
     await expect(page.getByRole("cell", { name: "License ID" })).toBeVisible();
