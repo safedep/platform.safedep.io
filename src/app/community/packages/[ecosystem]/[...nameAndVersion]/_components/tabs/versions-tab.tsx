@@ -145,7 +145,6 @@ export default function VersionsTab({
     <VirtualizedDataTable
       data={availableVersions}
       columns={columns}
-      height={560}
       rowEstimate={40}
       overscan={12}
     />
