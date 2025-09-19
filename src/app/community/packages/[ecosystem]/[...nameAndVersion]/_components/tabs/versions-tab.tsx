@@ -90,7 +90,7 @@ function makeColumns({
         return <span>{timestampDate(publishedAt).toLocaleDateString()}</span>;
       },
       meta: {
-        className: "max-w-30",
+        className: "max-w-32",
       },
     }),
     columnHelper.display({

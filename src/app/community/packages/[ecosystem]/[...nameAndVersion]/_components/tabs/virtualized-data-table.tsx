@@ -1,4 +1,3 @@
-// VirtualizedDataTable.tsx
 import * as React from "react";
 import {
   ColumnDef,
