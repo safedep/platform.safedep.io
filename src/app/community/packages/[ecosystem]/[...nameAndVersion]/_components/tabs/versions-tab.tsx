@@ -1,7 +1,6 @@
 "use client";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
-import { DataTable } from "@/components/ui/data-table";
 import {
   Ecosystem,
   EcosystemSchema,
@@ -14,6 +13,7 @@ import { Route } from "next";
 import Link from "next/link";
 import { use } from "react";
 import { useState } from "react";
+import VirtualizedDataTable from "../virtualized-data-table";
 
 /**
  * Rationale: We render a "View Version" button for each version in the versions
@@ -89,6 +89,9 @@ function makeColumns({
         }
         return <span>{timestampDate(publishedAt).toLocaleDateString()}</span>;
       },
+      meta: {
+        className: "max-w-32",
+      },
     }),
     columnHelper.display({
       header: "",
@@ -107,6 +110,9 @@ function makeColumns({
             </OnlyHoverPrefetchLink>
           </Button>
         );
+      },
+      meta: {
+        className: "max-w-20",
       },
     }),
   ] as ColumnDef<PackageAvailableVersion>[];
@@ -142,12 +148,11 @@ export default function VersionsTab({
   });
 
   return (
-    <div>
-      <DataTable
-        columns={columns}
-        data={availableVersions}
-        className="max-h-96 overflow-auto rounded-md"
-      />
-    </div>
+    <VirtualizedDataTable
+      data={availableVersions}
+      columns={columns}
+      rowEstimate={40}
+      overscan={12}
+    />
   );
 }
