@@ -64,7 +64,7 @@ export default function VirtualizedDataTable<TData, TValue>({
     <div className="rounded-md border">
       <div
         ref={parentRef}
-        className={cn("h-96 w-full overflow-auto", className)}
+        className={cn("max-h-96 w-full overflow-auto", className)}
       >
         <Table className="w-full md:table-fixed">
           {/* Keep header inside the scroller and make it sticky */}
@@ -106,6 +106,8 @@ export default function VirtualizedDataTable<TData, TValue>({
                   key={row.id}
                   // measureElement enables dynamic row heights if rows vary
                   ref={rowVirtualizer.measureElement}
+                  // required by shadcn-ui/radix
+                  data-index={vi.index}
                 >
                   {row.getVisibleCells().map((cell) => (
                     <TableCell
