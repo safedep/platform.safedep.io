@@ -1,7 +1,6 @@
 "use client";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
-import { DataTable } from "@/components/ui/data-table";
 import {
   Ecosystem,
   EcosystemSchema,
@@ -12,8 +11,9 @@ import { Timestamp, timestampDate } from "@bufbuild/protobuf/wkt";
 import { ColumnDef, createColumnHelper } from "@tanstack/react-table";
 import { Route } from "next";
 import Link from "next/link";
-import { use } from "react";
+import { use, useRef } from "react";
 import { useState } from "react";
+import { useVirtualizer } from "@tanstack/react-virtual";
 
 /**
  * Rationale: We render a "View Version" button for each version in the versions
@@ -141,13 +141,37 @@ export default function VersionsTab({
     ecosystem,
   });
 
+  const scrollAreaRef = useRef<HTMLDivElement>(null);
+
+  const virtual = useVirtualizer({
+    count: availableVersions.length,
+    getScrollElement: () => scrollAreaRef.current,
+    estimateSize: () => 50,
+  });
+
   return (
-    <div>
-      <DataTable
-        columns={columns}
-        data={availableVersions}
-        className="max-h-96 overflow-auto rounded-md"
-      />
+    <div ref={scrollAreaRef} className="h-96 overflow-auto">
+      {/* The large inner element to hold all of the items */}
+      <div
+        style={{
+          height: `${virtual.getTotalSize()}px`,
+        }}
+        className="relative w-full"
+      >
+        {/* Only the visible items in the virtualizer, manually positioned to be in view */}
+        {virtual.getVirtualItems().map((virtualItem) => (
+          <div
+            key={virtualItem.key}
+            className="absolute top-0 left-0 w-full"
+            style={{
+              height: `${virtualItem.size}px`,
+              transform: `translateY(${virtualItem.start}px)`,
+            }}
+          >
+            Row {virtualItem.key}
+          </div>
+        ))}
+      </div>
     </div>
   );
 }
