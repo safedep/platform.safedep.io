@@ -80,7 +80,7 @@ export default async function AnalysisTab({
                 </time>
               </span>
             ) : (
-              <span />
+              <div />
             )}
 
             {(report.fileEvidences.length > 0 || report.reportId) && (
