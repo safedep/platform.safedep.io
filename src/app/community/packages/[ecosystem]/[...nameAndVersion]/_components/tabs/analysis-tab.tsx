@@ -68,8 +68,8 @@ export default async function AnalysisTab({
         </CardContent>
 
         <CardFooter className="text-muted-foreground w-full text-sm">
-          {analyzedAt && (
-            <div className="flex w-full justify-between">
+          <div className="flex w-full justify-between">
+            {analyzedAt ? (
               <span>
                 Analysis performed at{" "}
                 <time dateTime={analyzedAt?.toISOString()}>
@@ -79,6 +79,11 @@ export default async function AnalysisTab({
                   })}
                 </time>
               </span>
+            ) : (
+              <div />
+            )}
+
+            {(report.fileEvidences.length > 0 || report.reportId) && (
               <span className="flex items-center gap-1">
                 <span>Analysis by</span>
                 <a
@@ -89,8 +94,8 @@ export default async function AnalysisTab({
                   <Image src={safedepLogo} alt="SafeDep" height={20} />
                 </a>
               </span>
-            </div>
-          )}
+            )}
+          </div>
         </CardFooter>
       </Card>
     </div>
