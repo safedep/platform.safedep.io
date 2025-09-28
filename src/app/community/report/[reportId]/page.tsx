@@ -6,6 +6,9 @@ import PackageAnalysisTab from "./_components/tabs/package-analysis-tab";
 import VulnerabilitiesTab from "./_components/tabs/vulnerabilities-tab";
 import ViolationsTab from "./_components/tabs/violations-tab";
 import ManifestsTab from "./_components/tabs/manifests-tab";
+import StatsCards from "./_components/stats-cards/stats-cards";
+import { getReport } from "./actions";
+import { notFound } from "next/navigation";
 
 export default async function Page({
   params,
@@ -14,9 +17,21 @@ export default async function Page({
 }) {
   const { reportId } = await params;
 
+  const report = await getReport(reportId);
+  if (!report) {
+    return notFound();
+  }
+
   return (
-    <div className="mx-auto flex w-full max-w-5xl flex-col gap-4 p-2 sm:p-4">
-      <PageHeader reportId={reportId} />
+    <div className="mx-auto flex w-full max-w-5xl flex-col gap-4 p-4">
+      <PageHeader reportId={report.name} />
+
+      <StatsCards
+        componentsCount={33}
+        vulnerabilities={[]}
+        maliciousPackagesCount={0}
+        manifestsCount={0}
+      />
 
       <Tabs defaultValue="components" className="w-full">
         <TabsList className="flex h-auto w-full flex-wrap items-center justify-start gap-1">
