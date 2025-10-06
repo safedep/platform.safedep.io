@@ -1,5 +1,5 @@
 "use client";
-import { useSuspenseQuery } from "@tanstack/react-query";
+import { useQuery } from "@tanstack/react-query";
 import { getListScanPolicyViolationsQuery } from "../../queries";
 
 export default function ViolationsTab({
@@ -9,11 +9,11 @@ export default function ViolationsTab({
   reportId: string;
   tenant: string;
 }) {
-  const { data } = useSuspenseQuery({
+  const { data } = useQuery({
     ...getListScanPolicyViolationsQuery({
       reportId,
       tenant,
     }),
   });
-  return <div>ViolationsTab {data.policyViolations.length}</div>;
+  return <div>ViolationsTab {data?.policyViolations.length}</div>;
 }

@@ -1,4 +1,4 @@
-import { queryOptions } from "@tanstack/react-query";
+import { keepPreviousData, queryOptions } from "@tanstack/react-query";
 import {
   listScanComponents,
   listScanPolicyViolations,
@@ -41,6 +41,7 @@ export function getListScanComponentsQuery({
             pagination?.sortOrder ?? PaginationRequest_SortOrder.DESCENDING,
         },
       }),
+    placeholderData: keepPreviousData,
   });
 }
 
@@ -78,6 +79,7 @@ export function getListScanPolicyViolationsQuery({
             pagination?.sortOrder ?? PaginationRequest_SortOrder.DESCENDING,
         },
       }),
+    placeholderData: keepPreviousData,
   });
 }
 
@@ -115,5 +117,6 @@ export function getListScanVulnerabilitiesQuery({
             pagination?.sortOrder ?? PaginationRequest_SortOrder.DESCENDING,
         },
       }),
+    placeholderData: keepPreviousData,
   });
 }

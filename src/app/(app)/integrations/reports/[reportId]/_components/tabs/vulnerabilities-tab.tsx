@@ -2,7 +2,7 @@
 
 import { DataTable } from "@/components/ui/data-table";
 import { Vulnerability } from "@buf/safedep_api.bufbuild_es/safedep/messages/vulnerability/v1/vulnerability_pb";
-import { useSuspenseQuery } from "@tanstack/react-query";
+import { useQuery } from "@tanstack/react-query";
 import { ColumnDef, createColumnHelper } from "@tanstack/react-table";
 import { getListScanVulnerabilitiesQuery } from "../../queries";
 import { usePagination } from "@/hooks/use-pagination";
@@ -49,7 +49,7 @@ export default function VulnerabilitiesTab({
   ] = usePagination();
   const columns = createColumns();
 
-  const { data } = useSuspenseQuery({
+  const { data } = useQuery({
     ...getListScanVulnerabilitiesQuery({
       reportId,
       tenant,
@@ -67,7 +67,7 @@ export default function VulnerabilitiesTab({
 
   return (
     <div className="flex flex-col gap-4">
-      <DataTable columns={columns} data={data.vulnerabilities ?? []} />
+      <DataTable columns={columns} data={data?.vulnerabilities ?? []} />
       <DataTablePagination
         onNextPage={() => handleNextPage(data?.pagination?.nextPageToken)}
         onPrevPage={handlePrevPage}

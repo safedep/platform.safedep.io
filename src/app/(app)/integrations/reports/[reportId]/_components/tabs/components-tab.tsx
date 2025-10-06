@@ -1,20 +1,12 @@
 "use client";
 
 import { DataTable } from "@/components/ui/data-table";
-import { useSuspenseQuery } from "@tanstack/react-query";
+import { useQuery } from "@tanstack/react-query";
 import { ColumnDef, createColumnHelper } from "@tanstack/react-table";
-import { listScanComponents } from "../../actions";
 import { getListScanComponentsQuery } from "../../queries";
-
-type Component = {
-  name: string;
-  ecosystem: string; // Enum
-  source: string; // Enum
-  downloads: number;
-  stars: number;
-  version: string;
-  vulnerabilitiesCount: number;
-};
+import { Component } from "@buf/safedep_api.bufbuild_es/safedep/messages/controltower/v1/component_pb";
+import { usePagination } from "@/hooks/use-pagination";
+import { DataTablePagination } from "@/app/(app)/keys/components/keys-pagination";
 
 function createColumns() {
   const helper = createColumnHelper<Component>();
@@ -26,20 +18,8 @@ function createColumns() {
     helper.accessor("ecosystem", {
       header: "Ecosystem",
     }),
-    helper.accessor("source", {
-      header: "Source",
-    }),
-    helper.accessor("downloads", {
-      header: "Downloads",
-    }),
-    helper.accessor("stars", {
-      header: "Stars",
-    }),
     helper.accessor("version", {
       header: "Version",
-    }),
-    helper.accessor("vulnerabilitiesCount", {
-      header: "Vulnerabilities Count",
     }),
   ] as ColumnDef<Component>[];
 }
@@ -51,17 +31,34 @@ export default function ComponentsTab({
   reportId: string;
   tenant: string;
 }) {
-  const {} = useSuspenseQuery({
+  const columns = createColumns();
+  const [
+    { pageToken, pageSize, sortOrder },
+    { handleNextPage, handlePrevPage, handlePageSizeChange },
+  ] = usePagination();
+  const { data } = useQuery({
     ...getListScanComponentsQuery({
       reportId,
       tenant,
+      pagination: { pageToken, pageSize, sortOrder },
+    }),
+    select: (data) => ({
+      components: data.components.map((c) => c.component!),
+      pagination: data.pagination,
     }),
   });
-  const columns = createColumns();
 
   return (
-    <div>
-      <DataTable columns={columns} data={[]} />
+    <div className="flex flex-col gap-4">
+      <DataTable columns={columns} data={data?.components ?? []} />
+      <DataTablePagination
+        onNextPage={() => handleNextPage(data?.pagination?.nextPageToken)}
+        onPrevPage={handlePrevPage}
+        hasNextPage={!!data?.pagination?.nextPageToken}
+        hasPrevPage={pageToken !== undefined}
+        pageSize={pageSize}
+        onPageSizeChange={handlePageSizeChange}
+      />
     </div>
   );
 }
