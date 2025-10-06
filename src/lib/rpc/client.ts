@@ -6,6 +6,7 @@ import { UserService } from "@buf/safedep_api.bufbuild_es/safedep/services/contr
 import { MalwareAnalysisService } from "@buf/safedep_api.bufbuild_es/safedep/services/malysis/v1/malysis_pb";
 import { IntegrationService } from "@buf/safedep_api.bufbuild_es/safedep/services/controltower/v1/integration_pb";
 import { InsightService } from "@buf/safedep_api.bufbuild_es/safedep/services/insights/v2/insights_pb";
+import { ScanService } from "@buf/safedep_api.bufbuild_es/safedep/services/controltower/v1/scan_pb";
 import { env } from "@/env";
 import "server-only";
 
@@ -62,4 +63,9 @@ export function createIntegrationServiceClient(tenant: string, token: string) {
 export function createInsightsServiceClient(tenant: string, token: string) {
   const transport = createTransport(apiBaseUrl, tenant, token);
   return createClient(InsightService, transport);
+}
+
+export function createScanServiceClient(tenant: string, token: string) {
+  const transport = createTransport(apiBaseUrl, tenant, token);
+  return createClient(ScanService, transport);
 }
