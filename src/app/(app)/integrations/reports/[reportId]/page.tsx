@@ -24,24 +24,23 @@ export default async function Page({
   }
 
   const { reportId } = await params;
-  const report = await getScan({ reportId, tenant: queryParams.tenant });
-  if (!report) {
+  const scan = await getScan({ reportId, tenant: queryParams.tenant });
+  if (!scan) {
     return notFound();
   }
 
   return (
     <div className="mx-auto flex w-full max-w-5xl flex-col gap-4 p-4">
       <PageHeader
-        reportId={
-          report.scanSession?.scanSession?.scanSessionId?.sessionId ?? ""
-        }
+        reportId={scan.scanSession?.scanSession?.scanSessionId?.sessionId ?? ""}
       />
 
       <StatsCards
-        componentsCount={33}
-        vulnerabilities={[]}
-        maliciousPackagesCount={0}
-        manifestsCount={0}
+        componentsCount={scan.componentsCount ?? 0}
+        vulnerabilitiesCount={scan.vulnerabilitiesCount ?? 0}
+        maliciousComponentsCount={scan.maliciousComponentsCount ?? 0}
+        policyViolationsCount={scan.policyViolationsCount ?? 0}
+        suspiciousComponentsCount={scan.suspiciousComponentsCount ?? 0}
       />
 
       <Tabs defaultValue="components" className="w-full">

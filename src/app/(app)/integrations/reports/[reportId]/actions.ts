@@ -2,6 +2,8 @@
 import { createScanServiceClient } from "@/lib/rpc/client";
 import { getSessionOrRedirectToAuth } from "@/lib/session/session";
 import { PaginationRequest_SortOrder } from "@buf/safedep_api.bufbuild_es/safedep/messages/controltower/v1/pagination_pb";
+import { Code, ConnectError } from "@connectrpc/connect";
+import { forbidden } from "next/navigation";
 
 async function getScanServiceClient({
   reportId,
@@ -25,9 +27,20 @@ export async function getScan({
 }) {
   const service = await getScanServiceClient({ reportId, tenant });
 
-  return await service.getScan({
-    scanSessionId: { sessionId: reportId },
-  });
+  try {
+    return await service.getScan({
+      scanSessionId: { sessionId: reportId },
+    });
+  } catch (error) {
+    if (error instanceof ConnectError && error.code === Code.NotFound) {
+      return;
+    }
+    if (error instanceof ConnectError && error.code === Code.PermissionDenied) {
+      return forbidden();
+    }
+
+    throw error;
+  }
 }
 
 type PaginationParams = {

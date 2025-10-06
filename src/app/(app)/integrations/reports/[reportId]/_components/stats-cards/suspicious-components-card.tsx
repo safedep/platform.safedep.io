@@ -2,11 +2,11 @@ import { Card, CardHeader } from "@/components/ui/card";
 import { CardTitle } from "@/components/ui/card";
 import { CardContent } from "@/components/ui/card";
 
-export default function ComponentsCard({ count }: { count: number }) {
+export default function SuspiciousComponentsCard({ count }: { count: number }) {
   return (
     <Card className="w-full">
       <CardHeader>
-        <CardTitle>Malicious Packages</CardTitle>
+        <CardTitle>Suspicious Components</CardTitle>
       </CardHeader>
       <CardContent className="flex-1">
         <div className="flex justify-center">

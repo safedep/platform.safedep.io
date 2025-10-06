@@ -1,27 +1,30 @@
-import VulnerabilityStatsCard from "@/app/community/packages/[ecosystem]/[...nameAndVersion]/_components/stats-cards/vulnerability-stats-card";
 import ComponentsCard from "./components-card";
-import { Vulnerability } from "@buf/safedep_api.bufbuild_es/safedep/messages/vulnerability/v1/vulnerability_pb";
-import MaliciousPackagesCard from "./malicious-packages-card";
-import ManifestsCard from "./manifests-card";
+import MaliciousComponentsCard from "./malicious-components-card";
+import PolicyViolationsCard from "./policy-violations-card";
+import SuspiciousComponentsCard from "./suspicious-components-card";
+import VulnerabilitiesCard from "./vulnerabilities-card";
 
 export default function StatsCards({
   componentsCount,
-  vulnerabilities,
-  maliciousPackagesCount,
-  manifestsCount,
+  vulnerabilitiesCount,
+  maliciousComponentsCount,
+  policyViolationsCount,
+  suspiciousComponentsCount,
 }: {
   componentsCount: number;
-  vulnerabilities: Vulnerability[];
-  maliciousPackagesCount: number;
-  manifestsCount: number;
+  vulnerabilitiesCount: number;
+  maliciousComponentsCount: number;
+  policyViolationsCount: number;
+  suspiciousComponentsCount: number;
 }) {
   return (
     <div className="@container/cards">
       <div className="grid auto-rows-fr grid-cols-2 gap-6 @2xl/cards:grid-cols-4">
+        <VulnerabilitiesCard count={vulnerabilitiesCount} />
+        <PolicyViolationsCard count={policyViolationsCount} />
         <ComponentsCard count={componentsCount} />
-        <VulnerabilityStatsCard vulnerabilities={vulnerabilities} />
-        <MaliciousPackagesCard count={maliciousPackagesCount} />
-        <ManifestsCard count={manifestsCount} />
+        <SuspiciousComponentsCard count={suspiciousComponentsCount} />
+        <MaliciousComponentsCard count={maliciousComponentsCount} />
       </div>
     </div>
   );
