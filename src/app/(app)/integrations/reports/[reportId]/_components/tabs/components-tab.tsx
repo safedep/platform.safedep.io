@@ -33,7 +33,7 @@ export default function ComponentsTab({
 }) {
   const columns = createColumns();
   const [
-    { pageToken, pageSize, sortOrder },
+    { pageToken, pageSize, sortOrder, hasPreviousPage },
     { handleNextPage, handlePrevPage, handlePageSizeChange },
   ] = usePagination();
   const { data } = useQuery({
@@ -55,7 +55,7 @@ export default function ComponentsTab({
         onNextPage={() => handleNextPage(data?.pagination?.nextPageToken)}
         onPrevPage={handlePrevPage}
         hasNextPage={!!data?.pagination?.nextPageToken}
-        hasPrevPage={pageToken !== undefined}
+        hasPrevPage={hasPreviousPage}
         pageSize={pageSize}
         onPageSizeChange={handlePageSizeChange}
       />

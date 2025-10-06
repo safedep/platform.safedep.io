@@ -1,6 +1,5 @@
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import PageHeader from "./_components/page-header";
-import { Suspense } from "react";
 import ComponentsTab from "./_components/tabs/components-tab";
 import VulnerabilitiesTab from "./_components/tabs/vulnerabilities-tab";
 import ViolationsTab from "./_components/tabs/violations-tab";
@@ -28,9 +27,10 @@ export default async function Page({
   }
 
   return (
-    <div className="mx-auto flex w-full max-w-5xl flex-col gap-4 p-4">
+    <div className="mx-auto flex w-full max-w-5xl flex-col gap-4">
       <PageHeader
-        reportId={scan.scanSession?.scanSession?.scanSessionId?.sessionId ?? ""}
+        projectName={scan.projectVersion?.project?.name ?? ""}
+        projectVersion={scan.projectVersion?.projectVersion?.version ?? ""}
       />
 
       <StatsCards
@@ -49,24 +49,15 @@ export default async function Page({
         </TabsList>
 
         <TabsContent value="components">
-          <Suspense fallback={<div>Loading...</div>}>
-            <ComponentsTab reportId={reportId} tenant={queryParams.tenant} />
-          </Suspense>
+          <ComponentsTab reportId={reportId} tenant={queryParams.tenant} />
         </TabsContent>
 
         <TabsContent value="vulnerabilities">
-          <Suspense fallback={<div>Loading...</div>}>
-            <VulnerabilitiesTab
-              reportId={reportId}
-              tenant={queryParams.tenant}
-            />
-          </Suspense>
+          <VulnerabilitiesTab reportId={reportId} tenant={queryParams.tenant} />
         </TabsContent>
 
         <TabsContent value="violations">
-          <Suspense fallback={<div>Loading...</div>}>
-            <ViolationsTab reportId={reportId} tenant={queryParams.tenant} />
-          </Suspense>
+          <ViolationsTab reportId={reportId} tenant={queryParams.tenant} />
         </TabsContent>
       </Tabs>
     </div>
