@@ -7,24 +7,35 @@ import VulnerabilitiesTab from "./_components/tabs/vulnerabilities-tab";
 import ViolationsTab from "./_components/tabs/violations-tab";
 import ManifestsTab from "./_components/tabs/manifests-tab";
 import StatsCards from "./_components/stats-cards/stats-cards";
-import { getReport } from "./actions";
+import { getScan } from "./actions";
 import { notFound } from "next/navigation";
+import { parseQueryParams, QueryParamSchema } from "./schema";
 
 export default async function Page({
   params,
+  searchParams,
 }: {
   params: Promise<{ reportId: string }>;
+  searchParams: Promise<QueryParamSchema>;
 }) {
-  const { reportId } = await params;
+  const queryParams = parseQueryParams(await searchParams);
+  if (!queryParams) {
+    return notFound();
+  }
 
-  const report = await getReport(reportId);
+  const { reportId } = await params;
+  const report = await getScan({ reportId, tenant: queryParams.tenant });
   if (!report) {
     return notFound();
   }
 
   return (
     <div className="mx-auto flex w-full max-w-5xl flex-col gap-4 p-4">
-      <PageHeader reportId={report.name} />
+      <PageHeader
+        reportId={
+          report.scanSession?.scanSession?.scanSessionId?.sessionId ?? ""
+        }
+      />
 
       <StatsCards
         componentsCount={33}

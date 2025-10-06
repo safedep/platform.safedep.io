@@ -66,6 +66,6 @@ export function createInsightsServiceClient(tenant: string, token: string) {
 }
 
 export function createScanServiceClient(tenant: string, token: string) {
-  const transport = createTransport(apiBaseUrl, tenant, token);
+  const transport = createTransport(cloudApiBaseUrl, tenant, token);
   return createClient(ScanService, transport);
 }

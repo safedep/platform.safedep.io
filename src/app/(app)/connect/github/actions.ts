@@ -1,12 +1,11 @@
 "use server";
 
-import { auth0 } from "@/lib/auth0";
 import {
   createIntegrationServiceClient,
   createUserServiceClient,
 } from "@/lib/rpc/client";
+import { getSessionOrRedirectToAuth } from "@/lib/session/session";
 import { Code, ConnectError } from "@connectrpc/connect";
-import { Route } from "next";
 import { redirect } from "next/navigation";
 
 export async function connectTenantToGithub({
@@ -59,22 +58,4 @@ export async function getUserInfoOrRedirectToAuth(returnTo: string) {
 
     throw error;
   }
-}
-
-/**
- * Get the session if the user is authenticated. If the user is not authenticated,
- * redirect to the login page.
- *
- * @param postAuthReturnTo Where to come back to after authentication flow is done.
- * You are responsible for encoding the URL.
- * @returns The session if the user is authenticated.
- */
-async function getSessionOrRedirectToAuth(postAuthReturnTo: string) {
-  const session = await auth0.getSession();
-  if (!session) {
-    return redirect(
-      `/auth/login?returnTo=${postAuthReturnTo}&screen_hint=signup` as Route,
-    );
-  }
-  return session;
 }

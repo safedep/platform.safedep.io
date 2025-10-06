@@ -62,3 +62,21 @@ export async function getTenantAndToken() {
 
   return { tenant, accessToken };
 }
+
+/**
+ * Get the session if the user is authenticated. If the user is not authenticated,
+ * redirect to the login page.
+ *
+ * @param postAuthReturnTo Where to come back to after authentication flow is done.
+ * You are responsible for encoding the URL.
+ * @returns The session if the user is authenticated.
+ */
+export async function getSessionOrRedirectToAuth(postAuthReturnTo: string) {
+  const session = await auth0.getSession();
+  if (!session) {
+    return redirect(
+      `/auth/login?returnTo=${postAuthReturnTo}&screen_hint=signup` as Route,
+    );
+  }
+  return session;
+}
