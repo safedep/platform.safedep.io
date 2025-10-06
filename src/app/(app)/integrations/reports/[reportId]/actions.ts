@@ -43,7 +43,7 @@ export async function getScan({
   }
 }
 
-type PaginationParams = {
+export type PaginationParams = {
   pageToken?: string;
   pageSize?: number;
   sortOrder?: PaginationRequest_SortOrder;

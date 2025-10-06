@@ -1,7 +1,10 @@
 "use client";
 
 import { DataTable } from "@/components/ui/data-table";
+import { useSuspenseQuery } from "@tanstack/react-query";
 import { ColumnDef, createColumnHelper } from "@tanstack/react-table";
+import { listScanComponents } from "../../actions";
+import { getListScanComponentsQuery } from "../../queries";
 
 type Component = {
   name: string;
@@ -41,7 +44,19 @@ function createColumns() {
   ] as ColumnDef<Component>[];
 }
 
-export default function ComponentsTab() {
+export default function ComponentsTab({
+  reportId,
+  tenant,
+}: {
+  reportId: string;
+  tenant: string;
+}) {
+  const {} = useSuspenseQuery({
+    ...getListScanComponentsQuery({
+      reportId,
+      tenant,
+    }),
+  });
   const columns = createColumns();
 
   return (

@@ -42,7 +42,7 @@ export function DataTablePagination({
   onPageSizeChange,
 }: DataTablePaginationProps) {
   return (
-    <div className="flex items-center justify-between px-2">
+    <div className="flex items-center justify-between">
       <div className="flex items-center space-x-2"></div>
       <div className="flex items-center space-x-6">
         <div className="flex items-center space-x-2">
