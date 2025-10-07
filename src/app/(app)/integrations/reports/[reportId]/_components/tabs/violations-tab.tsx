@@ -6,6 +6,11 @@ import { ListScanPolicyViolationsResponse_PolicyViolationWithAttributes } from "
 import { DataTable } from "@/components/ui/data-table";
 import { usePagination } from "@/hooks/use-pagination";
 import { DataTablePagination } from "@/app/(app)/keys/components/keys-pagination";
+import LocaleTime from "../locale-time";
+import { timestampDate } from "@bufbuild/protobuf/wkt";
+import { enumToJson } from "@bufbuild/protobuf";
+import { RuleCheckSchema } from "@buf/safedep_api.bufbuild_es/safedep/messages/policy/v1/rule_pb";
+import { ruleCheckToIcon } from "@/lib/proto/rule-check";
 
 function createColumns() {
   const helper =
@@ -13,8 +18,41 @@ function createColumns() {
 
   return [
     helper.accessor("policyViolation.rule.name", {
-      header: "Name",
+      header: "Rule",
+      cell: ({ getValue }) => <span className="font-mono">{getValue()}</span>,
     }),
+    helper.accessor("policyViolation.rule.check", {
+      header: "Check",
+      cell: ({ getValue }) => {
+        const check = getValue();
+        const checkName = enumToJson(RuleCheckSchema, check)
+          ?.toString()
+          .split("RULE_CHECK_")[1]
+          .toLowerCase();
+        const CheckIcon = ruleCheckToIcon(check);
+
+        return (
+          <div className="flex items-center gap-2 capitalize">
+            <CheckIcon className="size-4" />
+            <span>{checkName}</span>
+          </div>
+        );
+      },
+    }),
+    helper.accessor("policyViolation.detectedAt", {
+      header: "Detected At",
+      cell: ({ getValue }) => {
+        const detectedAt = getValue();
+
+        return detectedAt ? (
+          <LocaleTime dateTime={timestampDate(detectedAt)} />
+        ) : (
+          <span>-</span>
+        );
+      },
+    }),
+
+    // Project	Project Version	Rule	Affected Component	Check
   ] as ColumnDef<ListScanPolicyViolationsResponse_PolicyViolationWithAttributes>[];
 }
 
