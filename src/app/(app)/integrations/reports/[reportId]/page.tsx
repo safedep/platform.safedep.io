@@ -13,18 +13,23 @@ import { timestampDate } from "@bufbuild/protobuf/wkt";
 import LocaleTime from "./_components/locale-time";
 
 export default async function Page({
-  params,
-  searchParams,
+  params: paramsPromise,
+  searchParams: searchParamsPromise,
 }: {
   params: Promise<{ reportId: string }>;
   searchParams: Promise<QueryParamSchema>;
 }) {
-  const queryParams = parseQueryParams(await searchParams);
+  const [params, searchParams] = await Promise.all([
+    paramsPromise,
+    searchParamsPromise,
+  ]);
+
+  const queryParams = parseQueryParams(searchParams);
   if (!queryParams) {
     return notFound();
   }
 
-  const { reportId } = await params;
+  const { reportId } = params;
   const scan = await getScan({ reportId, tenant: queryParams.tenant });
   if (!scan) {
     return notFound();
