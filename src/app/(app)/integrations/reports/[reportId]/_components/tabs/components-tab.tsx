@@ -11,6 +11,7 @@ import { enumToJson } from "@bufbuild/protobuf";
 import { EcosystemSchema } from "@buf/safedep_api.bufbuild_es/safedep/messages/package/v1/ecosystem_pb";
 import { OnlyHoverPrefetchLink } from "@/components/only-hover-prefetch-link";
 import { Route } from "next";
+import { Button } from "@/components/ui/button";
 
 function createColumns() {
   const helper = createColumnHelper<Component>();
@@ -26,9 +27,11 @@ function createColumns() {
         const link = `/community/packages/${ecosystemName}/${row.original.name}/${row.original.version}`;
 
         return (
-          <OnlyHoverPrefetchLink href={link as Route}>
-            {row.original.name}
-          </OnlyHoverPrefetchLink>
+          <Button variant="link" asChild size="sm">
+            <OnlyHoverPrefetchLink href={link as Route}>
+              {row.original.name}
+            </OnlyHoverPrefetchLink>
+          </Button>
         );
       },
     }),
