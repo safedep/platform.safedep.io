@@ -97,7 +97,7 @@ export default function VulnerabilitiesTab({
   tenant: string;
 }) {
   const [
-    { pageToken, pageSize },
+    { pageToken, pageSize, hasPreviousPage },
     { handleNextPage, handlePrevPage, handlePageSizeChange },
   ] = usePagination();
   const columns = createColumns();
@@ -125,7 +125,7 @@ export default function VulnerabilitiesTab({
         onNextPage={() => handleNextPage(data?.pagination?.nextPageToken)}
         onPrevPage={handlePrevPage}
         hasNextPage={!!data?.pagination?.nextPageToken}
-        hasPrevPage={pageToken !== undefined}
+        hasPrevPage={hasPreviousPage}
         pageSize={pageSize}
         onPageSizeChange={handlePageSizeChange}
       />
