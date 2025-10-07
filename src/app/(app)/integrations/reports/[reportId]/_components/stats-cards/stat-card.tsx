@@ -1,6 +1,4 @@
-import { Card, CardHeader } from "@/components/ui/card";
-import { CardTitle } from "@/components/ui/card";
-import { CardContent } from "@/components/ui/card";
+import { Card, CardHeader, CardTitle, CardContent } from "@/components/ui/card";
 
 export default function StatCard({
   count,
