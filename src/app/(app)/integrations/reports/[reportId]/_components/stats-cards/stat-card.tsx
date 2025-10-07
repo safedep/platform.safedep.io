@@ -10,7 +10,7 @@ export default function StatCard({
   count: number;
 }) {
   return (
-    <Card className="w-full">
+    <Card className="min-w-36 flex-1 shrink-0">
       <CardHeader>
         <CardTitle>{title}</CardTitle>
       </CardHeader>

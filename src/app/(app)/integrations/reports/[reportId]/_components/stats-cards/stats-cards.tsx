@@ -18,8 +18,8 @@ export default function StatsCards({
   suspiciousComponentsCount: number;
 }) {
   return (
-    <div className="@container/cards">
-      <div className="grid auto-rows-fr grid-cols-2 gap-6 @2xl/cards:grid-cols-4">
+    <div className="@container/cards flex flex-col gap-6">
+      <div className="flex w-full flex-wrap gap-6">
         <VulnerabilitiesCard count={vulnerabilitiesCount} />
         <PolicyViolationsCard count={policyViolationsCount} />
         <ComponentsCard count={componentsCount} />
