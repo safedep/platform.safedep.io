@@ -51,8 +51,6 @@ function createColumns() {
         );
       },
     }),
-
-    // Project	Project Version	Rule	Affected Component	Check
   ] as ColumnDef<ListScanPolicyViolationsResponse_PolicyViolationWithAttributes>[];
 }
 
