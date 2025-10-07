@@ -1,18 +1,5 @@
-import { Card, CardHeader } from "@/components/ui/card";
-import { CardTitle } from "@/components/ui/card";
-import { CardContent } from "@/components/ui/card";
+import StatCard from "./stat-card";
 
 export default function PolicyViolationsCard({ count }: { count: number }) {
-  return (
-    <Card className="w-full">
-      <CardHeader>
-        <CardTitle>Policy Violations</CardTitle>
-      </CardHeader>
-      <CardContent className="flex-1">
-        <div className="flex justify-center">
-          <span className="text-3xl font-bold">{count}</span>
-        </div>
-      </CardContent>
-    </Card>
-  );
+  return <StatCard title="Policy Violations" count={count} />;
 }
