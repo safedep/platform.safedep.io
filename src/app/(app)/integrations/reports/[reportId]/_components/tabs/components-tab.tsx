@@ -7,6 +7,10 @@ import { getListScanComponentsQuery } from "../../queries";
 import { Component } from "@buf/safedep_api.bufbuild_es/safedep/messages/controltower/v1/component_pb";
 import { usePagination } from "@/hooks/use-pagination";
 import { DataTablePagination } from "@/app/(app)/keys/components/keys-pagination";
+import { enumToJson } from "@bufbuild/protobuf";
+import { EcosystemSchema } from "@buf/safedep_api.bufbuild_es/safedep/messages/package/v1/ecosystem_pb";
+import { OnlyHoverPrefetchLink } from "@/components/only-hover-prefetch-link";
+import { Route } from "next";
 
 function createColumns() {
   const helper = createColumnHelper<Component>();
@@ -14,6 +18,19 @@ function createColumns() {
   return [
     helper.accessor("name", {
       header: "Name",
+      cell: ({ row }) => {
+        const ecosystemName = enumToJson(
+          EcosystemSchema,
+          row.original.ecosystem,
+        );
+        const link = `/community/packages/${ecosystemName}/${row.original.name}/${row.original.version}`;
+
+        return (
+          <OnlyHoverPrefetchLink href={link as Route}>
+            {row.original.name}
+          </OnlyHoverPrefetchLink>
+        );
+      },
     }),
     helper.accessor("ecosystem", {
       header: "Ecosystem",
