@@ -17,6 +17,7 @@ import { Badge } from "@/components/ui/badge";
 import LocaleTime from "../locale-time";
 import { timestampDate } from "@bufbuild/protobuf/wkt";
 import { Button } from "@/components/ui/button";
+import TableLoading from "../table-loading";
 
 function createColumns() {
   const helper = createColumnHelper<Vulnerability>();
@@ -102,7 +103,7 @@ export default function VulnerabilitiesTab({
   ] = usePagination();
   const columns = createColumns();
 
-  const { data } = useQuery({
+  const { data, isLoading } = useQuery({
     ...getListScanVulnerabilitiesQuery({
       reportId,
       tenant,
@@ -117,6 +118,10 @@ export default function VulnerabilitiesTab({
       pagination: data.pagination,
     }),
   });
+
+  if (isLoading) {
+    return <TableLoading />;
+  }
 
   return (
     <div className="flex flex-col gap-4">

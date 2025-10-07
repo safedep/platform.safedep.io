@@ -11,6 +11,7 @@ import { timestampDate } from "@bufbuild/protobuf/wkt";
 import { enumToJson } from "@bufbuild/protobuf";
 import { RuleCheckSchema } from "@buf/safedep_api.bufbuild_es/safedep/messages/policy/v1/rule_pb";
 import { ruleCheckToIcon } from "@/lib/proto/rule-check";
+import TableLoading from "../table-loading";
 
 function createColumns() {
   const helper =
@@ -67,7 +68,7 @@ export default function ViolationsTab({
     { handleNextPage, handlePrevPage, handlePageSizeChange },
   ] = usePagination();
 
-  const { data } = useQuery({
+  const { data, isLoading } = useQuery({
     ...getListScanPolicyViolationsQuery({
       reportId,
       tenant,
@@ -78,6 +79,10 @@ export default function ViolationsTab({
       },
     }),
   });
+
+  if (isLoading) {
+    return <TableLoading />;
+  }
 
   return (
     <div className="flex flex-col gap-4">

@@ -13,6 +13,7 @@ import { OnlyHoverPrefetchLink } from "@/components/only-hover-prefetch-link";
 import { Route } from "next";
 import { Button } from "@/components/ui/button";
 import { getEcosystemIconByEcosystem } from "@/utils/ecosystem";
+import TableLoading from "../table-loading";
 
 function createColumns() {
   const helper = createColumnHelper<Component>();
@@ -73,7 +74,7 @@ export default function ComponentsTab({
     { pageToken, pageSize, sortOrder, hasPreviousPage },
     { handleNextPage, handlePrevPage, handlePageSizeChange },
   ] = usePagination();
-  const { data } = useQuery({
+  const { data, isLoading } = useQuery({
     ...getListScanComponentsQuery({
       reportId,
       tenant,
@@ -84,6 +85,10 @@ export default function ComponentsTab({
       pagination: data.pagination,
     }),
   });
+
+  if (isLoading) {
+    return <TableLoading />;
+  }
 
   return (
     <div className="flex flex-col gap-4">
