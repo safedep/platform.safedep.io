@@ -8,6 +8,15 @@ import { getListScanVulnerabilitiesQuery } from "../../queries";
 import { usePagination } from "@/hooks/use-pagination";
 import { DataTablePagination } from "@/app/(app)/keys/components/keys-pagination";
 import { PaginationRequest_SortOrder } from "@buf/safedep_api.bufbuild_es/safedep/messages/controltower/v1/pagination_pb";
+import {
+  getHighestSeverityRisk,
+  riskLevelToBadgeColor,
+  riskLevelToName,
+} from "@/utils/severity";
+import { Badge } from "@/components/ui/badge";
+import LocaleTime from "../locale-time";
+import { timestampDate } from "@bufbuild/protobuf/wkt";
+import { Button } from "@/components/ui/button";
 
 function createColumns() {
   const helper = createColumnHelper<Vulnerability>();
@@ -16,23 +25,67 @@ function createColumns() {
     // id
     helper.accessor("id.value", {
       header: "ID",
+      cell: ({ getValue }) => {
+        const id = getValue();
+        return (
+          <Button variant="link" asChild className="m-0 p-0">
+            <a
+              href={`https://osv.dev/vulnerability/${id}`}
+              target="_blank"
+              rel="noopener noreferrer"
+            >
+              <span className="font-mono">{id}</span>
+            </a>
+          </Button>
+        );
+      },
+      meta: {
+        className: "w-36",
+      },
     }),
-    // component
-    helper.display({
-      header: "Component",
-    }),
-    // description (details, summary)
+    // summary
     helper.accessor("summary", {
-      header: "Description",
+      header: "Summary",
     }),
-    // version
-    helper.display({
-      header: "Version",
+    // risk
+    helper.accessor("severities", {
+      header: "Risk",
+      cell: ({ row }) => {
+        const severities = row.original.severities;
+        const highestRisk = getHighestSeverityRisk(severities);
+        const riskLevelName = riskLevelToName(highestRisk);
+        const riskLevelBadgeColor = riskLevelToBadgeColor(highestRisk);
+
+        return (
+          <Badge variant="outline" className={riskLevelBadgeColor}>
+            {riskLevelName}
+          </Badge>
+        );
+      },
     }),
-    // severity
-    helper.display({
-      header: "Severity",
+    // published
+    helper.accessor("publishedAt", {
+      header: "Published",
+      cell: ({ getValue }) => {
+        const publishedAt = getValue();
+        if (!publishedAt) {
+          return <span>-</span>;
+        }
+        return <LocaleTime dateTime={timestampDate(publishedAt)} />;
+      },
     }),
+    // modified
+    helper.accessor("modifiedAt", {
+      header: "Modified",
+      cell: ({ getValue }) => {
+        const modifiedAt = getValue();
+        if (!modifiedAt) {
+          return <span>-</span>;
+        }
+        return <LocaleTime dateTime={timestampDate(modifiedAt)} />;
+      },
+    }),
+    // ID	Summary	Risk	Published	Modified
   ] as ColumnDef<Vulnerability>[];
 }
 
