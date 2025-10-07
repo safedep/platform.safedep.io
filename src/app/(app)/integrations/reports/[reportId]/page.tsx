@@ -7,6 +7,8 @@ import StatsCards from "./_components/stats-cards/stats-cards";
 import { getScan } from "./actions";
 import { notFound } from "next/navigation";
 import { parseQueryParams, QueryParamSchema } from "./schema";
+import Image from "next/image";
+import safedepLogoWordmark from "@/assets/safedep-logo-wordmark.png";
 
 export default async function Page({
   params,
@@ -60,6 +62,17 @@ export default async function Page({
           <ViolationsTab reportId={reportId} tenant={queryParams.tenant} />
         </TabsContent>
       </Tabs>
+
+      <div className="text-muted-foreground flex gap-2 self-end text-sm">
+        <span>Analyzed by</span>
+        <Image
+          src={safedepLogoWordmark}
+          alt="SafeDep Logo"
+          height={20}
+          width={88}
+          priority
+        />
+      </div>
     </div>
   );
 }
