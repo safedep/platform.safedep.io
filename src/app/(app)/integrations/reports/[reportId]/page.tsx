@@ -9,6 +9,8 @@ import { notFound } from "next/navigation";
 import { parseQueryParams, QueryParamSchema } from "./schema";
 import Image from "next/image";
 import safedepLogoWordmark from "@/assets/safedep-logo-wordmark.png";
+import { timestampDate } from "@bufbuild/protobuf/wkt";
+import LocaleTime from "./_components/locale-time";
 
 export default async function Page({
   params,
@@ -27,6 +29,10 @@ export default async function Page({
   if (!scan) {
     return notFound();
   }
+
+  const analysedAt =
+    scan.scanSession?.scanSession?.createdAt &&
+    timestampDate(scan.scanSession?.scanSession?.createdAt);
 
   return (
     <div className="mx-auto flex w-full max-w-5xl flex-col gap-4">
@@ -63,15 +69,28 @@ export default async function Page({
         </TabsContent>
       </Tabs>
 
-      <div className="text-muted-foreground flex gap-2 self-end text-sm">
-        <span>Analyzed by</span>
-        <Image
-          src={safedepLogoWordmark}
-          alt="SafeDep Logo"
-          height={20}
-          width={88}
-          priority
-        />
+      <div className="text-muted-foreground flex justify-between text-sm">
+        <div>
+          Analysed at{" "}
+          {analysedAt ? <LocaleTime dateTime={analysedAt} /> : <span>-</span>}
+        </div>
+
+        <div className="flex gap-2">
+          <span>Analyzed by</span>
+          <a
+            href="https://safedep.io"
+            target="_blank"
+            rel="noopener noreferrer"
+          >
+            <Image
+              src={safedepLogoWordmark}
+              alt="SafeDep Logo"
+              height={20}
+              width={88}
+              priority
+            />
+          </a>
+        </div>
       </div>
     </div>
   );
