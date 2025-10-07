@@ -25,7 +25,7 @@ import {
 } from "@tanstack/react-table";
 import Link from "next/link";
 import { cn } from "@/lib/utils";
-import { DataTablePagination } from "./keys-pagination";
+import DataTablePagination from "@/components/data-table/data-table-pagination";
 
 interface ApiKeyListProps<TData, TValue> {
   className?: string;

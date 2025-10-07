@@ -33,7 +33,7 @@ interface DataTablePaginationProps {
  * - Current page display
  * - Total pages display
  */
-export function DataTablePagination({
+export default function DataTablePagination({
   onNextPage,
   onPrevPage,
   hasNextPage = false,

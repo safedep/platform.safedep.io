@@ -5,7 +5,7 @@ import { ColumnDef, createColumnHelper } from "@tanstack/react-table";
 import { ListScanPolicyViolationsResponse_PolicyViolationWithAttributes } from "@buf/safedep_api.bufbuild_es/safedep/services/controltower/v1/scan_pb";
 import { DataTable } from "@/components/ui/data-table";
 import { usePagination } from "@/hooks/use-pagination";
-import { DataTablePagination } from "@/app/(app)/keys/components/keys-pagination";
+import DataTablePagination from "@/components/data-table/data-table-pagination";
 import LocaleTime from "../locale-time";
 import { timestampDate } from "@bufbuild/protobuf/wkt";
 import { enumToJson } from "@bufbuild/protobuf";

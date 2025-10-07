@@ -6,7 +6,7 @@ import { useQuery } from "@tanstack/react-query";
 import { ColumnDef, createColumnHelper } from "@tanstack/react-table";
 import { getListScanVulnerabilitiesQuery } from "../../queries";
 import { usePagination } from "@/hooks/use-pagination";
-import { DataTablePagination } from "@/app/(app)/keys/components/keys-pagination";
+import DataTablePagination from "@/components/data-table/data-table-pagination";
 import { PaginationRequest_SortOrder } from "@buf/safedep_api.bufbuild_es/safedep/messages/controltower/v1/pagination_pb";
 import {
   getHighestSeverityRisk,

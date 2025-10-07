@@ -6,7 +6,7 @@ import { ColumnDef, createColumnHelper } from "@tanstack/react-table";
 import { getListScanComponentsQuery } from "../../queries";
 import { Component } from "@buf/safedep_api.bufbuild_es/safedep/messages/controltower/v1/component_pb";
 import { usePagination } from "@/hooks/use-pagination";
-import { DataTablePagination } from "@/app/(app)/keys/components/keys-pagination";
+import DataTablePagination from "@/components/data-table/data-table-pagination";
 import { enumToJson } from "@bufbuild/protobuf";
 import { EcosystemSchema } from "@buf/safedep_api.bufbuild_es/safedep/messages/package/v1/ecosystem_pb";
 import { OnlyHoverPrefetchLink } from "@/components/only-hover-prefetch-link";
