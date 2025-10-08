@@ -10,46 +10,9 @@ import { enumToJson } from "@bufbuild/protobuf";
 import { Timestamp, timestampDate } from "@bufbuild/protobuf/wkt";
 import { ColumnDef, createColumnHelper } from "@tanstack/react-table";
 import { Route } from "next";
-import Link from "next/link";
 import { use } from "react";
-import { useState } from "react";
 import VirtualizedDataTable from "../virtualized-data-table";
-
-/**
- * Rationale: We render a "View Version" button for each version in the versions
- * table. Since there are just too many versions in the versions table (hence
- * too many links), this will quickly eat up Vercel's serverless function quota.
- * To prevent that from happening while also retaining the ability to prefetch
- * the link when the user hovers over the link, we use this component.
- *
- * And guess what? Vercel intentionally provides no support for something like
- * `prefetch="onHover"`. If `prefetch={null}` or `prefetch={true}`, the link
- * will always be prefetched no matter what. But if `prefetch={false}`, the link
- * will not be prefetched **at all!**, NOT even on hover.
- *
- * @see {@link https://nextjs.org/docs/app/api-reference/components/link#scrolling-to-an-id}
- * @see {@link https://github.com/vercel/next.js/discussions/11793#discussioncomment-10226034}
- */
-export function OnlyHoverPrefetchLink({
-  href,
-  children,
-}: {
-  href: Route;
-  children: React.ReactNode;
-}) {
-  const [active, setActive] = useState(false);
-
-  return (
-    <Link
-      href={href}
-      prefetch={active ? null : false}
-      onMouseEnter={() => setActive(true)}
-      onFocus={() => setActive(true)}
-    >
-      {children}
-    </Link>
-  );
-}
+import { OnlyHoverPrefetchLink } from "@/components/only-hover-prefetch-link";
 
 function makeColumns({
   latestVersionPublishedAt,

@@ -16,6 +16,11 @@ const nextConfig: NextConfig = {
   // type check routes
   typedRoutes: true,
 
+  images: {
+    // use modern image formats to save bandwidth
+    formats: ["image/avif", "image/webp"],
+  },
+
   rewrites: async () => {
     return [
       {

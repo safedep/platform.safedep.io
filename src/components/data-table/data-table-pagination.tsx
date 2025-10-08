@@ -33,7 +33,7 @@ interface DataTablePaginationProps {
  * - Current page display
  * - Total pages display
  */
-export function DataTablePagination({
+export default function DataTablePagination({
   onNextPage,
   onPrevPage,
   hasNextPage = false,
@@ -42,7 +42,7 @@ export function DataTablePagination({
   onPageSizeChange,
 }: DataTablePaginationProps) {
   return (
-    <div className="flex items-center justify-between px-2">
+    <div className="flex items-center justify-between">
       <div className="flex items-center space-x-2"></div>
       <div className="flex items-center space-x-6">
         <div className="flex items-center space-x-2">
@@ -51,7 +51,7 @@ export function DataTablePagination({
             value={pageSize.toString()}
             onValueChange={(value) => onPageSizeChange?.(Number(value))}
           >
-            <SelectTrigger className="h-8 w-[70px]">
+            <SelectTrigger className="h-8 min-w-20">
               <SelectValue placeholder={pageSize.toString()} />
             </SelectTrigger>
             <SelectContent side="top">
