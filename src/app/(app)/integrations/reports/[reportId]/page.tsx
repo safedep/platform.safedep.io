@@ -11,6 +11,37 @@ import Image from "next/image";
 import safedepLogoWordmark from "@/assets/safedep-logo-wordmark.png";
 import { timestampDate } from "@bufbuild/protobuf/wkt";
 import LocaleTime from "./_components/locale-time";
+import { Metadata } from "next";
+
+export async function generateMetadata({
+  params: paramsPromise,
+  searchParams: searchParamsPromise,
+}: {
+  params: Promise<{ reportId: string }>;
+  searchParams: Promise<QueryParamSchema>;
+}): Promise<Metadata> {
+  const [params, searchParams] = await Promise.all([
+    paramsPromise,
+    searchParamsPromise,
+  ]);
+
+  const queryParams = parseQueryParams(searchParams);
+  if (!queryParams) {
+    return notFound();
+  }
+
+  const { reportId } = params;
+  const scan = await getScan({ reportId, tenant: queryParams.tenant });
+  if (!scan) {
+    return notFound();
+  }
+
+  return {
+    title: `Report for ${scan.projectVersion?.project?.name}@${scan.projectVersion?.projectVersion?.version}`,
+    description: "Security and package information insights for the project",
+    keywords: ["security", "safedep", "project", "scan", "BOM"],
+  };
+}
 
 export default async function Page({
   params: paramsPromise,
