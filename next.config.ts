@@ -12,6 +12,8 @@ const nextConfig: NextConfig = {
     inlineCss: true,
     // allow using cache in server actions
     useCache: true,
+    // allow auth interrupts (unauthenticated page etc.)
+    authInterrupts: true,
   },
   // type check routes
   typedRoutes: true,
