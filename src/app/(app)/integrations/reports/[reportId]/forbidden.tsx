@@ -38,7 +38,7 @@ export default function Forbidden() {
       </EmptyHeader>
       <EmptyContent>
         <Button asChild>
-          <a href={`/auth/login?returnTo=${returnTo}`}>
+          <a href={`/auth/login?returnTo=${encodeURIComponent(returnTo)}`}>
             Log in with a different account
           </a>
         </Button>
