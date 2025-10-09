@@ -12,6 +12,7 @@ import safedepLogoWordmark from "@/assets/safedep-logo-wordmark.png";
 import { timestampDate } from "@bufbuild/protobuf/wkt";
 import LocaleTime from "./_components/locale-time";
 import { Metadata } from "next";
+import MaliciousPackagesTab from "./_components/tabs/malicious-packages-tab";
 
 export async function generateMetadata({
   params: paramsPromise,
@@ -90,6 +91,7 @@ export default async function Page({
           <TabsTrigger value="components">Components</TabsTrigger>
           <TabsTrigger value="violations">Violations</TabsTrigger>
           <TabsTrigger value="vulnerabilities">Vulnerabilities</TabsTrigger>
+          <TabsTrigger value="malicious-pkgs">Malicious Packages</TabsTrigger>
         </TabsList>
 
         <TabsContent value="components">
@@ -102,6 +104,13 @@ export default async function Page({
 
         <TabsContent value="violations">
           <ViolationsTab reportId={reportId} tenant={queryParams.tenant} />
+        </TabsContent>
+
+        <TabsContent value="malicious-pkgs">
+          <MaliciousPackagesTab
+            reportId={reportId}
+            tenant={queryParams.tenant}
+          />
         </TabsContent>
       </Tabs>
 

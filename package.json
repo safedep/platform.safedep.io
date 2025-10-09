@@ -15,7 +15,7 @@
   "dependencies": {
     "@auth0/nextjs-auth0": "^4.9.0",
     "@braintree/sanitize-url": "^7.1.1",
-    "@buf/safedep_api.bufbuild_es": "2.9.0-20250929120853-4be4acc36726.1",
+    "@buf/safedep_api.bufbuild_es": "2.9.0-20251008091848-5ee5efe52797.1",
     "@bufbuild/protobuf": "^2.9.0",
     "@connectrpc/connect": "^2.1.0",
     "@connectrpc/connect-node": "^2.1.0",

@@ -15,8 +15,8 @@ importers:
         specifier: ^7.1.1
         version: 7.1.1
       '@buf/safedep_api.bufbuild_es':
-        specifier: 2.9.0-20250929120853-4be4acc36726.1
-        version: 2.9.0-20250929120853-4be4acc36726.1(@bufbuild/protobuf@2.9.0)
+        specifier: 2.9.0-20251008091848-5ee5efe52797.1
+        version: 2.9.0-20251008091848-5ee5efe52797.1(@bufbuild/protobuf@2.9.0)
       '@bufbuild/protobuf':
         specifier: ^2.9.0
         version: 2.9.0
@@ -348,8 +348,8 @@ packages:
     peerDependencies:
       '@bufbuild/protobuf': ^2.9.0
 
-  '@buf/safedep_api.bufbuild_es@2.9.0-20250929120853-4be4acc36726.1':
-    resolution: {tarball: https://buf.build/gen/npm/v1/@buf/safedep_api.bufbuild_es/-/safedep_api.bufbuild_es-2.9.0-20250929120853-4be4acc36726.1.tgz}
+  '@buf/safedep_api.bufbuild_es@2.9.0-20251008091848-5ee5efe52797.1':
+    resolution: {tarball: https://buf.build/gen/npm/v1/@buf/safedep_api.bufbuild_es/-/safedep_api.bufbuild_es-2.9.0-20251008091848-5ee5efe52797.1.tgz}
     peerDependencies:
       '@bufbuild/protobuf': ^2.9.0
 
@@ -4341,7 +4341,7 @@ snapshots:
     dependencies:
       '@bufbuild/protobuf': 2.9.0
 
-  '@buf/safedep_api.bufbuild_es@2.9.0-20250929120853-4be4acc36726.1(@bufbuild/protobuf@2.9.0)':
+  '@buf/safedep_api.bufbuild_es@2.9.0-20251008091848-5ee5efe52797.1(@bufbuild/protobuf@2.9.0)':
     dependencies:
       '@buf/bufbuild_protovalidate.bufbuild_es': 2.9.0-20240508200655-46a4cf4ba109.1(@bufbuild/protobuf@2.9.0)
       '@bufbuild/protobuf': 2.9.0
