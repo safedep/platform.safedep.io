@@ -12,6 +12,11 @@ import { enumToJson } from "@bufbuild/protobuf";
 import { RuleCheckSchema } from "@buf/safedep_api.bufbuild_es/safedep/messages/policy/v1/rule_pb";
 import { ruleCheckToIcon } from "@/lib/proto/rule-check";
 import TableLoading from "../table-loading";
+import { getEcosystemIconByEcosystem } from "@/utils/ecosystem";
+import { Button } from "@/components/ui/button";
+import { OnlyHoverPrefetchLink } from "@/components/only-hover-prefetch-link";
+import { Route } from "next";
+import { EcosystemSchema } from "@buf/safedep_api.bufbuild_es/safedep/messages/package/v1/ecosystem_pb";
 
 function createColumns() {
   const helper =
@@ -37,6 +42,35 @@ function createColumns() {
             <CheckIcon className="size-4" />
             <span>{checkName}</span>
           </div>
+        );
+      },
+    }),
+    helper.accessor("componentTarget", {
+      header: "Violating Component",
+      cell: ({ getValue }) => {
+        const componentTarget = getValue();
+        if (!componentTarget) {
+          return <span>-</span>;
+        }
+        const EcosystemIcon = getEcosystemIconByEcosystem(
+          componentTarget.ecosystem,
+        );
+        const ecosystemName = enumToJson(
+          EcosystemSchema,
+          componentTarget.ecosystem,
+        );
+        const packageInsightLink = `/community/packages/${ecosystemName}/${componentTarget.name}/${componentTarget.version}`;
+
+        return (
+          <Button variant="link" asChild>
+            <OnlyHoverPrefetchLink
+              className="flex items-center gap-2"
+              href={packageInsightLink as Route}
+            >
+              <EcosystemIcon className="size-6" />
+              {componentTarget.name}
+            </OnlyHoverPrefetchLink>
+          </Button>
         );
       },
     }),
