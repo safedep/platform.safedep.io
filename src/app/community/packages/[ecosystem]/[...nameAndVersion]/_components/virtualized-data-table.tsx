@@ -32,6 +32,7 @@ export default function VirtualizedDataTable<TData, TValue>({
   overscan = 12,
   className,
 }: Props<TData, TValue>) {
+  "use no memo";
   const table = useReactTable({
     data,
     columns,
