@@ -114,10 +114,6 @@ export default function MaliciousPackagesTab({
       tenant,
       pagination: { pageToken, pageSize, sortOrder },
     }),
-    // select: (data) => ({
-    //   scans: data.scans.map((s) => s.scan!),
-    //   pagination: data.pagination,
-    // }),
   });
 
   if (isLoading) {
