@@ -59,7 +59,7 @@ function createColumns() {
       },
     }),
     columnHelper.accessor("isMalware", {
-      header: "Is Malware",
+      header: "Suspicious",
       cell: ({ getValue }) => {
         const isMalware = getValue();
         return (
@@ -73,7 +73,7 @@ function createColumns() {
       },
     }),
     columnHelper.accessor("isVerified", {
-      header: "Verified",
+      header: "Malicious",
       cell: ({ getValue }) => {
         const isVerified = getValue();
         return (
