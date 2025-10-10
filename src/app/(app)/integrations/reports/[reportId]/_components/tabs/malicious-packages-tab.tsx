@@ -55,7 +55,7 @@ function createColumns() {
         return <span className="font-mono">{version ?? "-"}</span>;
       },
       meta: {
-        className: "w-30 break-words",
+        className: "max-w-30 break-words",
       },
     }),
     columnHelper.accessor("isMalware", {

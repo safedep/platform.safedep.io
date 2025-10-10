@@ -3,6 +3,7 @@
 import {
   flexRender,
   getCoreRowModel,
+  RowData,
   useReactTable,
   type ColumnDef,
 } from "@tanstack/react-table";
@@ -15,6 +16,16 @@ import {
   TableRow,
 } from "@/components/ui/table";
 import { cn } from "@/lib/utils";
+
+declare module "@tanstack/react-table" {
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
+  interface ColumnMeta<TData extends RowData, TValue> {
+    /**
+     * Custom CSS classes for the column.
+     */
+    className?: string;
+  }
+}
 
 interface DataTableProps<TData, TValue> {
   columns: ColumnDef<TData, TValue>[];
