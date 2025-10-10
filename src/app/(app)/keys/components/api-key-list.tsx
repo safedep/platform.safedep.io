@@ -50,6 +50,7 @@ export default function ApiKeyList<TData, TValue>({
   hasPrevPage,
   onPageSizeChange,
 }: ApiKeyListProps<TData, TValue>) {
+  "use no memo";
   const table = useReactTable({
     data: apiKeys,
     columns,

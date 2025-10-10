@@ -16,7 +16,10 @@ function parseNameAndVersion(segments: string[]) {
     return undefined;
   }
   const name = segments.slice(0, -1).join("/");
-  return { name: decodeURIComponent(name), version };
+  return {
+    name: decodeURIComponent(name),
+    version: decodeURIComponent(version),
+  };
 }
 
 export const schema = v.object({

@@ -1,6 +1,7 @@
 import { keepPreviousData, queryOptions } from "@tanstack/react-query";
 import {
   listScanComponents,
+  listScanMaliciousPackages,
   listScanPolicyViolations,
   listScanVulnerabilities,
   PaginationParams,
@@ -108,6 +109,44 @@ export function getListScanVulnerabilitiesQuery({
     ],
     queryFn: async () =>
       await listScanVulnerabilities({
+        reportId,
+        tenant,
+        pagination: {
+          pageToken: pagination?.pageToken ?? "",
+          pageSize: pagination?.pageSize ?? 10,
+          sortOrder:
+            pagination?.sortOrder ?? PaginationRequest_SortOrder.DESCENDING,
+        },
+      }),
+    placeholderData: keepPreviousData,
+  });
+}
+
+export function getListScanMaliciousPackagesQuery({
+  reportId,
+  tenant,
+  pagination,
+}: {
+  reportId: string;
+  tenant: string;
+  pagination?: PaginationParams;
+}) {
+  return queryOptions({
+    queryKey: [
+      "list-scan-malicious-packages",
+      {
+        reportId,
+        tenant,
+        pagination: {
+          pageToken: pagination?.pageToken ?? "",
+          pageSize: pagination?.pageSize ?? 10,
+          sortOrder:
+            pagination?.sortOrder ?? PaginationRequest_SortOrder.DESCENDING,
+        },
+      },
+    ],
+    queryFn: async () =>
+      await listScanMaliciousPackages({
         reportId,
         tenant,
         pagination: {

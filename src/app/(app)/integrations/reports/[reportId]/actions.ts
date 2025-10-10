@@ -114,3 +114,24 @@ export async function listScanVulnerabilities({
     },
   });
 }
+
+export async function listScanMaliciousPackages({
+  reportId,
+  tenant,
+  pagination,
+}: {
+  reportId: string;
+  tenant: string;
+  pagination?: PaginationParams;
+}) {
+  const service = await getScanServiceClient({ reportId, tenant });
+  return await service.listScanMaliciousPackages({
+    scanSessionId: { sessionId: reportId },
+    pagination: {
+      pageToken: pagination?.pageToken ?? "",
+      pageSize: pagination?.pageSize ?? 10,
+      sortOrder:
+        pagination?.sortOrder ?? PaginationRequest_SortOrder.DESCENDING,
+    },
+  });
+}

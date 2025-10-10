@@ -8,11 +8,7 @@ import {
   DropdownMenuItem,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
-import {
-  createColumnHelper,
-  RowData,
-  type ColumnDef,
-} from "@tanstack/react-table";
+import { createColumnHelper, type ColumnDef } from "@tanstack/react-table";
 import { toast } from "sonner";
 import { useState } from "react";
 import {
@@ -31,16 +27,6 @@ export interface ApiKey {
   name: string;
   description: string | null;
   expiresAt: Date;
-}
-
-declare module "@tanstack/react-table" {
-  // eslint-disable-next-line @typescript-eslint/no-unused-vars
-  interface ColumnMeta<TData extends RowData, TValue> {
-    /**
-     * Custom CSS classes for the column.
-     */
-    className?: string;
-  }
 }
 
 export function getColumns({
