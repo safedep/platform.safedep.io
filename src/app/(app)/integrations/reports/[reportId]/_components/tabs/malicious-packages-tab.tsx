@@ -14,6 +14,13 @@ import { Route } from "next";
 import { enumToJson } from "@bufbuild/protobuf";
 import { EcosystemSchema } from "@buf/safedep_api.bufbuild_es/safedep/messages/package/v1/ecosystem_pb";
 import { Badge } from "@/components/ui/badge";
+import {
+  Tooltip,
+  TooltipContent,
+  TooltipTrigger,
+} from "@/components/ui/tooltip";
+
+const MAX_VERSION_LENGTH = 16;
 
 function createColumns() {
   const columnHelper =
@@ -52,10 +59,25 @@ function createColumns() {
       header: "Version",
       cell: ({ getValue }) => {
         const version = getValue();
-        return <span className="font-mono">{version ?? "-"}</span>;
+
+        if (version.length <= MAX_VERSION_LENGTH) {
+          return <span className="font-mono">{version ?? "-"}</span>;
+        }
+
+        const clipped = version.slice(0, MAX_VERSION_LENGTH);
+        return (
+          <Tooltip>
+            <TooltipTrigger asChild>
+              <span className="font-mono">{clipped ?? "-"}...</span>
+            </TooltipTrigger>
+            <TooltipContent>
+              <span className="font-mono">{version ?? "-"}</span>
+            </TooltipContent>
+          </Tooltip>
+        );
       },
       meta: {
-        className: "max-w-30 break-words",
+        className: "max-w-32 break-words",
       },
     }),
     columnHelper.accessor("isMalware", {
