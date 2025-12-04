@@ -36,24 +36,30 @@ function getBadgeColor(safety: PackageSafety) {
   }
 }
 
-function getIcon(safety: PackageSafety) {
+function SafetyIcon({
+  safety,
+  className,
+}: {
+  safety: PackageSafety;
+  className?: string;
+}) {
   switch (safety) {
     case PackageSafety.SAFE:
-      return ShieldCheck;
+      return <ShieldCheck className={className} />;
     case PackageSafety.SUSPICIOUS:
-      return AlertTriangle;
+      return <AlertTriangle className={className} />;
     case PackageSafety.MALICIOUS:
-      return XOctagon;
+      return <XOctagon className={className} />;
     case PackageSafety.VULNERABLE:
-      return AlertCircle;
+      return <AlertCircle className={className} />;
     case PackageSafety.RISKY_LICENSE:
-      return FileWarning;
+      return <FileWarning className={className} />;
     case PackageSafety.UNMAINTAINED:
-      return Wrench;
+      return <Wrench className={className} />;
     case PackageSafety.UNPOPULAR:
-      return Users;
+      return <Users className={className} />;
     case PackageSafety.POOR_SECURITY_HYGIENE:
-      return ThumbsDown;
+      return <ThumbsDown className={className} />;
     default:
       const exhaustiveCheck: never = safety;
       throw new Error(`Unsupported safety: ${exhaustiveCheck}`);
@@ -66,13 +72,12 @@ export default function PackageSafetyBadge({
   safety: PackageSafety;
 }) {
   const badgeColor = getBadgeColor(safety);
-  const SafetyIcon = getIcon(safety);
 
   return (
     <Badge
       className={cn("text-md flex items-center gap-2 px-4 py-2", badgeColor)}
     >
-      <SafetyIcon className="size-4!" />
+      <SafetyIcon className="size-4!" safety={safety} />
       <span className="capitalize">{safety}</span>
     </Badge>
   );

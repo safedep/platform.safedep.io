@@ -2,7 +2,7 @@
 import { Badge } from "@/components/ui/badge";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { cn } from "@/lib/utils";
-import { getEcosystemIconByEcosystem } from "@/utils/ecosystem";
+import { EcosystemIcon } from "@/utils/ecosystem";
 import { Ecosystem } from "@buf/safedep_api.bufbuild_es/safedep/messages/package/v1/ecosystem_pb";
 import {
   Package,
@@ -78,7 +78,6 @@ export default async function PackageHeader({
   scorecardChecks?: ScorecardCheck[];
   downloadCount?: number;
 }) {
-  const EcosystemIcon = getEcosystemIconByEcosystem(ecosystem);
   const safety = getPackageSafetyStatus(
     inference,
     verificationRecord,
@@ -104,7 +103,7 @@ export default async function PackageHeader({
         <CardContent>
           <div className="flex flex-wrap gap-2">
             <HeaderBadge>
-              <EcosystemIcon className="size-6!" />
+              <EcosystemIcon ecosystem={ecosystem} className="size-6!" />
             </HeaderBadge>
             <HeaderBadge>
               <Tag className="size-3" />

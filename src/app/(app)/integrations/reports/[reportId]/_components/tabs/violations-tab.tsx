@@ -12,11 +12,11 @@ import { enumToJson } from "@bufbuild/protobuf";
 import { RuleCheckSchema } from "@buf/safedep_api.bufbuild_es/safedep/messages/policy/v1/rule_pb";
 import { ruleCheckToIcon } from "@/lib/proto/rule-check";
 import TableLoading from "../table-loading";
-import { getEcosystemIconByEcosystem } from "@/utils/ecosystem";
 import { Button } from "@/components/ui/button";
 import { OnlyHoverPrefetchLink } from "@/components/only-hover-prefetch-link";
 import { Route } from "next";
 import { EcosystemSchema } from "@buf/safedep_api.bufbuild_es/safedep/messages/package/v1/ecosystem_pb";
+import { EcosystemIcon } from "@/utils/ecosystem";
 
 function createColumns() {
   const helper =
@@ -52,9 +52,6 @@ function createColumns() {
         if (!componentTarget) {
           return <span>-</span>;
         }
-        const EcosystemIcon = getEcosystemIconByEcosystem(
-          componentTarget.ecosystem,
-        );
         const ecosystemName = enumToJson(
           EcosystemSchema,
           componentTarget.ecosystem,
@@ -67,7 +64,10 @@ function createColumns() {
               className="flex items-center gap-2"
               href={packageInsightLink as Route}
             >
-              <EcosystemIcon className="size-6" />
+              <EcosystemIcon
+                ecosystem={componentTarget.ecosystem}
+                className="size-6"
+              />
               {componentTarget.name}
             </OnlyHoverPrefetchLink>
           </Button>

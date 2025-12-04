@@ -11,41 +11,46 @@ import {
   SiTerraform,
 } from "react-icons/si";
 import { VscVscode } from "react-icons/vsc";
-import { IconType } from "react-icons";
 import { SiHomebrew } from "react-icons/si";
 
-export function getEcosystemIconByEcosystem(ecosystem: Ecosystem): IconType {
+export function EcosystemIcon({
+  ecosystem,
+  className,
+}: {
+  ecosystem: Ecosystem;
+  className?: string;
+}) {
   switch (ecosystem) {
     case Ecosystem.NPM:
-      return FaNpm;
+      return <FaNpm className={className} />;
     case Ecosystem.RUBYGEMS:
-      return SiRubygems;
+      return <SiRubygems className={className} />;
     case Ecosystem.GO:
-      return SiGo;
+      return <SiGo className={className} />;
     case Ecosystem.MAVEN:
-      return SiApachemaven;
+      return <SiApachemaven className={className} />;
     case Ecosystem.PYPI:
-      return FaPython;
+      return <FaPython className={className} />;
     case Ecosystem.PACKAGIST:
-      return SiPackagist;
+      return <SiPackagist className={className} />;
     case Ecosystem.NUGET:
-      return SiNuget;
+      return <SiNuget className={className} />;
     case Ecosystem.CARGO:
-      return SiRust;
+      return <SiRust className={className} />;
     case Ecosystem.TERRAFORM:
     case Ecosystem.TERRAFORM_MODULE:
     case Ecosystem.TERRAFORM_PROVIDER:
-      return SiTerraform;
+      return <SiTerraform className={className} />;
     case Ecosystem.VSCODE:
     case Ecosystem.OPENVSX:
-      return VscVscode;
+      return <VscVscode className={className} />;
     case Ecosystem.GITHUB_ACTIONS:
     case Ecosystem.GITHUB_REPOSITORY:
-      return SiGithub;
+      return <SiGithub className={className} />;
     case Ecosystem.HOMEBREW:
-      return SiHomebrew;
+      return <SiHomebrew className={className} />;
     case Ecosystem.UNSPECIFIED:
-      return FaQuestion;
+      return <FaQuestion className={className} />;
     default:
       // type exhaustive check
       const exhaustiveCheck: never = ecosystem;

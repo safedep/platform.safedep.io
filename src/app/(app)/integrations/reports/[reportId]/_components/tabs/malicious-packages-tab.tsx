@@ -7,7 +7,6 @@ import { DataTable } from "@/components/ui/data-table";
 import DataTablePagination from "@/components/data-table/data-table-pagination";
 import { ColumnDef, createColumnHelper } from "@tanstack/react-table";
 import { ListScanMaliciousPackagesResponse_MaliciousPackage } from "@buf/safedep_api.bufbuild_es/safedep/services/controltower/v1/scan_pb";
-import { getEcosystemIconByEcosystem } from "@/utils/ecosystem";
 import { Button } from "@/components/ui/button";
 import { OnlyHoverPrefetchLink } from "@/components/only-hover-prefetch-link";
 import { Route } from "next";
@@ -19,6 +18,7 @@ import {
   TooltipContent,
   TooltipTrigger,
 } from "@/components/ui/tooltip";
+import { EcosystemIcon } from "@/utils/ecosystem";
 
 const MAX_VERSION_LENGTH = 16;
 
@@ -33,9 +33,6 @@ function createColumns() {
         if (!componentTarget) {
           return <span>-</span>;
         }
-        const EcosystemIcon = getEcosystemIconByEcosystem(
-          componentTarget.ecosystem,
-        );
         const ecosystemName = enumToJson(
           EcosystemSchema,
           componentTarget.ecosystem,
@@ -48,7 +45,10 @@ function createColumns() {
               className="flex items-center gap-2"
               href={packageInsightLink as Route}
             >
-              <EcosystemIcon className="size-6" />
+              <EcosystemIcon
+                ecosystem={componentTarget.ecosystem}
+                className="size-6"
+              />
               {componentTarget.name}
             </OnlyHoverPrefetchLink>
           </Button>

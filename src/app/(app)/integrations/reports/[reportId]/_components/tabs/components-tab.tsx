@@ -12,8 +12,8 @@ import { EcosystemSchema } from "@buf/safedep_api.bufbuild_es/safedep/messages/p
 import { OnlyHoverPrefetchLink } from "@/components/only-hover-prefetch-link";
 import { Route } from "next";
 import { Button } from "@/components/ui/button";
-import { getEcosystemIconByEcosystem } from "@/utils/ecosystem";
 import TableLoading from "../table-loading";
+import { EcosystemIcon } from "@/utils/ecosystem";
 
 function createColumns() {
   const helper = createColumnHelper<Component>();
@@ -40,12 +40,12 @@ function createColumns() {
     helper.accessor("ecosystem", {
       header: "Ecosystem",
       cell: ({ row }) => {
-        const EcosystemIcon = getEcosystemIconByEcosystem(
-          row.original.ecosystem,
-        );
         return (
           <span>
-            <EcosystemIcon className="size-6" />
+            <EcosystemIcon
+              ecosystem={row.original.ecosystem}
+              className="size-6"
+            />
           </span>
         );
       },

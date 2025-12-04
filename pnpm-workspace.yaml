@@ -1,9 +1,5 @@
 onlyBuiltDependencies:
-  - '@tailwindcss/oxide'
   - core-js
   - esbuild
-  - oxc-resolver
   - sharp
   - unrs-resolver
-publicHoistPattern:
-- "*eslint*"
