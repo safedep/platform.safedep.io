@@ -5,9 +5,6 @@ const nextConfig: NextConfig = {
   output: env.STANDALONE_IN_PROD ? "standalone" : undefined,
 
   experimental: {
-    // low-risk memory optimization, see:
-    // https://nextjs.org/docs/app/building-your-application/optimizing/memory-usage#try-experimentalwebpackmemoryoptimizations
-    webpackMemoryOptimizations: true,
     // put all css in the head since tailwind is O(1)
     inlineCss: true,
     // allow using cache in server actions
@@ -36,6 +33,11 @@ const nextConfig: NextConfig = {
       {
         source: "/ingest/decide",
         destination: "https://us.i.posthog.com/decide",
+      },
+      // forward all community requests to the app
+      {
+        source: "/community/:path*",
+        destination: "https://app.safedep.io/community/:path*",
       },
     ];
   },
