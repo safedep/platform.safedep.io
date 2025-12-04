@@ -34,10 +34,16 @@ const nextConfig: NextConfig = {
         source: "/ingest/decide",
         destination: "https://us.i.posthog.com/decide",
       },
+    ];
+  },
+
+  redirects: async () => {
+    return [
       // forward all community requests to the app
       {
         source: "/community/:path*",
         destination: "https://app.safedep.io/community/:path*",
+        permanent: true,
       },
     ];
   },
