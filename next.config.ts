@@ -3,6 +3,7 @@ import { env } from "@/env";
 
 const nextConfig: NextConfig = {
   output: env.STANDALONE_IN_PROD ? "standalone" : undefined,
+  reactCompiler: true,
 
   experimental: {
     // put all css in the head since tailwind is O(1)
